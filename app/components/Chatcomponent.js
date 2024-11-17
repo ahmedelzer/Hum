@@ -9,8 +9,6 @@ export default function Chatcomponent({ item }) {
 
   console.log(item.messages[item.messages.length - 1]);
 
-
-
   function handleNavigateToMessageScreen() {
     navigation.navigate("Messagescreen", {
       currentGroupName: item.currentGroupName,
@@ -27,12 +25,16 @@ export default function Chatcomponent({ item }) {
         <View>
           <Text style={styles.userName}>{item.currentGroupName}</Text>
           <Text style={styles.message}>
-            {item && item.messages && item.messages.length ? item.messages[item.messages.length - 1].text : "Tap to start messaging"}
+            {item && item.messages && item.messages.length
+              ? item.messages[item.messages.length - 1].text
+              : "Tap to start messaging"}
           </Text>
         </View>
         <View>
           <Text style={styles.time}>
-            {item && item.messages && item.messages.length ? item.messages[item.messages.length - 1].time : "Now"}
+            {item && item.messages && item.messages.length
+              ? item.messages[item.messages.length - 1].time
+              : "Now"}
           </Text>
         </View>
       </View>

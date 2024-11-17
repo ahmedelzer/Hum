@@ -11,6 +11,7 @@ import Room from "../screens/Room";
 import Login from "../screens/Login";
 import Chatscreen from "../screens/Chatscreen";
 import Messagescreen from "../screens/Messagescreen";
+import SignIn from "../components/signin/index";
 
 import GlobalState from "../context";
 import Login1 from "../screens/Login1";
@@ -55,11 +56,18 @@ export default function AppNavigation() {
           />
           <Stack.Screen
             name="Signup"
-            component={Signup}
+            component={SignIn}
             options={{
               headerShown: false,
             }}
           />
+          {/* <Stack.Screen
+            name="Signup"
+            component={Signup}
+            options={{
+              headerShown: false,
+            }}
+          /> */}
           <Stack.Screen name="Messagescreen" component={Messagescreen} />
         </Stack.Navigator>
         <Footer />
