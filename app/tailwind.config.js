@@ -18,6 +18,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        body: "#111111",
+        primary: "#FF8C42",
+        card: "#2B2B2B",
+        text: "#FFFFFF",
+        accent: {
+          DEFAULT: "#FF6700",
+          hover: "#FF4500",
+        },
         primary: {
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
           50: "rgb(var(--color-primary-50)/<alpha-value>)",
@@ -174,16 +182,36 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
-        mono: undefined,
-        roboto: ["Roboto", "sans-serif"],
+        primary: '"sans-serif"',
+      },
+      container: {
+        padding: {
+          DEFAULT: "15px",
+        },
+        center: true,
+      },
+      screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "960px",
+        xl: "1440px",
       },
       fontWeight: {
         extrablack: "950",
       },
       fontSize: {
         "2xs": "10px",
+      },
+      keyframes: {
+        shake: {
+          "10%, 90%": { transform: "translate3d(-1px, 0,0 )" },
+          "20%, 80%": { transform: "translate3d(2px, 0,0 )" },
+          "30%, 50%, 70%": { transform: "translate3d(-4px, 0,0 )" },
+          "40%, 60%": { transform: "translate3d(4px, 0,0 )" },
+        },
+      },
+      animation: {
+        shake: "shake 1s ease-in-out",
       },
       boxShadow: {
         "hard-1": "-2px 2px 8px 0px rgba(38, 38, 38, 0.20)",

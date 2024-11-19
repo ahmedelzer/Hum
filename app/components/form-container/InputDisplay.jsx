@@ -37,12 +37,19 @@ function InputDisplay({ props, BaseInput, errorResult }) {
             setStyle={setInputStyle}
           />
           <Text style={styles.label}>{props.title}</Text>
-          <Input
+          {/* <Input
             {...props}
             onChangeText={handleChange}
             title={inputErrorResult || props.title}
             placeholder={`${props.title}`}
             style={[inputStyle, props.style]}
+          /> */}
+          <BaseInput
+            {...props}
+            onChange={handleChange}
+            title={inputErrorResult ? inputErrorResult : props.title}
+            placeholder={localization.inputs.base.placeholder + props.title}
+            style={inputStyle}
           />
         </View>
       )}

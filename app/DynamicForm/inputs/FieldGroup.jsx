@@ -21,27 +21,71 @@
 // }
 import React from "react";
 import { TextInput, StyleSheet } from "react-native";
+import { Input, InputField } from "../../components/ui";
+import { Controller } from "react-hook-form";
 
 export default function FieldGroup({
   value,
-  onChange,
-  onFocus,
+  name,
   title,
   className,
+  control,
   ...props
 }) {
   // Applying conditional style for validation
   const inputStyle = title ? styles.invalid : styles.input;
-
   return (
-    <TextInput
-      {...props}
-      value={value}
-      onChangeText={onChange}
-      onFocus={onFocus}
-      style={[inputStyle, props.style]} // Merges conditional style with any external styles passed via props
+    <Controller
+      control={control}
+      rules={{
+        required: true,
+      }}
+      render={({ field: { onChange, onBlur, value } }) => (
+        // <TextInput
+        //   placeholder="Email"
+        //   onBlur={onBlur}
+        //   onChangeText={onChange}
+        //   value={value}
+        // />
+        <Input
+          variant="outline"
+          size="md"
+          isDisabled={false}
+          isInvalid={false}
+          isReadOnly={false}
+        >
+          <InputField
+            value={value}
+            onChangeText={onChange}
+            // onFocus={onFocus}
+            onBlur={onBlur}
+            // {...props}
+            placeholder={props.placeholder}
+            // style={[inputStyle, props.style]}
+          />
+        </Input>
+      )}
+      name={name}
     />
   );
+}
+{
+  /* <Input
+  variant="outline"
+  size="md"
+  isDisabled={false}
+  isInvalid={false}
+  isReadOnly={false}
+>
+  <InputField
+    value={value}
+    onChangeText={onChange}
+    onFocus={onFocus}
+    // {...props}
+    placeholder={props.placeholder}
+    // style={[inputStyle, props.style]}
+  />
+</Input> */
 }
 
 const styles = StyleSheet.create({

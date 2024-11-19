@@ -29,7 +29,8 @@ function FormContainer({ tableSchema, row, errorResult }: any) {
                 <Column
                   size={Sm(param)}
                   className="px-2"
-                  key={param.parameterField}>
+                  key={param.parameterField}
+                >
                   <DataCellRender
                     //@ts-ignore
                     isActionField={
