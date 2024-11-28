@@ -1,15 +1,52 @@
 import axios from "axios";
-// import { Axios } from "react-native-axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// import axios from "axios";
-export const baseURL = "http://localhost:5276/api";
-// export const websoketBaseURI = "ws://ihs.ddnsking.com:8002/Chanels";
-// export const defaultProjectProxyRoute =
-//   "http://ihs.ddnsking.com:8002/Centralization/Api";
+export const baseURL = "http://maingatewayapi.ihs-solutions.com:8001";
+export const defaultProjectProxyRoute =
+  "http://maingatewayapi.ihs-solutions.com:8001/BrandingMart/api/";
+export const defaultProjectProxyRouteWithoutAPI =
+  "http://maingatewayapi.ihs-solutions.com:8001/BrandingMart/";
+// export const languageName = window.localStorage.getItem("language");
+// export const languageID = window.localStorage.getItem("languageID");
+// export const projectProxyRoute =
+//   window.sessionStorage.getItem("projectProxyRoute");//!make it by storge
+let projectProxyRoute = "BrandingMart";
+// Set projectProxyRoute
+export function SetReoute(Route) {
+  projectProxyRoute = Route;
+}
+
+// Add other methods as needed
+
+export const baseURLWithoutApi = `${baseURL}/${projectProxyRoute}`;
+//"proxy": "http://ihs.ddnsking.com:8000",
+
+export function GetProjectUrl() {
+  return `${baseURL}/${projectProxyRoute}/api`;
+}
+export function SetHeaders() {
+  const headers = {
+    languageName: encodeURIComponent(AsyncStorage.getItem("language")),
+    "Content-Type": "application/json",
+    // "Access-Control-Allow-Credentials": "true",
+    // "Access-Control-Allow-Origin": "*",
+    languageID: AsyncStorage.getItem("languageID"),
+  };
+
+  // Remove any undefined or null properties
+  Object.keys(headers).forEach(
+    (key) =>
+      (headers[key] === undefined || headers[key] === null) &&
+      delete headers[key]
+  );
+
+  return headers;
+}
 
 export const request = axios.create({
-  baseURL: baseURL,
-  headers: {
-    // languageName: lan,
-  },
+  // baseURL: baseURL,
+  // headers: {
+  //   ...SetHeaders(),
+  // },
+  // withCredentials: true,
 });

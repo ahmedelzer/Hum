@@ -1,0 +1,6 @@
+fundamentals of Application
+1-make config of rtl dircations
+2-add languages context 
+3-
+//rev
+1-working on rtl dircations and display the languages components and context and the storge porxy rout

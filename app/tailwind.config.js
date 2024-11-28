@@ -19,7 +19,6 @@ module.exports = {
     extend: {
       colors: {
         body: "#111111",
-        primary: "#FF8C42",
         card: "#2B2B2B",
         text: "#FFFFFF",
         accent: {
@@ -27,6 +26,7 @@ module.exports = {
           hover: "#FF4500",
         },
         primary: {
+          custom: "#FF8C42",
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
           50: "rgb(var(--color-primary-50)/<alpha-value>)",
           100: "rgb(var(--color-primary-100)/<alpha-value>)",

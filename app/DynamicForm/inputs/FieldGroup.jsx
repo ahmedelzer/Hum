@@ -41,24 +41,18 @@ export default function FieldGroup({
         required: true,
       }}
       render={({ field: { onChange, onBlur, value } }) => (
-        // <TextInput
-        //   placeholder="Email"
-        //   onBlur={onBlur}
-        //   onChangeText={onChange}
-        //   value={value}
-        // />
         <Input
           variant="outline"
           size="md"
           isDisabled={false}
-          isInvalid={false}
+          // isInvalid={true}
           isReadOnly={false}
         >
           <InputField
             value={value}
             onChangeText={onChange}
-            // onFocus={onFocus}
             onBlur={onBlur}
+            // onFocus={onFocus}
             // {...props}
             placeholder={props.placeholder}
             // style={[inputStyle, props.style]}

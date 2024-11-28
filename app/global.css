@@ -1,18 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --body: #111111;
-  --card: #2b2b2b;
-  --primary: #ff8c42;
-  --text: #ffffff;
-  --accent-DEFAULT: #ff6700;
-  --accent-hover: #ff4500;
-}
-@layer base {
+/* @layer base {
   body {
-    @apply font-primary bg-body !text-text;
+    @apply font-primary bg-body !text-text  overflow-hidden h-full;
   }
   .h2 {
     @apply text-3xl capitalize;
@@ -38,11 +29,10 @@
   .main-button {
     @apply inline-block rounded border-2 border-accent text-accent hover:border-accent-hover hover:bg-accent hover:bg-opacity-10 hover:text-accent-hover px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal transition duration-150 ease-in-out focus:outline-none focus:ring-0;
   }
-}
+} */
 body {
-  @apply overflow-hidden h-full;
+  @apply font-primary bg-body !text-text  overflow-hidden h-full;
 }
-
 ::-webkit-scrollbar {
   @apply w-1.5 h-2;
 }

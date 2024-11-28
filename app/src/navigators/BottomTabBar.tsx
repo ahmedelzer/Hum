@@ -26,6 +26,12 @@ const BottomBarTabs: FC = () => {
       projectProxyRoute: "HumMenu",
     },
     {
+      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
+      dashboardMenuItemName: "MenuItem1",
+      routePath: "test",
+      projectProxyRoute: "HumMenu",
+    },
+    {
       dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee82",
       dashboardMenuItemName: "MenuItem2",
       routePath: "MenuView",
@@ -57,7 +63,8 @@ const BottomBarTabs: FC = () => {
         <Tab.Screen
           key={item.dashboardMenuItemName}
           name={item.routePath}
-          options={{ headerShown: false, tabBarIcon: homeIcon }}>
+          options={{ headerShown: false, tabBarIcon: homeIcon }}
+        >
           {() => (
             <RenderItemsView
               dashboardItemId={item.dashboardItemID}

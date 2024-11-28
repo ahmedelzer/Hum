@@ -1,13 +1,17 @@
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
+#import <React/RCTI18nUtil.h> // Import RCTI18nUtil for RTL support
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   self.moduleName = @"main";
+
+  // Enable RTL support
+  [[RCTI18nUtil sharedInstance] allowRTL:YES];
+  [[RCTI18nUtil sharedInstance] forceRTL:NO]; // Set to YES if you want to force RTL for all layouts
 
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

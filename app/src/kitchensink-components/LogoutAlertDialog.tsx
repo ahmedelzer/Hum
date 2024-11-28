@@ -14,6 +14,8 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
 } from "../../components/ui";
+import { deleteKey } from "../store/zustandStore";
+import { DevSettings } from "react-native";
 
 const LogoutAlertDialog = ({
   openLogoutAlertDialog,
@@ -21,6 +23,10 @@ const LogoutAlertDialog = ({
 }: any) => {
   const handleClose = () => {
     setOpenLogoutAlertDialog(false);
+  };
+  const handleLogout = async () => {
+    await deleteKey("token");
+    DevSettings.reload();
   };
 
   return (
@@ -40,7 +46,7 @@ const LogoutAlertDialog = ({
           <Button variant="outline" action="secondary" onPress={handleClose}>
             <ButtonText>Cancel</ButtonText>
           </Button>
-          <Button action="negative" onPress={handleClose}>
+          <Button action="negative" onPress={handleLogout}>
             <ButtonText className="text-white">Logout</ButtonText>
           </Button>
         </AlertDialogFooter>

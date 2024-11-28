@@ -5,7 +5,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import BottomBarTabs from "./BottomTabBar";
 import OutsideStack from "./OutSideStack";
-import useToken from "../store/zustandStore";
+import { retrieveSecureValue } from "../store/zustandStore";
+import { useAuth } from "../../context/auth";
 
 // types
 export type RootStackParamList = {
@@ -25,14 +26,16 @@ export type RootStackParamList = {
 
 const Stack = createStackNavigator<RootStackParamList>();
 const RootStack: FC = (props: any) => {
-  const { token, setToken } = useToken();
+  const { user, loading } = useAuth();
   return (
-    <NavigationContainer>
-      {token && <BottomBarTabs />}
-      {!token && <OutsideStack />}
-      {/* <BottomBarTabs /> */}
-      {/* <BottomBarTabs /> */}
-    </NavigationContainer>
+    !loading && (
+      <NavigationContainer>
+        {user && <BottomBarTabs />}
+        {!user && <OutsideStack />}
+        {/* <BottomBarTabs /> */}
+        {/* <BottomBarTabs /> */}
+      </NavigationContainer>
+    )
   );
 };
 
