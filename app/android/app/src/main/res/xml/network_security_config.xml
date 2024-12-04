@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">maingatewayapi.ihs-solutions.com:8001</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">192.168.0.0/16</domain> <!-- Replace with your local network IP range -->
+    </domain-config>
+</network-security-config>

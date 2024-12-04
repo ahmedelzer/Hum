@@ -25,7 +25,7 @@ import { Input, InputField } from "../../components/ui";
 import { Controller } from "react-hook-form";
 
 export default function FieldGroup({
-  value,
+  defaultValue,
   name,
   title,
   className,
@@ -45,13 +45,14 @@ export default function FieldGroup({
           variant="outline"
           size="md"
           isDisabled={false}
-          // isInvalid={true}
+          isInvalid={props.invalidInput}
           isReadOnly={false}
         >
           <InputField
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
+            defaultValue={defaultValue}
             // onFocus={onFocus}
             // {...props}
             placeholder={props.placeholder}

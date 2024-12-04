@@ -46,6 +46,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({
       const savedLocalization = await AsyncStorage.getItem("localization");
       const savedLanguageID = await AsyncStorage.getItem("languageID");
 
+      console.log(savedDirection, "sss");
       if (savedDirection !== null) {
         const direction = savedDirection === "true";
         setIsRTL(direction);
@@ -53,7 +54,8 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({
           I18nManager.forceRTL(direction);
         }
       }
-
+      I18nManager.forceRTL(true); //!delete that
+      setIsRTL(true);
       if (savedLanguage) {
         setLanguage(savedLanguage);
       }

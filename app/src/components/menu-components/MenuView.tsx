@@ -23,7 +23,7 @@ import { StarIcon } from "lucide-react-native";
 import { Image } from "expo-image";
 import MenuCardsView from "./MenuCardsView";
 import MenuCardView from "./MenuCardView";
-import HomeCarousel from "@/src/kitchensink-components/main-content/HomeCarousel";
+import HomeCarousel from "../../kitchensink-components/main-content/HomeCarousel";
 
 const MenuView = ({ schemas }: any) => {
   const { data, isLoading, isSuccess } = useFetchSchemaActions({
@@ -42,29 +42,25 @@ const MenuView = ({ schemas }: any) => {
   const menuCardItem = schemas?.find(
     (schema: any) => schema.schemaType === "menuItemCards"
   );
-
+  console.log("aaa", schemas);
   return (
     <View className="flex-1 gap-y-4 mx-4">
-      <HStack space="2xl" className="items-center mt-4">
+      <HStack space="2xl" className="items-center mt-8">
         <View style={{ flex: 1 }}>
-          {searchBarSchema && (
-            <Searchbar schema={searchBarSchema} setRow={setRow} row={row} />
-          )}
+          {/* {searchBarSchema && ( */}
+          <Searchbar schema={searchBarSchema} setRow={setRow} row={row} />
+          {/* )} */}
         </View>
         <View style={{ flex: 0 }}>
-          {searchBarFilter && (
-            <SearchBarFilter
-              schema={searchBarFilter}
-              setRow={setRow}
-              row={row}
-            />
-          )}
+          {/* {searchBarFilter && ( */}
+          <SearchBarFilter schema={searchBarFilter} setRow={setRow} row={row} />
+          {/* )} */}
         </View>
       </HStack>
       <HomeCarousel menuCardItem={menuCardItem} row={row} setRow={setRow} />
-      {menuCardItem && (
-        <MenuCardsView menuCardItem={menuCardItem} row={row} setRow={setRow} />
-      )}
+      {/* {menuCardItem && ( */}
+      <MenuCardsView menuCardItem={menuCardItem} row={row} setRow={setRow} />
+      {/* )} */}
     </View>
   );
 };

@@ -42,6 +42,7 @@ import {
 import { LocalizationContext } from "../../../../context/LocalizationContext";
 import { SetReoute } from "../../../../request";
 import { useAuth } from "../../../../context/auth";
+import { jwtDecode } from "jwt-decode";
 
 const ACTION_SCHEMA = [
   {
@@ -56,7 +57,7 @@ const ACTION_SCHEMA = [
 
 const LoginWithLeftBackground = () => {
   const { localization } = useContext(LocalizationContext);
-  const { user, setUser, loading, setLoading } = useAuth();
+  const { user, setUser } = useAuth();
 
   const postAction =
     ACTION_SCHEMA &&
@@ -82,16 +83,13 @@ const LoginWithLeftBackground = () => {
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    console.log("====================================");
-    console.log(data);
-    console.log("====================================");
     SetReoute(loginFormSchema.projectProxyRoute);
     const postAction =
       schemaActions &&
       schemaActions.find(
         (action) => action.dashboardFormActionMethodType === "Post"
       );
-    setLoading(true);
+    // setLoading(true);
     const apply = await onApply(
       data,
       "",
@@ -99,10 +97,19 @@ const LoginWithLeftBackground = () => {
       postAction,
       loginFormSchema.projectProxyRoute
     );
+    console.log("====================================");
+    console.log(apply);
+    console.log("====================================");
     if (apply && apply.success === true) {
-      // const decodedToken = jwtDecode(apply.data.token);
+      try {
+        const decodedToken = jwtDecode(apply.data.token);
+        console.log("Decoded Token:", decodedToken);
+      } catch (error) {
+        console.error("Failed to decode token:", error.message);
+      }
       // const expiresInSeconds = decodedToken.exp;
       // const expirationDate = new Date(expiresInSeconds * 1000);
+
       // if (formJson.rememberMe) {
       //   Cookies.set("user", apply.data.token, { expires: expirationDate });
       // } else {
@@ -114,18 +121,13 @@ const LoginWithLeftBackground = () => {
       //   ...decodedToken,
       // };
       // setUser(user);
-      // window.sessionStorage.setItem(
-      //   "routes",
-      //   user?.UsersGroupDashboardMenuItems
-      // );
-      // navigate("/home");
-      await saveSecureValue("token", apply.data.token);
-      DevSettings.reload();
+      // await saveSecureValue("token", apply.data.token);
+      // DevSettings.reload();
     } else if (!apply.success) {
       // setResult(apply);
       // notify(apply.message, "error", 2000);
     }
-    setLoading(false);
+    // setLoading(false);
   };
 
   return (
@@ -151,19 +153,11 @@ const LoginWithLeftBackground = () => {
           <FormContainer
             tableSchema={loginFormSchema}
             control={control}
-            errorResult={{
-              password: {
-                message: "",
-                ref: { name: "password" },
-                type: "required",
-              },
-              username: {
-                message: "",
-                ref: { name: "username" },
-                type: "required",
-              },
+            errorResult={errors}
+            row={{
+              username: "admin",
+              password: "123321123",
             }}
-            row={{}}
           />
 
           <HStack className="w-full justify-between ">

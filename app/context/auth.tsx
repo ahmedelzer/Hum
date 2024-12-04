@@ -15,7 +15,8 @@ function AuthProvider(props) {
   useEffect(() => {
     (async function () {
       const result = await retrieveSecureValue("token");
-      setUser(result);
+      console.log("Retrieved token:", result);
+      setUser(() => result);
       // if (result.isOk) {
       //   setUser(result.data);
       // }

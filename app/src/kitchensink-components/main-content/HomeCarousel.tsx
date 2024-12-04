@@ -161,12 +161,14 @@ const HomeCarousel = ({ menuCardItem, row }: any) => {
             setIsContentAtRight(true);
           }
           setScrollPosition(event.nativeEvent.contentOffset.x);
-        }}>
+        }}
+      >
         {data.map((image, index) => {
           return (
             <Box
               key={index}
-              className=" justify-center items-center relative -mb-4">
+              className=" justify-center items-center relative -mb-4"
+            >
               {imageView && (
                 <Image
                   source={image.src}
@@ -178,10 +180,12 @@ const HomeCarousel = ({ menuCardItem, row }: any) => {
               )}
               <Card
                 variant="elevated"
-                className="absolute bottom-9 w-[90%] justify-center p-4 rounded-3xl shadow-xl">
+                className="absolute bottom-9 w-[90%] justify-center p-4 rounded-3xl shadow-xl"
+              >
                 <Pressable
                   onPress={() => setLikes(!likes)}
-                  className="absolute top-3 right-4 h-6 w-6  justify-center items-center">
+                  className="absolute top-3 right-4 h-6 w-6  justify-center items-center"
+                >
                   <AnimatePresence>
                     <Motion.View
                       key={likes ? "like" : "dislike"}
@@ -202,7 +206,8 @@ const HomeCarousel = ({ menuCardItem, row }: any) => {
                       }}
                       style={{
                         position: "absolute",
-                      }}>
+                      }}
+                    >
                       <Icon
                         as={Heart}
                         size="xl"
@@ -317,7 +322,8 @@ const ScrollLeft = ({ handleScrollLeft, disabled }: any) => {
             : "data-[disabled=true]:opacity-100"
         }`}
         disabled={disabled}
-        onPress={handleScrollLeft}>
+        onPress={handleScrollLeft}
+      >
         <Icon as={ChevronLeft} size="lg" color={"#535252"} />
       </Pressable>
     </Center>
@@ -334,7 +340,8 @@ const ScrollRight = ({ handleScrollRight, disabled }: any) => {
             : "data-[disabled=true]:opacity-100"
         }`}
         onPress={handleScrollRight}
-        disabled={disabled}>
+        disabled={disabled}
+      >
         <Icon as={ChevronRight} size="lg" color={"#535252"} />
       </Pressable>
     </Center>

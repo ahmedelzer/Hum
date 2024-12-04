@@ -16,6 +16,7 @@ import { ChevronRight, Heart, Scroll } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { ScreenHeight } from "@/src/components/shared";
 import MenuCardView from "./MenuCardView";
+import { LocalizationContext } from "../../../context/LocalizationContext";
 
 const tabsData = [
   {
@@ -179,7 +180,7 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
   // );
 
   return (
-    <Box className="md:px-0 flex-1 -mt-4">
+    <Box className="md:px-0 -mt-4">
       <HomestayInfoTabs
         tabs={tabs}
         activeTab={activeTab}
@@ -194,15 +195,15 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
                 return (
                   <MenuCardView
                     imageView={imageView}
-                    text={text}
-                    description={description}
+                    text={"text"}
+                    description={"description"}
                     numberOfIndividuals={numberOfIndividuals}
                     rate={rate}
                     likes={likes}
                     dislikes={dislikes}
                     orders={orders}
                     reviews={reviews}
-                    index={index}
+                    // index={index}
                   />
                 );
               });
@@ -224,6 +225,7 @@ const HomestayInfoTabs = ({
   row,
   setRow,
 }: any) => {
+  const { isRTL } = useContext(LocalizationContext);
   // const schemaActionsParams = data?.map((item: any) =>
   //   item?.dashboardFormSchemaActionQueryParams.map(
   //     (param: any) => param.dashboardFormParameterField
@@ -252,27 +254,41 @@ const HomestayInfoTabs = ({
   return (
     <Box className="border-b border-outline-50 md:border-b-0 md:border-transparent">
       <Box className="py-5">
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <HStack space="lg" className="mx-0.5 xl:gap-5 2xl:gap-6">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            flexDirection: "row-reverse",
+          }}
+          // contentContainerStyle={{
+          //   flexDirection: isRTL ? "row-reverse" : "row",
+          // }}
+        >
+          <HStack
+            space="lg"
+            className={`mx-0.5 ${
+              isRTL ? "ml-auto" : "mr-auto"
+            } xl:gap-5 2xl:gap-6`}
+          >
             {tabs.map((tab: any) => {
               return (
                 <Pressable
                   key={tab.title}
                   className={`my-0.5 py-1 ${
                     activeTab === tab ? "border-b-[3px]" : "border-b-0"
-                  } border-outline-900 hover:border-b-[3px] ${
+                  } !border-text hover:border-b-[3px] ${
                     activeTab === tab
-                      ? "hover:border-outline-900"
-                      : "hover:border-outline-200"
+                      ? "hover:border-accent"
+                      : "hover:border-accent-hover"
                   } `}
-                  onPress={() => setActiveTab(tab)}>
+                  onPress={() => setActiveTab(tab)}
+                >
                   <Text
                     size="sm"
                     className={`${
-                      activeTab === tab
-                        ? "text-typography-900"
-                        : "text-typography-600"
-                    } font-medium`}>
+                      activeTab === tab ? "text-accent" : "text-text"
+                    } font-medium ${isRTL ? "text-right" : "text-left"}`}
+                  >
                     {tab.title}
                   </Text>
                 </Pressable>

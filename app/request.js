@@ -25,12 +25,20 @@ export function GetProjectUrl() {
   return `${baseURL}/${projectProxyRoute}/api`;
 }
 export function SetHeaders() {
+  console.log("====================================");
+  console.log(
+    AsyncStorage.getItem("language"),
+    AsyncStorage.getItem("languageID")
+  );
+  console.log("====================================");
   const headers = {
-    languageName: encodeURIComponent(AsyncStorage.getItem("language")),
+    languageName: "",
+    // languageName: encodeURIComponent(AsyncStorage.getItem("language")) || "",
     "Content-Type": "application/json",
     // "Access-Control-Allow-Credentials": "true",
     // "Access-Control-Allow-Origin": "*",
-    languageID: AsyncStorage.getItem("languageID"),
+    languageID: "",
+    // languageID: AsyncStorage.getItem("languageID") || "",
   };
 
   // Remove any undefined or null properties

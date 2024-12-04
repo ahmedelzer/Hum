@@ -14,7 +14,7 @@ function InputPassword({ ...props }) {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-  let { value, enable, title, fieldName, control }: any = props;
+  let { value: defaultValue, enable, title, fieldName, control }: any = props;
   return (
     <Controller
       control={control}
@@ -51,7 +51,7 @@ function InputPassword({ ...props }) {
         //     {passwordVisible ? <EyeOff /> : <Eye />}
         //   </TouchableOpacity>
         // </View>
-        <Input className="text-center">
+        <Input className="text-center" isInvalid={props.invalidInput}>
           <InputSlot
             className="pr-3 text-black"
             onPress={togglePasswordVisibility}
@@ -69,6 +69,7 @@ function InputPassword({ ...props }) {
             onBlur={onBlur}
             secureTextEntry={!passwordVisible}
             value={value}
+            defaultValue={defaultValue}
             editable={enable}
             placeholder={title}
             id={fieldName}

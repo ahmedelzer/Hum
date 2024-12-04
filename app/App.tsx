@@ -1,54 +1,59 @@
-import "./global.css";
-import { SafeAreaView, StyleSheet, View } from "react-native";
-import RootStack from "./src/navigators/RootStack";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GluestackUIProvider } from "./components/ui";
-// import AppNavigation from "./navigation/AppNavigation";
-import { Text } from "react-native";
-import { LocalizationProvider } from "./context/LocalizationContext";
-import { AuthProvider } from "./context/auth";
-import Notification from "./src/components/notification/Notification";
-import { WS_Class } from "./components/hooks/ws/WS_Class";
-import Header from "./src/kitchensink-components/Header";
-import { WS_Provider } from "./context/WS";
+import React, { useEffect } from "react";
+import { View, Text, Button, Platform } from "react-native";
+import * as BackgroundFetch from "expo-background-fetch";
+import * as TaskManager from "expo-task-manager";
 
-const queryClient = new QueryClient();
-console.log("====================================");
-console.log();
-console.log("====================================");
-export default function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <GluestackUIProvider mode="light">
-        <LocalizationProvider>
-          <WS_Provider>
-            <AuthProvider>
-              <SafeAreaView
-                style={{
-                  flex: 1,
-                  // backgroundColor: "#111111",
-                }}
-                // className="bg-body"
-              >
-                {/* <Notification /> */}
-                <RootStack />
-                {/* <WebSocketBackgroundService /> */}
-              </SafeAreaView>
-            </AuthProvider>
-          </WS_Provider>
-        </LocalizationProvider>
-      </GluestackUIProvider>
-    </QueryClientProvider>
-  );
-}
+// Define the background fetch task name
+const BACKGROUND_FETCH_TASK = "background-fetch-task";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+// Define the background fetch task
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+  try {
+    // Simulate an API call or any background task you need to run
+    // const response = await fetch('https://api.example.com/data');
+    // const data = await response.json();
+    console.log("Fetched data in background:");
+    // Return NewData if the task was successful, or Failed if not
+    return BackgroundFetch.BackgroundFetchResult.NewData;
+  } catch (error) {
+    console.error("Error fetching data in background:", error);
+    return BackgroundFetch.BackgroundFetchResult.Failed;
+  }
 });
 
-// http://maingatewayapi.ihs-solutions.com:8000/${projectProxyRoute}/Api
+const App: React.FC = () => {
+  // Function to register the background fetch task
+  const registerBackgroundFetch = async () => {
+    const status = await BackgroundFetch.getStatusAsync();
+    if (status === BackgroundFetch.BackgroundFetchStatus.Available) {
+      await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+        minimumInterval: 60 * 15, // 15 minutes
+        stopOnTerminate: false, // Continue after app termination
+        startOnBoot: true, // Start on device reboot
+      });
+      console.log("Background Fetch Task registered");
+    } else {
+      console.log("Background fetch is not available");
+    }
+  };
+
+  // Function to check background fetch status
+  const checkFetchStatus = async () => {
+    const status = await BackgroundFetch.getStatusAsync();
+    console.log("Background fetch status:", status);
+  };
+
+  useEffect(() => {
+    // Register background fetch when the app is loaded
+    registerBackgroundFetch();
+  }, []);
+
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Background Fetch Example</Text>
+      <Button title="Check Fetch Status" onPress={checkFetchStatus} />
+    </View>
+  );
+};
+
+export default App;

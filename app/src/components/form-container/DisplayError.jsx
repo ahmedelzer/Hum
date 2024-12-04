@@ -6,6 +6,7 @@ import {
   ToastTitle,
   useToast,
 } from "../../../components/ui";
+import { Text, View } from "react-native";
 
 function DisplayError({ dataError, parameterField, setTitle }) {
   const toast = useToast();
@@ -36,6 +37,11 @@ function DisplayError({ dataError, parameterField, setTitle }) {
   } else if (dataError[parameterField]) {
     // Handle UI validation errors
     const errorMessage = `${parameterField} is ${dataError[parameterField]?.type}`;
+    return (
+      <View>
+        <Text className="!text-red-500 mt-1 text-sm">{errorMessage}</Text>
+      </View>
+    );
     // showNewToast();
   }
 

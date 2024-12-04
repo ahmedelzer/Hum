@@ -20,7 +20,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"],
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.INTERNET"
+      ],
       "package": "com.HumApp",
       "googleServicesFile": "./android/app/google-services.json"
     },
@@ -34,6 +37,16 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e70421d7-bd0c-4677-90b5-2f8d26945831"
+      }
+    }
   }
 }

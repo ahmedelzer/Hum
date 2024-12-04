@@ -25,17 +25,16 @@ function InputDisplay({ props, BaseInput, errorResult }) {
       setInputStyle(styles.input);
     }
   }, [inputErrorResult, errorResult, changed]);
-
+  const invalidInput = () => {
+    if (inputErrorResult !== null || errorResult[props.fieldName]) {
+      return true;
+    }
+    return false;
+  };
   return (
     <View>
       {props.type !== "detailsCell" && (
         <View style={styles.formGroup}>
-          <DisplayError
-            dataError={errorResult}
-            parameterField={props.fieldName}
-            setTitle={setInputErrorResult}
-            setStyle={setInputStyle}
-          />
           <Text style={styles.label}>{props.title}</Text>
           {/* <Input
             {...props}
@@ -50,6 +49,13 @@ function InputDisplay({ props, BaseInput, errorResult }) {
             title={inputErrorResult ? inputErrorResult : props.title}
             placeholder={props.title}
             style={inputStyle}
+            invalidInput={invalidInput()}
+          />
+          <DisplayError
+            dataError={errorResult}
+            parameterField={props.fieldName}
+            setTitle={setInputErrorResult}
+            setStyle={setInputStyle}
           />
         </View>
       )}

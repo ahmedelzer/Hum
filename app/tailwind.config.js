@@ -18,9 +18,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        body: "#111111",
-        card: "#2B2B2B",
-        text: "#FFFFFF",
+        body: "#FFFFFF",
+        card: "white",
+        text: "#111111",
         accent: {
           DEFAULT: "#FF6700",
           hover: "#FF4500",

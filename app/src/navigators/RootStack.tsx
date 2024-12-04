@@ -7,6 +7,7 @@ import BottomBarTabs from "./BottomTabBar";
 import OutsideStack from "./OutSideStack";
 import { retrieveSecureValue } from "../store/zustandStore";
 import { useAuth } from "../../context/auth";
+import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
 
 // types
 export type RootStackParamList = {
@@ -23,19 +24,25 @@ export type RootStackParamList = {
   RoomsView: undefined;
 };
 ``;
+//todo: make with pixel rexio padding or margin top with  platforms
 
 const Stack = createStackNavigator<RootStackParamList>();
 const RootStack: FC = (props: any) => {
   const { user, loading } = useAuth();
   return (
-    !loading && (
-      <NavigationContainer>
-        {user && <BottomBarTabs />}
-        {!user && <OutsideStack />}
-        {/* <BottomBarTabs /> */}
-        {/* <BottomBarTabs /> */}
-      </NavigationContainer>
-    )
+    <NavigationContainer>
+      {/* {!loading ? (
+        user ? (
+          <BottomBarTabs />
+        ) : (
+          <OutsideStack />
+        )
+      ) : (
+        <LoadingScreen />
+      )} */}
+      {/* <OutsideStack /> */}
+      <BottomBarTabs />
+    </NavigationContainer>
   );
 };
 

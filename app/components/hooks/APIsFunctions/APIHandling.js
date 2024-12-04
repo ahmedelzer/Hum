@@ -1,10 +1,4 @@
-import {
-  GetProjectUrl,
-  languageID,
-  languageName,
-  SetHeaders,
-  token,
-} from "../../../request";
+import { GetProjectUrl, SetHeaders } from "../../../request";
 export default async function APIHandling(url, methodType, sendBody, query) {
   var myHeaders = new Headers();
   let urlRoute = GetProjectUrl() + "/" + url;

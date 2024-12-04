@@ -31,7 +31,7 @@
   }
 } */
 body {
-  @apply font-primary bg-body !text-text  overflow-hidden h-full;
+  @apply font-primary overflow-hidden h-full bg-body !text-text;
 }
 ::-webkit-scrollbar {
   @apply w-1.5 h-2;
