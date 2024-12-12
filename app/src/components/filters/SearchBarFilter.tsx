@@ -38,10 +38,17 @@ import {
   PlayIcon,
   SettingsIcon,
 } from "lucide-react-native";
+import FormContainer from "../form-container/FormContainer";
+import { loginFormSchema } from "../../kitchensink-components/auth/signin/loginSchema";
+import { useForm } from "react-hook-form";
 
 const SearchBarFilter = ({ schema }: any) => {
   // console.log(schema, "schema from search bar filter");
-
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const searchFilter = schema?.dashboardFormSchemaParameters?.find(
     (item: any) => item?.isIDField && item?.parameterType === "collapse"
   );
@@ -61,7 +68,20 @@ const SearchBarFilter = ({ schema }: any) => {
             <Icon as={FilterIcon} size="lg" color="#f2f2f2" />
           </Button>
         );
-      }}>
+      }}
+    >
+      {/* New Settings Menu Item */}
+      {/* <MenuItem key="Settings" textValue="Settings">
+        <FormContainer
+          tableSchema={loginFormSchema} // Use a different schema for settings if needed
+          control={control}
+          errorResult={errors}
+          row={{
+            username: "admin",
+            password: "newpassword",
+          }}
+        />
+      </MenuItem> */}
       <MenuItem key="Add account" textValue="Add account">
         <Accordion
           size="sm"
@@ -69,7 +89,8 @@ const SearchBarFilter = ({ schema }: any) => {
           type="single"
           isCollapsible={true}
           isDisabled={false}
-          className="border border-outline-200 rounded-lg">
+          className="border border-outline-200 rounded-lg"
+        >
           <AccordionItem value="a">
             <AccordionHeader>
               <AccordionTrigger>
@@ -94,7 +115,8 @@ const SearchBarFilter = ({ schema }: any) => {
                 value={values}
                 onChange={(keys) => {
                   setValues(keys);
-                }}>
+                }}
+              >
                 <VStack space="xl">
                   <Checkbox value="Eng">
                     <CheckboxIndicator>

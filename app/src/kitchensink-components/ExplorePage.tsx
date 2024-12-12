@@ -11,32 +11,30 @@ import Header from "../components/header/Header";
 const Explorepage = ({ activeTab, setActiveTab }: any) => {
   return (
     <>
-      <Box className={`w-full ${activeTab != "Profile" ? "flex" : "hidden"}`}>
-        {/* top banner */}
-        <Header
+      {/* <Box className={`w-full ${activeTab != "Profile" ? "flex" : "hidden"}`}> */}
+      {/* top banner */}
+      {/* <Header
           title="Explore"
           subTitle="Home / Explore"
           backPress={() => console.log("Back pressed")}
           isBackIcon={false}
           isProfileImage={false}
-        />
-        {/* <Header /> */}
-      </Box>
+        /> */}
+      {/* <Header /> */}
+      {/* </Box> */}
 
       {/* mobile */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        className="h-[1px] md:hidden mt-2">
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Box
-          className={`${activeTab !== "Profile" ? "flex" : "hidden"} md:hidden`}>
-          <VStack space="sm" style={{ flex: 1 }}>
-            <HomeStatusBar />
+          className={`${activeTab !== "Profile" ? "flex" : "hidden"} md:hidden`}
+        >
+          <VStack space="sm">
+            {/* <HomeStatusBar /> */}
             <HomeCarousel />
             <HomeContent />
           </VStack>
         </Box>
       </ScrollView>
-
       {/* web */}
       <HStack className="w-full hidden md:flex">
         <WebSidebar />

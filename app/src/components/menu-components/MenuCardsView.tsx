@@ -1,68 +1,68 @@
 import React, { useContext, useEffect } from "react";
-import {
-  Box,
-  HStack,
-  Icon,
-  Image,
-  Pressable,
-  Text,
-  VStack,
-  Tooltip,
-  TooltipContent,
-  TooltipText,
-  StarIcon,
-} from "../../../components/ui";
-import { ChevronRight, Heart, Scroll } from "lucide-react-native";
-import { ScrollView } from "react-native";
-import { ScreenHeight } from "@/src/components/shared";
-import MenuCardView from "./MenuCardView";
+import { I18nManager, ScrollView } from "react-native";
+import { Box, HStack, Pressable, Text, VStack } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
+import MenuCardView from "./MenuCardView";
+import { getAllProducts, getProducts } from "../../reducers/ProductReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const tabsData = [
   {
     name: "Picks for you",
     data: [
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/food1.jpg"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
+        id: 1,
+        name: "ImageView Inn",
+        description:
+          "Enjoy a cozy stay with scenic views at ImageView Inn, complete with all modern amenities.",
+        price: "EGP 4,576.00",
         rating: 4.9,
+        location: "401 Platte River Rd, Gothenburg, United States",
+        image: require("../../../assets/display/food1.jpg"),
+        quantity: 0,
       },
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/food.jpg"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
+        id: 2,
+        name: "Snack Box",
+        description:
+          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
+        price: "EGP 136.00",
+        rating: 4.8,
+        location: "Downtown Cairo, Egypt",
+        image: require("../../../assets/display/food.jpg"),
+        quantity: 0,
       },
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/food1.jpg"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
+        id: 3,
+        name: "Snack Box2",
+        description:
+          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
+        price: "EGP 136.00",
+        rating: 4.8,
+        location: "Downtown Cairo, Egypt",
+        image: require("../../../assets/display/food.jpg"),
+        quantity: 0,
       },
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/food.jpg"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
+        id: 4,
+        name: "Snack Box3",
+        description:
+          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
+        price: "EGP 136.00",
+        rating: 4.8,
+        location: "Downtown Cairo, Egypt",
+        image: require("../../../assets/display/food.jpg"),
+        quantity: 0,
       },
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/food1.jpg"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
-      },
-      {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/food.jpg"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
+        id: "0",
+        image:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqg_OBzcVDnKHv1d3hyVk_WlCo43pzit4CJQ&usqp=CAU",
+        name: "Icecream",
+        quantity: 0,
+        description:
+          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can(330 ML)",
+        price: "EGP 136.00",
       },
     ],
   },
@@ -70,25 +70,14 @@ const tabsData = [
     name: "Discount",
     data: [
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/image28.png"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
-      },
-      {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/image28.png"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
-      },
-      {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/image28.png"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
+        id: 3,
+        name: "Discounted Stay",
+        description:
+          "Enjoy luxurious stays with amazing discounts at prime locations.",
+        price: "EGP 3,000.00",
+        rating: 4.7,
+        location: "El Gouna, Red Sea, Egypt",
+        image: require("../../../assets/display/image28.png"),
       },
     ],
   },
@@ -96,23 +85,29 @@ const tabsData = [
     name: "New king",
     data: [
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/food1.jpg"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
+        id: 4,
+        name: "King's Suite",
+        description:
+          "A royal suite experience with exclusive amenities and breathtaking views.",
+        price: "EGP 12,000.00",
         rating: 4.9,
+        location: "Aswan, Egypt",
+        image: require("../../../assets/display/food1.jpg"),
       },
     ],
   },
   {
-    name: "national parks",
+    name: "National Parks",
     data: [
       {
-        title: "ImageView Inn",
-        src: require("../../../assets/display/image16.png"),
-        location: "401 Platte River Rd, Gothenburg, United States",
-        price: "$1,481",
-        rating: 4.9,
+        id: 5,
+        name: "National Park Retreat",
+        description:
+          "Explore nature at its best with a stay amidst the lush greenery of national parks.",
+        price: "EGP 5,800.00",
+        rating: 4.6,
+        location: "Wadi El Gemal National Park, Egypt",
+        image: require("../../../assets/display/image16.png"),
       },
     ],
   },
@@ -132,7 +127,8 @@ const tabs = [
 
 const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
   const [activeTab, setActiveTab] = React.useState(tabs[0]);
-
+  const products = useSelector((state) => state.product.product);
+  const dispatch = useDispatch();
   const imageView = menuCardItem?.dashboardFormSchemaParameters?.find(
     (item: any) => item?.parameterType === "imagePath"
   );
@@ -178,7 +174,50 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
   //   menuCardItem?.dashboardFormSchemaParameters,
   //   "menuCardItem?.dashboardFormSchemaParameters"
   // );
-
+  const foods = [
+    {
+      id: "1",
+      name: "Meat Pizza",
+      ingredients: "Mixed Pizza",
+      price: "8.30",
+      image: require("../../../assets/display/food1.jpg"),
+    },
+    {
+      id: "2",
+      name: "Cheese Pizza",
+      ingredients: "Cheese Pizza",
+      price: "7.10",
+      image: require("../../../assets/display/food1.jpg"),
+    },
+    {
+      id: "3",
+      name: "Chicken Burger",
+      ingredients: "Fried Chicken",
+      price: "5.10",
+      image: require("../../../assets/display/food1.jpg"),
+    },
+    {
+      id: "4",
+      name: "Sushi Makizushi",
+      ingredients: "Salmon Meat",
+      price: "9.55",
+      image: require("../../../assets/display/food.jpg"),
+    },
+  ];
+  useEffect(() => {
+    // if (products.length > 0) return;
+    //! set here the conditions of is have new products and online users
+    const data = tabsData.find(
+      (tab) => tab.name.toLowerCase() === activeTab.title.toLowerCase()
+    ).data;
+    const fetchProducts = () => {
+      dispatch(getAllProducts(data));
+    };
+    fetchProducts();
+  }, [activeTab]);
+  // console.log("====================================");
+  // console.log(products);
+  // console.log("====================================");
   return (
     <Box className="md:px-0 -mt-4">
       <HomestayInfoTabs
@@ -189,26 +228,23 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack>
-          {tabsData.map((tab: any) => {
-            if (tab.name.toLowerCase() === activeTab.title.toLowerCase()) {
-              return tab.data.map((image: any, index: any) => {
-                return (
-                  <MenuCardView
-                    imageView={imageView}
-                    text={"text"}
-                    description={"description"}
-                    numberOfIndividuals={numberOfIndividuals}
-                    rate={rate}
-                    likes={likes}
-                    dislikes={dislikes}
-                    orders={orders}
-                    reviews={reviews}
-                    // index={index}
-                  />
-                );
-              });
-            }
-            return null;
+          {products.map((image: any, index: any) => {
+            return (
+              <MenuCardView
+                key={index}
+                item={image}
+                imageView={imageView}
+                text={"text"}
+                description={"description"}
+                numberOfIndividuals={numberOfIndividuals}
+                rate={rate}
+                likes={likes}
+                dislikes={dislikes}
+                orders={orders}
+                reviews={reviews}
+                // index={index}
+              />
+            );
           })}
         </VStack>
       </ScrollView>
@@ -258,42 +294,39 @@ const HomestayInfoTabs = ({
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            flexDirection: "row-reverse",
+            flexDirection: I18nManager.isRTL ? "row-reverse" : "row", // Adjust layout for RTL
           }}
-          // contentContainerStyle={{
-          //   flexDirection: isRTL ? "row-reverse" : "row",
-          // }}
         >
           <HStack
             space="lg"
-            className={`mx-0.5 ${
-              isRTL ? "ml-auto" : "mr-auto"
-            } xl:gap-5 2xl:gap-6`}
+            className={`mx-0.5 xl:gap-5 2xl:gap-6 flex ${
+              I18nManager.isRTL ? "flex-row-reverse" : "flex-row"
+            }`}
           >
-            {tabs.map((tab: any) => {
-              return (
-                <Pressable
-                  key={tab.title}
-                  className={`my-0.5 py-1 ${
-                    activeTab === tab ? "border-b-[3px]" : "border-b-0"
-                  } !border-text hover:border-b-[3px] ${
-                    activeTab === tab
-                      ? "hover:border-accent"
-                      : "hover:border-accent-hover"
-                  } `}
-                  onPress={() => setActiveTab(tab)}
+            {tabs.map((tab: any) => (
+              <Pressable
+                key={tab.title}
+                className={`my-0.5 py-1 ${
+                  activeTab === tab ? "border-b-[3px]" : "border-b-0"
+                } !border-text hover:border-b-[3px] ${
+                  activeTab === tab
+                    ? "hover:border-accent"
+                    : "hover:border-accent-hover"
+                }`}
+                onPress={() => setActiveTab(tab)}
+              >
+                <Text
+                  size="sm"
+                  className={`${
+                    activeTab === tab ? "text-accent" : "text-text"
+                  } font-medium ${
+                    I18nManager.isRTL ? "text-right" : "text-left"
+                  }`} // Dynamic alignment
                 >
-                  <Text
-                    size="sm"
-                    className={`${
-                      activeTab === tab ? "text-accent" : "text-text"
-                    } font-medium ${isRTL ? "text-right" : "text-left"}`}
-                  >
-                    {tab.title}
-                  </Text>
-                </Pressable>
-              );
-            })}
+                  {tab.title}
+                </Text>
+              </Pressable>
+            ))}
           </HStack>
         </ScrollView>
       </Box>

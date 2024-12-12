@@ -55,7 +55,7 @@ function InputDisplay({ props, BaseInput, errorResult }) {
             dataError={errorResult}
             parameterField={props.fieldName}
             setTitle={setInputErrorResult}
-            setStyle={setInputStyle}
+            // setStyle={setInputStyle}
           />
         </View>
       )}

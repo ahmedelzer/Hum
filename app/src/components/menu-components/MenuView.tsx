@@ -45,7 +45,7 @@ const MenuView = ({ schemas }: any) => {
   console.log("aaa", schemas);
   return (
     <View className="flex-1 gap-y-4 mx-4">
-      <HStack space="2xl" className="items-center mt-8">
+      <HStack space="2xl" className="items-center">
         <View style={{ flex: 1 }}>
           {/* {searchBarSchema && ( */}
           <Searchbar schema={searchBarSchema} setRow={setRow} row={row} />
@@ -57,7 +57,7 @@ const MenuView = ({ schemas }: any) => {
           {/* )} */}
         </View>
       </HStack>
-      <HomeCarousel menuCardItem={menuCardItem} row={row} setRow={setRow} />
+      {/* <HomeCarousel menuCardItem={menuCardItem} row={row} setRow={setRow} /> */}
       {/* {menuCardItem && ( */}
       <MenuCardsView menuCardItem={menuCardItem} row={row} setRow={setRow} />
       {/* )} */}

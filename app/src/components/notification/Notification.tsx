@@ -9,6 +9,10 @@ import Constants from "expo-constants";
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from "expo-background-fetch";
 import * as IntentLauncher from "expo-intent-launcher";
+import { useNavigation } from "@react-navigation/native";
+import { Icon } from "../../../components/ui";
+import { moderateScale } from "react-native-size-matters";
+import { Bell } from "lucide-react-native";
 
 // Notification handler
 Notifications.setNotificationHandler({
@@ -73,43 +77,45 @@ function Notification() {
   }, []);
 
   // Setup WebSocket and Background Fetch
-  useEffect(() => {
-    const showNotification = async (message) => {
-      console.log("Received message:", message);
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "New Notification",
-          body: message || "You've received a new notification.",
-          sound: "default",
-        },
-        trigger: null,
-      });
-    };
+  // useEffect(() => {
+  //   const showNotification = async (message) => {
+  //     console.log("Received message:", message);
+  //     await Notifications.scheduleNotificationAsync({
+  //       content: {
+  //         title: "New Notification",
+  //         body: message || "You've received a new notification.",
+  //         sound: "default",
+  //       },
+  //       trigger: null,
+  //     });
+  //   };
 
-    const WS = initializeWebSocket(socketRef, showNotification);
+  //   const WS = initializeWebSocket(socketRef, showNotification);
 
-    const registerBackgroundTask = async () => {
-      const status = await BackgroundFetch.getStatusAsync();
-      if (status === BackgroundFetch.Status.Available) {
-        // console.log("Background fetch is available.");
-        await BackgroundFetch.registerTaskAsync(BACKGROUND_TASK_NAME, {
-          minimumInterval: 60, // Every 1 minute
-          stopOnTerminate: false,
-          startOnBoot: true,
-        });
-      } else {
-        // console.warn("Background fetch is not available.");
-      }
-    };
+  //   const registerBackgroundTask = async () => {
+  //     const status = await BackgroundFetch.getStatusAsync();
+  //     if (status === BackgroundFetch.Status.Available) {
+  //       // console.log("Background fetch is available.");
+  //       await BackgroundFetch.registerTaskAsync(BACKGROUND_TASK_NAME, {
+  //         minimumInterval: 60, // Every 1 minute
+  //         stopOnTerminate: false,
+  //         startOnBoot: true,
+  //       });
+  //     } else {
+  //       // console.warn("Background fetch is not available.");
+  //     }
+  //   };
 
-    registerBackgroundTask();
+  //   registerBackgroundTask();
 
-    return () => {
-      WS.disconnect();
-      BackgroundFetch.unregisterTaskAsync(BACKGROUND_TASK_NAME);
-      // console.log("WebSocket and background fetch unregistered.");
-    };
-  }, []);
+  //   return () => {
+  //     WS.disconnect();
+  //     BackgroundFetch.unregisterTaskAsync(BACKGROUND_TASK_NAME);
+  //     // console.log("WebSocket and background fetch unregistered.");
+  //   };
+  // }, []);
+  const navigation = useNavigation();
+
   return (
     <View className="flex justify-center items-center">
       <TouchableOpacity className={`relative flex items-center justify-center`}>
@@ -123,7 +129,13 @@ function Notification() {
           </View>
         )}
       </TouchableOpacity>
-      <Ionicons name="notifications-outline" size={30} color="black" />
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Cart")}
+        className="p-2 rounded-lg bg-accent items-center justify-center"
+      >
+        <Icon as={Bell} size={"md"} className="text-body" />
+      </TouchableOpacity>
+      {/* bell-dot */}
     </View>
   );
 }

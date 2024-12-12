@@ -13,7 +13,7 @@ import {
   ButtonText,
   Button,
 } from "../../../components/ui";
-import { ScrollView } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import {
   AxeIcon,
   BoxIcon,
@@ -27,6 +27,8 @@ import {
   UserCheck,
 } from "lucide-react-native";
 import { AnimatePresence, Motion } from "@legendapp/motion";
+import Carousel from "react-native-snap-carousel";
+import { moderateScale, scale } from "react-native-size-matters";
 
 const data = [
   {
@@ -140,166 +142,116 @@ const HomeCarousel = ({ menuCardItem, row }: any) => {
     }
     return false;
   };
+  var { width, height } = Dimensions.get("window");
+  // Reusable Carousel Box Component
+  const CarouselBox = ({ image, title, description }) => (
+    <Box className="justify-center items-center">
+      <View>
+        <Image
+          source={image}
+          alt={title}
+          // className="w-auto h-[60%] aspect-square rounded-xl" //!solve the height
+          style={{
+            width: "100%", // Dynamically adjust width
+            height: `${scale(600)}`, // Responsive height
+            aspectRatio: 1, // Maintain square aspect ratio
+            borderRadius: moderateScale(10), // Rounded corners
+          }}
+          // resizeMode="cover"
+        />
+      </View>
+      <Card
+        variant="elevated"
+        className="absolute bottom-6 w-[90%] md:w-[80%] lg:w-[70%] p-4 rounded-3xl shadow-xl"
+      >
+        <Pressable
+          onPress={() => setLikes(!likes)}
+          className="absolute top-3 right-4 h-6 w-6 justify-center items-center"
+        >
+          <AnimatePresence>
+            <Motion.View
+              key={likes ? "like" : "dislike"}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              transition={{
+                type: "spring",
+                mass: 0.9,
+                damping: 9,
+                stiffness: 300,
+              }}
+            >
+              <Icon
+                as={Heart}
+                size="xl"
+                className={`${
+                  likes
+                    ? "fill-red-500 stroke-red-500"
+                    : "fill-gray-500 stroke-white"
+                }`}
+              />
+            </Motion.View>
+          </AnimatePresence>
+        </Pressable>
 
+        <VStack space="sm">
+          <Text bold size="sm" className="text-primary">
+            {title}
+          </Text>
+          <Text size="sm" className="text-gray-500">
+            {description}
+          </Text>
+          <HStack space="sm" className="items-center">
+            <HStack space="xs" className="items-center">
+              {[...Array(4)].map((_, i) => (
+                <Icon key={i} as={StarIcon} size="sm" color="orange" />
+              ))}
+            </HStack>
+            <Text size="sm" className="ml-2 text-gray-600">
+              4.5
+            </Text>
+            <Text size="sm" className="ml-2 text-gray-600">
+              8
+            </Text>
+            <Icon as={UserCheck} size="sm" color="green" />
+          </HStack>
+          <HStack space="lg" className="items-center">
+            <Button variant="link">
+              <Text className="font-medium text-sm">8</Text>
+              <Icon as={BoxIcon} className="h-4 w-4 ml-1" />
+            </Button>
+            <Button variant="link">
+              <Text className="font-medium text-sm">18</Text>
+              <Icon as={AxeIcon} className="h-4 w-4 ml-1" />
+            </Button>
+            <Button variant="link">
+              <Text className="font-medium text-sm">Locate</Text>
+              <Icon as={LocateIcon} className="h-4 w-4 ml-1" />
+            </Button>
+          </HStack>
+        </VStack>
+      </Card>
+    </Box>
+  );
   // console.log("isContentAtRight");
   return (
     <Box className="w-full">
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        ref={scrollViewRef}
-        scrollEventThrottle={50}
-        contentContainerStyle={{
-          columnGap: 16,
-          marginTop: -110,
-          // backgroundColor: "red",
-        }}
-        onScroll={(event) => {
-          if (isCloseToRight(event)) {
-            setIsContentAtRight(false);
-          } else {
-            setIsContentAtRight(true);
-          }
-          setScrollPosition(event.nativeEvent.contentOffset.x);
-        }}
-      >
-        {data.map((image, index) => {
-          return (
-            <Box
-              key={index}
-              className=" justify-center items-center relative -mb-4"
-            >
-              {imageView && (
-                <Image
-                  source={image.src}
-                  alt={"place" + index}
-                  // @ts-ignore
-                  className="w-auto h-[60%] aspect-square rounded-xl"
-                  resizeMode="cover"
-                />
-              )}
-              <Card
-                variant="elevated"
-                className="absolute bottom-9 w-[90%] justify-center p-4 rounded-3xl shadow-xl"
-              >
-                <Pressable
-                  onPress={() => setLikes(!likes)}
-                  className="absolute top-3 right-4 h-6 w-6  justify-center items-center"
-                >
-                  <AnimatePresence>
-                    <Motion.View
-                      key={likes ? "like" : "dislike"}
-                      initial={{
-                        scale: 1.3,
-                      }}
-                      animate={{
-                        scale: 1,
-                      }}
-                      exit={{
-                        scale: 0.9,
-                      }}
-                      transition={{
-                        type: "spring",
-                        mass: 0.9,
-                        damping: 9,
-                        stiffness: 300,
-                      }}
-                      style={{
-                        position: "absolute",
-                      }}
-                    >
-                      <Icon
-                        as={Heart}
-                        size="xl"
-                        className={`${
-                          likes
-                            ? "fill-red-500 stroke-red-500"
-                            : "fill-gray-500 stroke-white"
-                        }`}
-                      />
-                    </Motion.View>
-                  </AnimatePresence>
-                </Pressable>
+      <Carousel
+        data={data}
+        renderItem={({ item }) => (
+          <CarouselBox
+            image={item.src}
+            key={item.src}
+            title="Delicious Meal"
+            description="A delightful culinary experience."
+          />
+        )}
+        sliderWidth={width}
+        itemWidth={width * 0.8}
+        slideStyle={{ display: "flex", alignItems: "center" }}
+        inactiveSlideOpacity={0.8}
+      />
 
-                <VStack space="sm">
-                  {text && (
-                    <Text bold size="sm">
-                      {text?.parameterTitel}
-                    </Text>
-                  )}
-                  {description && (
-                    <Text size="sm" className="w-[50%]">
-                      {description?.parameterTitel}
-                    </Text>
-                  )}
-                  {rate && (
-                    <HStack space="sm" className="items-center">
-                      <HStack space="xs" className="items-center">
-                        {[...Array(4)].map((_, i) => (
-                          <Icon
-                            key={i}
-                            as={StarIcon}
-                            size="sm"
-                            color="orange"
-                          />
-                        ))}
-                      </HStack>
-                      <Text size="sm" className="ml-2">
-                        4
-                      </Text>
-
-                      {numberOfIndividuals && (
-                        <>
-                          <Text size="sm" className="ml-2">
-                            8
-                          </Text>
-                          <Icon as={UserCheck} size="sm" color="green" />
-                        </>
-                      )}
-                    </HStack>
-                  )}
-                  <HStack space="lg" className="items-center">
-                    {orders && (
-                      <Button variant="link">
-                        <ButtonText className="font-medium text-sm text-typography-900">
-                          8
-                        </ButtonText>
-                        <Icon
-                          color="gray"
-                          as={BoxIcon}
-                          className="h-4 w-4 ml-1"
-                        />
-                      </Button>
-                    )}
-                    {reviews && (
-                      <Button variant="link">
-                        <ButtonText className="font-medium text-sm text-typography-900">
-                          18
-                        </ButtonText>
-                        <Icon
-                          as={AxeIcon}
-                          className="h-4 w-4  ml-1"
-                          color="#bee5d2"
-                        />
-                      </Button>
-                    )}
-                    <Button variant="link">
-                      <ButtonText className="font-medium text-sm text-typography-900">
-                        Locate
-                      </ButtonText>
-                      <Icon
-                        as={LocateIcon}
-                        className="h-4 w-4  ml-1"
-                        color="orange"
-                      />
-                    </Button>
-                  </HStack>
-                </VStack>
-              </Card>
-            </Box>
-          );
-        })}
-      </ScrollView>
       <ScrollLeft
         handleScrollLeft={handleScrollLeft}
         disabled={!checkContentAtLeft()}

@@ -41,11 +41,13 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
       animationType="fade"
       visible={visible}
       transparent={true}
-      onRequestClose={onClose}>
+      onRequestClose={onClose}
+    >
       <TouchableOpacity
         style={styles.modalOverlay}
         onPress={onClose}
-        activeOpacity={1}>
+        activeOpacity={1}
+      >
         <View style={styles.modalContainerWrapper}>
           <TouchableOpacity activeOpacity={1} style={styles.modalContainer}>
             <View style={styles.header}>
@@ -67,7 +69,8 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                     styles.flatListContent,
                     item.seen && styles.seenNotification,
                   ]}
-                  disabled={item.seen}>
+                  disabled={item.seen}
+                >
                   <Text style={styles.notificationText}>{item.message}</Text>
                 </TouchableOpacity>
               )}

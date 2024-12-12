@@ -19,7 +19,7 @@ module.exports = {
     extend: {
       colors: {
         body: "#FFFFFF",
-        card: "white",
+        card: "#e5e7eb",
         text: "#111111",
         accent: {
           DEFAULT: "#FF6700",

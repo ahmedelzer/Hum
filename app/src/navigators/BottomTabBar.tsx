@@ -1,18 +1,38 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FC } from "react";
-import HomeStack from "./HomeStack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import CartPage from "../kitchensink-components/cart/CartPage";
+import HomeScreen from "../kitchensink-components/cart/h";
 import { RootStackParamList } from "./RootStack";
-import HomestayPage from "../kitchensink-components/HomestayPage";
-import MenuView from "../components/menu-components/MenuView";
-import MobileProfilePage from "../kitchensink-components/MobileProfilePage";
 import { Icon } from "@/components/ui";
 import { Home, Mail, Menu, User } from "lucide-react-native";
-import { useGetDashboardForm } from "../services/react-query-hooks/GetDashboardForm";
 import RenderItemsView from "../utils/renderItemsView";
+import Header from "../components/header/Header";
+import HeaderParent from "../components/header/HeaderParent";
 
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator<RootStackParamList>();
+
+// Define the TestStack with HomeScreen and CartPage
+const TestStack = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
+    <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    <Stack.Screen name="Cart" component={CartPage} />
+  </Stack.Navigator>
+);
+
 const BottomBarTabs: FC = () => {
   const dummyArr = [
+    {
+      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
+      dashboardMenuItemName: "MenuItem1",
+      routePath: "Home",
+      projectProxyRoute: "HumMenu",
+    },
     {
       dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee81",
       dashboardMenuItemName: "MenuItem",
@@ -22,13 +42,7 @@ const BottomBarTabs: FC = () => {
     {
       dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
       dashboardMenuItemName: "MenuItem1",
-      routePath: "Home",
-      projectProxyRoute: "HumMenu",
-    },
-    {
-      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
-      dashboardMenuItemName: "MenuItem1",
-      routePath: "test",
+      routePath: "test", // Using the test route for nested navigators
       projectProxyRoute: "HumMenu",
     },
     {
@@ -39,11 +53,12 @@ const BottomBarTabs: FC = () => {
     },
     {
       dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee84",
-      dashboardMenuItemName: "MenuIte42",
+      dashboardMenuItemName: "MenuItem42",
       routePath: "Profile",
       projectProxyRoute: "HumMenu",
     },
   ];
+
   const homeIcon = ({ color }: { focused: boolean; color: string }) => (
     <Icon as={Home} size="lg" color={color} />
   );
@@ -56,69 +71,67 @@ const BottomBarTabs: FC = () => {
   const menuIcon = ({ color }: { focused: boolean; color: string }) => (
     <Icon as={Menu} size="lg" color={color} />
   );
+  const MargeStackWithTabs = (item) => {
+    const RenderComponent = () => (
+      <RenderItemsView
+        dashboardItemId={item.dashboardItemID}
+        routePath={item.routePath}
+      />
+    );
 
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {/* Rendered Item View Screen */}
+        <Stack.Screen name={item.routePath} component={RenderComponent} />
+
+        {/* Cart Screen */}
+        <Stack.Screen name="Cart" component={CartPage} />
+      </Stack.Navigator>
+    );
+  };
+  const SetOptions = (item) => {
+    switch (item.routePath) {
+      case "Home":
+      case "dynamicMenuItemsView":
+        return {
+          headerShown: true,
+          tabBarIcon: homeIcon,
+          headerTitle: () => <HeaderParent />,
+        };
+      case "Profile":
+        return {
+          headerShown: false,
+          tabBarIcon: homeIcon,
+        };
+      default:
+        return {
+          headerShown: false,
+          tabBarIcon: homeIcon,
+        };
+    }
+  };
   return (
     <Tab.Navigator>
       {dummyArr.map((item: any) => (
         <Tab.Screen
           key={item.dashboardMenuItemName}
           name={item.routePath}
-          options={{ headerShown: false, tabBarIcon: homeIcon }}
+          options={SetOptions(item)}
         >
-          {() => (
-            <RenderItemsView
-              dashboardItemId={item.dashboardItemID}
-              routePath={item.routePath}
-            />
-          )}
+          {() => {
+            // if (item.routePath === "test") {
+            //   return <TestStack />;
+            // }
+            return MargeStackWithTabs(item);
+          }}
         </Tab.Screen>
       ))}
     </Tab.Navigator>
-    // <Tab.Navigator>
-    //   {dummyArr.map((item: any) => (
-    //     <Tab.Screen
-    //       key={item.dashboardItemID}
-    //       name={item.routePath}
-    //       component={() => (
-    //         <RenderItemsView
-    //           dashboardItemId={item.dashboardItemID}
-    //           routePath={item.routePath}
-    //         />
-    //       )}
-    //       options={{ headerShown: false, tabBarIcon: homeIcon }}
-    //     />
-    //   ))}
-
-    //   {/* <Tab.Screen
-    //     name="Messages"
-    //     component={HomeStack}
-    //     options={{ headerShown: false, tabBarIcon: messageIcon }}
-    //   />
-    //   <Tab.Screen
-    //     name="MenuView"
-    //     component={MenuView}
-    //     options={{ headerShown: false, tabBarIcon: menuIcon }}
-    //   />
-    //   <Tab.Screen
-    //     options={{ headerShown: false, tabBarIcon: accountIcon }}
-    //     name="Profile"
-    //     component={MobileProfilePage}
-    //   /> */}
-    // </Tab.Navigator>
   );
 };
+
 export default BottomBarTabs;
-
-// useEffect(() => {
-//   const backAction = () => {
-//     navigation.goBack();
-//     return true; // Returning true prevents the default back action (exiting the app)
-//   };
-
-//   const backHandler = BackHandler.addEventListener(
-//     "hardwareBackPress",
-//     backAction
-//   );
-
-//   return () => backHandler.remove();
-// }, [navigation]);

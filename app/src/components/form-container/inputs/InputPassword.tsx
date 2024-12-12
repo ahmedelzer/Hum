@@ -7,7 +7,7 @@ import {
   InputField,
   InputIcon,
   InputSlot,
-} from "../../../components/ui";
+} from "../../../../components/ui";
 
 function InputPassword({ ...props }) {
   const [passwordVisible, setPasswordVisible] = useState(false);

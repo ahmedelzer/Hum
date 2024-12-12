@@ -1,7 +1,7 @@
 import React from "react";
 import InputDisplay from "./InputDisplay";
-import { CreateInputProps } from "../../../DynamicForm/CreateInputProps";
 import { GetInputComponent } from "./GetInputComponent";
+import { CreateInputProps } from "./CreateInputProps";
 
 export default function DataCellRender({
   data,

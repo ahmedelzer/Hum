@@ -8,6 +8,7 @@ import OutsideStack from "./OutSideStack";
 import { retrieveSecureValue } from "../store/zustandStore";
 import { useAuth } from "../../context/auth";
 import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
+import StackNavigator from "./StackNavigator";
 
 // types
 export type RootStackParamList = {
@@ -42,6 +43,7 @@ const RootStack: FC = (props: any) => {
       )} */}
       {/* <OutsideStack /> */}
       <BottomBarTabs />
+      {/* <StackNavigator /> */}
     </NavigationContainer>
   );
 };

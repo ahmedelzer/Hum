@@ -54,8 +54,8 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({
           I18nManager.forceRTL(direction);
         }
       }
-      I18nManager.forceRTL(true); //!delete that
-      setIsRTL(true);
+      I18nManager.forceRTL(false); //!delete that
+      setIsRTL(false);
       if (savedLanguage) {
         setLanguage(savedLanguage);
       }

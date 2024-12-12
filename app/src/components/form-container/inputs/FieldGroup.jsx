@@ -21,8 +21,8 @@
 // }
 import React from "react";
 import { TextInput, StyleSheet } from "react-native";
-import { Input, InputField } from "../../components/ui";
 import { Controller } from "react-hook-form";
+import { InputField, Input } from "../../../../components/ui";
 
 export default function FieldGroup({
   defaultValue,

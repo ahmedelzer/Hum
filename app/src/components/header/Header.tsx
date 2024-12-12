@@ -28,6 +28,7 @@ const Header: React.FC<CustomHeaderProps> = ({
 
   return (
     <HStack style={styles.container}>
+      <Text>header</Text>
       {isProfileImage ? (
         <HStack style={styles.startRow}>
           <Image
@@ -41,11 +42,11 @@ const Header: React.FC<CustomHeaderProps> = ({
         </HStack>
       ) : (
         <HStack style={{ alignItems: "flex-start" }}>
-          {isBackIcon && (
-            <TouchableOpacity onPress={backPress}>
-              <ChevronLeft size={18} />
-            </TouchableOpacity>
-          )}
+          {/* {isBackIcon && ( */}
+          <TouchableOpacity onPress={backPress}>
+            <ChevronLeft size={18} />
+          </TouchableOpacity>
+          {/* )} */}
           <View style={{ marginHorizontal: 8 }}>
             {title && <Text style={styles.title}>{title}</Text>}
             {subTitle && <Text style={styles.subTitle}>{subTitle}</Text>}
