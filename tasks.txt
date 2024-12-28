@@ -1,0 +1,5 @@
+1-make the cards of the app and handle card o menu items
+2-make the adds of home page images only
+3-mage cart with menu page 
+4-add icon of the cart on all screens
+5-when press on the menuitem display it in a popup with the card of home

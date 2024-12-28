@@ -1,0 +1,131 @@
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { Icon } from "../../../components/ui";
+import { Truck, MapPin, CreditCard } from "lucide-react-native";
+import { AntDesign } from "@expo/vector-icons";
+import GoBackHeader from "../../components/header/GoBackHeader";
+import { useSelector } from "react-redux";
+
+export default function CheckoutScreen() {
+  const [selectedPayment, setSelectedPayment] = useState("visa");
+  const total = useSelector((state) => state.cart.totalAmount);
+
+  return (
+    <View className="flex-1 bg-body">
+      {/* Header */}
+      <GoBackHeader subTitle={"McDonald's"} title={"Checkout"} />
+      <View className="my-2">
+        <Text>map</Text>
+      </View>
+      <ScrollView>
+        {/* Delivery Address */}
+        <View className="mt-4 bg-white p-4 border border-card rounded-xl">
+          <View className="flex-row justify-between">
+            <View className="flex-row items-center">
+              <Icon as={MapPin} size="3xl" className="text-text" />
+              <View className="ml-3">
+                <Text className="text-lg font-bold">
+                  Apartment (Adnan El Malky)
+                </Text>
+                <Text className="text-sm text-card">
+                  Adnan Al Maleki, g, g{"\n"}Mobile number: +20 1096749975
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity>
+              <Text className="text-accent text-sm font-semibold">Change</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Delivery Info */}
+        <View className="mt-4 bg-white p-4 border border-card rounded-xl">
+          <View className="flex-row justify-between items-center">
+            <View className="flex-row items-center">
+              <Icon as={Truck} size="3xl" className="text-text" />
+              <View className="ml-3">
+                <Text className="text-lg font-bold">Delivery</Text>
+                <Text className="text-sm text-card">
+                  Arriving in approx. 60 mins
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity>
+              <Text className="text-accent text-sm font-semibold">Change</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Payment Options */}
+        <View className="mt-4 p-4">
+          <Text className="text-xl font-semibold mb-2">Pay with</Text>
+
+          {/* Payment Methods */}
+          <TouchableOpacity
+            onPress={() => setSelectedPayment("visa")}
+            className={`p-4 flex-row items-center border ${
+              selectedPayment === "visa" ? "border-accent" : "border-card"
+            } rounded-xl mb-2`}
+          >
+            <AntDesign
+              name="checkcircle"
+              size={20}
+              color={selectedPayment === "visa" ? "#FF6600" : "#ccc"}
+            />
+            <Text className="ml-4 font-semibold text-lg">VISA xxxx-1191</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setSelectedPayment("newCard")}
+            className={`p-4 flex-row items-center border ${
+              selectedPayment === "newCard" ? "border-accent" : "border-card"
+            } rounded-xl mb-2`}
+          >
+            <AntDesign name="pluscircle" size={20} color="#ccc" />
+            <Text className="ml-4 font-semibold text-lg">Add new card</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setSelectedPayment("cash")}
+            className={`p-4 flex-row items-center border ${
+              selectedPayment === "cash" ? "border-accent" : "border-card"
+            } rounded-xl`}
+          >
+            <AntDesign name="wallet" size={20} color="#ccc" />
+            <Text className="ml-4 font-semibold text-lg">Cash</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Payment Summary */}
+        <View className="mt-4 bg-white p-4 rounded-xl">
+          <Text className="text-xl font-semibold mb-2">Payment summary</Text>
+          <View className="flex-row justify-between">
+            <Text className="text-lg">Subtotal</Text>
+            <Text className="text-lg">EGP {total}</Text>
+          </View>
+          <View className="flex-row justify-between mt-2">
+            <Text className="text-lg">Delivery fee</Text>
+            <Text className="text-lg">EGP {total}</Text>
+          </View>
+          <View className="flex-row justify-between mt-2">
+            <Text className="text-lg font-bold">Total amount</Text>
+            <Text className="text-lg font-bold">EGP {total}</Text>
+          </View>
+          <Text className="mt-4 text-sm">
+            By placing this order you agree to the Credit Card{" "}
+            <Text className="text-accent">Terms & Conditions</Text>
+          </Text>
+        </View>
+      </ScrollView>
+
+      {/* Footer Button */}
+      <View className="p-4 bg-white border-t border-card">
+        <TouchableOpacity className="bg-accent py-4 rounded-lg">
+          <Text className="text-white text-center text-lg font-semibold">
+            Place order
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}

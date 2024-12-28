@@ -1,0 +1,141 @@
+{
+  "UserInfo": [
+    {
+      "title": "First Name",
+      "placeholder": "Enter your First name",
+      "fieldName": "firstName",
+      "type": "text"
+    },
+    {
+      "title": "Last Name",
+      "placeholder": "Enter your Last name",
+      "fieldName": "lastName",
+      "type": "text"
+    },
+    {
+      "title": "Username",
+      "placeholder": "Enter your Username",
+      "fieldName": "username",
+      "type": "text"
+    },
+    {
+      "title": "Email Address",
+      "placeholder": "Enter your Email address",
+      "fieldName": "email",
+      "type": "email"
+    },
+    {
+      "title": "Birthday",
+      "placeholder": "Select your Birthday",
+      "fieldName": "birthdate",
+      "type": "date"
+    },
+    {
+      "title": "Mobile Number",
+      "placeholder": "Enter your Mobile number",
+      "fieldName": "phoneNumber",
+      "type": "tel"
+    },
+    {
+      "title": "Password",
+      "placeholder": "Enter your Password",
+      "fieldName": "password",
+      "type": "password"
+    },
+    {
+      "title": "Gender",
+      "placeholder": "Select your Gender",
+      "fieldName": "gender",
+      "type": "radio",
+      "options": [
+        { "name": "Male", "value": 0 },
+        { "name": "Female", "value": 1 }
+      ]
+    },
+    {
+      "title": "Contact Method",
+      "placeholder": "Select your Contact Method",
+      "fieldName": "contactMethod",
+      "type": "radio",
+      "options": [
+        { "name": "Phone", "value": 0 },
+        { "name": "Gmail", "value": 1 }
+      ]
+    }
+  ],
+  "CompanyInfo": [
+    {
+      "title": "Company Name",
+      "schemaID": "4772B7BF-C8E6-42CD-935F-08AB494A35E6",
+      "placeholder": "Enter Company Name",
+      "fieldName": "companyName",
+      "type": "text"
+    },
+    {
+      "title": "Company Logo",
+      "placeholder": "Enter Company Logo",
+      "fieldName": "companyLogo",
+      "type": "upload"
+    }
+  ],
+  "CompanyAddress": [
+    {
+      "title": "areaID",
+      "placeholder": "Enter areaID",
+      "fieldName": "areaID",
+      "schemaID": "4772b7bf-c8e6-42cd-935f-08ab494a35e6",
+      "displayField": "areaName",
+      "type": "comboBox"
+    },
+    {
+      "title": "Street Name",
+      "placeholder": "Enter Street Name",
+      "fieldName": "streetName",
+      "type": "text"
+    },
+    {
+      "title": "Zone Name",
+      "placeholder": "Enter Zone Name",
+      "fieldName": "zoneName",
+      "type": "text"
+    },
+    {
+      "title": "Build Number",
+      "placeholder": "Enter Build Number",
+      "fieldName": "buildNumber",
+      "type": "text"
+    },
+    {
+      "title": "Partition Number",
+      "placeholder": "Enter Partition Number",
+      "fieldName": "partitionNumber",
+      "type": "text"
+    },
+    {
+      "title": "flag Mark",
+      "placeholder": "Enter flag Mark",
+      "fieldName": "flagMark",
+      "type": "text"
+    },
+    {
+      "title": "locationLatitudePoint",
+      "placeholder": "Enter locationLatitudePoint",
+      "fieldName": "locationLatitudePoint",
+      "type": "location"
+    },
+    {
+      "title": "locationLongitudePoint",
+      "placeholder": "Enter locationLongitudePoint",
+      "fieldName": "locationLongitudePoint",
+      "type": "text"
+    }
+  ],
+  "four": [
+    {
+      "title": "companyBranchID",
+      "placeholder": "Enter companyBranchID",
+      "fieldName": "companyBranchID",
+      "type": "text"
+    }
+  ]
+}

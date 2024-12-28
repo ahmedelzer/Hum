@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640740895205",
+    "project_id": "hum-app-3579f",
+    "storage_bucket": "hum-app-3579f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640740895205:android:d47a13f8c569f4fade270c",
+        "android_client_info": {
+          "package_name": "com.HumApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtkpfK8l5269S8yyOYfCz8iTMJrFRIqTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
