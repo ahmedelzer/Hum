@@ -8,7 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
-const RangeSlider = ({ sliderWidth = 700, min, max, step, onValueChange }) => {
+const RangeSlider = ({ sliderWidth, min, max, step, onValueChange }) => {
   const position = useSharedValue(0);
   const position2 = useSharedValue(sliderWidth);
   const opacity = useSharedValue(0);

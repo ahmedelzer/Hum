@@ -33,7 +33,7 @@ const shortcuts = [
 const HomeContent = () => {
   return (
     <>
-      <HStack className="flex-1 items-center justify-between mx-4">
+      <HStack className="flex-1 items-center justify-between">
         <Text>Shortcuts</Text>
         <Text className="color-neutral-400">4</Text>
       </HStack>

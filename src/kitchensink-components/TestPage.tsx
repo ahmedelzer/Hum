@@ -70,8 +70,8 @@ export default SettingsScreen;
 // const SettingsScreen = () => {
 //   const MIN_DEFAULT = 10;
 //   const MAX_DEFAULT = 500;
-//   const [minValue, setMinValue] = useState(MIN_DEFAULT);
-//   const [maxValue, setMaxValue] = useState(MAX_DEFAULT);
+// const [minValue, setMinValue] = useState(MIN_DEFAULT);
+// const [maxValue, setMaxValue] = useState(MAX_DEFAULT);
 //   return (
 //     <GestureHandlerRootView style={{ flex: 1 }}>
 //       <View style={styles.container}>
@@ -79,14 +79,14 @@ export default SettingsScreen;
 //           <View style={styles.content}>
 //             <Text style={styles.text}>Price Slider</Text>
 //             <RangeSlider
-//               // sliderWidth={300}
+//               sliderWidth={300}
 //               min={MIN_DEFAULT}
 //               max={MAX_DEFAULT}
 //               step={10}
-//               onValueChange={(range) => {
-//                 setMinValue(range.min);
-//                 setMaxValue(range.max);
-//               }}
+// onValueChange={(range) => {
+//   setMinValue(range.min);
+//   setMaxValue(range.max);
+// }}
 //             />
 //             {/* <Text>here</Text> */}
 //             <View style={styles.tableContainer}>

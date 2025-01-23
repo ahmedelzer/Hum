@@ -41,8 +41,10 @@ import {
 import FormContainer from "../form-container/FormContainer";
 import { loginFormSchema } from "../../kitchensink-components/auth/signin/loginSchema";
 import { useForm } from "react-hook-form";
+import { useNavigation } from "@react-navigation/native";
 
 const SearchBarFilter = ({ schema }: any) => {
+  const navigation = useNavigation();
   // console.log(schema, "schema from search bar filter");
   const {
     control,
@@ -54,17 +56,22 @@ const SearchBarFilter = ({ schema }: any) => {
   );
 
   const [values, setValues] = useState(["Eng"]);
-
   return (
     <Menu
       className="mx-4 self-center rounded-xl"
       placement="top"
       offset={5}
+      onclick
       disabledKeys={["Settings"]}
       useRNModal={true}
       trigger={({ ...triggerProps }) => {
         return (
-          <Button {...triggerProps} size="sm" className="rounded-full">
+          <Button
+            {...triggerProps}
+            size="sm"
+            className="rounded-full"
+            onPress={() => navigation.navigate("MenuFilter")}
+          >
             <Icon as={FilterIcon} size="lg" color="#f2f2f2" />
           </Button>
         );
@@ -82,7 +89,7 @@ const SearchBarFilter = ({ schema }: any) => {
           }}
         />
       </MenuItem> */}
-      <MenuItem key="Add account" textValue="Add account">
+      {/* <MenuItem key="Add account" textValue="Add account">
         <Accordion
           size="sm"
           variant="unfilled"
@@ -168,7 +175,7 @@ const SearchBarFilter = ({ schema }: any) => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-      </MenuItem>
+      </MenuItem> */}
     </Menu>
   );
 };

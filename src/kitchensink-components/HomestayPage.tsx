@@ -38,12 +38,12 @@ const bottomTabs = [
 ];
 
 const HomestayPage = () => {
-  useEffect(() => {
-    if (Platform.OS === "web") {
-      document.body.style.overflow = "hidden";
-      document.body.style.height = "100%";
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Platform.OS === "web") {
+  //     document.body.style.overflow = "hidden";
+  //     document.body.style.height = "100%";
+  //   }
+  // }, []);
 
   const [activeTab, setActiveTab] = React.useState("Home");
 

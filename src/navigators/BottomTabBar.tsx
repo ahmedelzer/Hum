@@ -11,6 +11,8 @@ import { SetResponsiveContainer } from "../utils/SetResponsiveContainer";
 import { getTabBarVisibility } from "../utils/getTabBarVisibility";
 import RenderItemsView from "../utils/renderItemsView";
 import { RootStackParamList } from "./RootStack";
+import { View } from "react-native";
+import MenuFilter from "../components/filters/MenuFilter";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -94,6 +96,10 @@ const BottomBarTabs: FC = () => {
         <Stack.Screen
           name="Cart"
           component={() => SetResponsiveContainer(<CartPage />, true)}
+        />
+        <Stack.Screen
+          name="MenuFilter"
+          component={() => SetResponsiveContainer(<MenuFilter />, true)}
         />
         <Stack.Screen name="DetailsProductScreen" component={DetailsScreen} />
         <Stack.Screen

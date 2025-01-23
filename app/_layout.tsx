@@ -1,36 +1,37 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { Tabs, Stack } from "expo-router";
-import HeaderParent from "../src/components/header/HeaderParent";
-
-const TabsLayout = () => {
-  const dummyArr = [
-    {
-      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
-      dashboardMenuItemName: "MenuItem1",
-      routePath: "Home",
-      projectProxyRoute: "HumMenu",
-    },
-    {
-      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
-      dashboardMenuItemName: "MenuItem1",
-      routePath: "index",
-      projectProxyRoute: "HumMenu",
-    },
-    // Add more items if necessary
-  ];
-
-  return (
-    <Tabs>
-      {dummyArr.map((item) => (
-        <Tabs.Screen
-          key={item.dashboardMenuItemName}
-          name={item.routePath}
-          //   options={getTabOptions(item)}
-        />
-      ))}
-    </Tabs>
-  );
-};
-
-export default TabsLayout;
+// import "react-native-gesture-handler";
+// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// import { SafeAreaView } from "react-native";
+// import { GluestackUIProvider } from "../components/ui";
+// import { LocalizationProvider } from "../context/LocalizationContext";
+// import { WS_Provider } from "../context/WS";
+// import { AuthProvider } from "../context/auth";
+// import { GestureHandlerRootView } from "react-native-gesture-handler";
+// import { Provider } from "react-redux";
+// import store from "../src/store/cartStore";
+// import { Slot } from "expo-router";
+// import "../global.css";
+// const queryClient = new QueryClient();
+// export default function Layout() {
+//   console.log("====================================");
+//   console.log("from:layout");
+//   console.log("====================================");
+//   return (
+//     <GestureHandlerRootView style={{ flex: 1 }}>
+//       <Provider store={store}>
+//         <QueryClientProvider client={queryClient}>
+//           <GluestackUIProvider mode="light">
+//             <LocalizationProvider>
+//               <WS_Provider>
+//                 <AuthProvider>
+//                   <SafeAreaView style={{ flex: 1 }}>
+//                     <Slot />
+//                   </SafeAreaView>
+//                 </AuthProvider>
+//               </WS_Provider>
+//             </LocalizationProvider>
+//           </GluestackUIProvider>
+//         </QueryClientProvider>
+//       </Provider>
+//     </GestureHandlerRootView>
+//   );
+// }

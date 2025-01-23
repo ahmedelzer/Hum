@@ -5,6 +5,7 @@ import MobileProfilePage from "../kitchensink-components/MobileProfilePage";
 import { useGetDashboardForm } from "../services/react-query-hooks/GetDashboardForm";
 import { SetResponsiveContainer } from "./SetResponsiveContainer";
 import SettingsScreen from "../kitchensink-components/TestPage";
+import MenuFilter from "../components/filters/MenuFilter";
 
 const RenderItemsView = ({ dashboardItemId, routePath }: any) => {
   // return <MenuView dashboardItemId={dashboardItemId} />;

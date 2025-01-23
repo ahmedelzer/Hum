@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.HUM-App">
-
+ <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.INTERNET" />
-
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
@@ -11,6 +12,22 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:supportsRtl="true">
+  <meta-data
+    android:name="com.supersami.foregroundservice.notification_channel_name"
+    android:value="Sticky Title"
+  />
+  <meta-data
+    android:name="com.supersami.foregroundservice.notification_channel_description"
+    android:value="Sticky Description."
+  />
+  <meta-data
+    android:name="com.supersami.foregroundservice.notification_color"
+    android:resource="@color/blue"
+  />
+ 
+  <service android:name="com.supersami.foregroundservice.ForegroundService"></service> // also define android:foregroundServiceType="" according to your use case
+  <service android:name="com.supersami.foregroundservice.ForegroundServiceTask"></service> // also define android:foregroundServiceType="" according to your use case
+
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -23,6 +40,25 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+      <service android:name="com.zinspector.foregroundservice.ForegroundService" />
+        <service android:name="com.zinspector.foregroundservice.ForegroundServiceTask" />
+         <receiver
+        android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions"
+        android:permission="com.google.android.c2dm.permission.SEND">
+        <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+            <category android:name="${applicationId}" />
+        </intent-filter>
+    </receiver>
+    <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver"
+        android:exported="false">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+        </intent-filter>
+    </receiver>
     </application>
 
 </manifest>

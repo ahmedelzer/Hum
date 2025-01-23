@@ -9,7 +9,7 @@ import {
   // ImageParameterWithPanelActions,
   // LookupInput,
   InputPassword,
-  MeddleRange,
+  MeddleRangeParameter,
   SelectParameter,
   TextParameter,
 } from "./index";
@@ -32,7 +32,7 @@ export function GetInputComponent(type) {
     // case "phoneNumber":
     //   return PhoneNumberParameter;
     case "minMax":
-      return MeddleRange;
+      return MeddleRangeParameter;
     // case "lookup":
     //   return LookupInput;
 

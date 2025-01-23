@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 import store from "./src/store/cartStore";
 import Notification from "./src/components/notification/Notification";
 import HeaderParent from "./src/components/header/HeaderParent";
+import TestWithStaticServer from "./src/components/notification/TestWithStaticServer";
 
 const queryClient = new QueryClient();
 // Task name constant
@@ -50,15 +51,9 @@ export default function App() {
                     // className="bg-body"
                   >
                     {/* <Notification /> */}
+                    {/* <TestWithStaticServer /> */}
+                    <RootStack />
                     {/* <RootStack /> */}
-                    <HeaderParent />
-                    {/* <View className="text-center text-primary-custom">
-                      <Text className="text-primary-custom">
-                        Background Fetch Example
-                      </Text>
-                      <Button title="Check Fetch Status" />
-                    </View> */}
-                    {/* <WebSocketBackgroundService /> */}
                   </SafeAreaView>
                 </AuthProvider>
               </WS_Provider>
