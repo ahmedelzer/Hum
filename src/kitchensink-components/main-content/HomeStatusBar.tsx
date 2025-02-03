@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "../../../components/ui";
 import { ScrollView } from "react-native";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+// import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
 const data = [
   {
@@ -118,7 +118,8 @@ const HomeStatusBar = () => {
             setIsContentAtRight(true);
           }
           setScrollPosition(event.nativeEvent.contentOffset.x);
-        }}>
+        }}
+      >
         <HStack space="md" className="w-full px-4 md:px-0">
           {data.map((image, index) => {
             return (
@@ -126,7 +127,8 @@ const HomeStatusBar = () => {
                 key={index}
                 className={`flex-1 mt-2 p-1 rounded-xl  ${
                   !image.seen ? "border-2 border-green-500" : ""
-                }`}>
+                }`}
+              >
                 <Image
                   source={image.src}
                   alt={"place" + index}
@@ -164,8 +166,9 @@ const ScrollLeft = ({ handleScrollLeft, disabled }: any) => {
             : "data-[disabled=true]:opacity-100"
         }`}
         disabled={disabled}
-        onPress={handleScrollLeft}>
-        <Icon as={ChevronLeft} size="lg" color={"#535252"} />
+        onPress={handleScrollLeft}
+      >
+        {/* <Icon as={ChevronLeft} size="lg" color={"#535252"} /> */}
       </Pressable>
     </Center>
   );
@@ -181,8 +184,9 @@ const ScrollRight = ({ handleScrollRight, disabled }: any) => {
             : "data-[disabled=true]:opacity-100"
         }`}
         onPress={handleScrollRight}
-        disabled={disabled}>
-        <Icon as={ChevronRight} size="lg" color={"#535252"} />
+        disabled={disabled}
+      >
+        {/* <Icon as={ChevronRight} size="lg" color={"#535252"} /> */}
       </Pressable>
     </Center>
   );

@@ -289,5 +289,8 @@
     "headTitle": "Forgot Password?",
     "headDescription": "Enter email ID associated with your account.",
     "sighUpButton": "Send Link"
+  },
+  "menu": {
+    "currency": "EGP"
   }
 }

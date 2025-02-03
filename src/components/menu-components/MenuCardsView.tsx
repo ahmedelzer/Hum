@@ -3,135 +3,20 @@ import { I18nManager, ScrollView } from "react-native";
 import { Box, HStack, Pressable, Text, VStack } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import MenuCardView from "./MenuCardView";
-import { getAllProducts, getProducts } from "../../reducers/ProductReducer";
+import {
+  getAllMenuItems,
+  updateCategory,
+} from "../../reducers/MenuItemReducer";
 import { useDispatch, useSelector } from "react-redux";
-
-const tabsData = [
-  {
-    name: "Picks for you",
-    data: [
-      {
-        id: 1,
-        name: "ImageView Inn",
-        description:
-          "Enjoy a cozy stay with scenic views at ImageView Inn, complete with all modern amenities.",
-        price: 4576.0,
-        rating: 4.9,
-        location: "401 Platte River Rd, Gothenburg, United States",
-        image: require("../../../assets/display/food1.jpg"),
-        quantity: 0,
-      },
-      {
-        id: 2,
-        name: "Snack Box",
-        description:
-          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
-        price: 136.0,
-        rating: 4.8,
-        location: "Downtown Cairo, Egypt",
-        image: require("../../../assets/display/food.jpg"),
-        quantity: 0,
-      },
-      {
-        id: 3,
-        name: "Snack Box2",
-        description:
-          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
-        price: 136.0,
-        rating: 4.8,
-        location: "Downtown Cairo, Egypt",
-        image: require("../../../assets/display/food.jpg"),
-        quantity: 0,
-      },
-      {
-        id: 4,
-        name: "Snack Box3",
-        description:
-          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
-        price: 136.0,
-        rating: 4.8,
-        location: "Downtown Cairo, Egypt",
-        image: require("../../../assets/display/food.jpg"),
-        quantity: 0,
-      },
-      {
-        id: "0",
-        image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqg_OBzcVDnKHv1d3hyVk_WlCo43pzit4CJQ&usqp=CAU",
-        name: "Icecream",
-        quantity: 0,
-        description:
-          "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can(330 ML)",
-        price: 136.0,
-      },
-    ],
-  },
-  {
-    name: "Discount",
-    data: [
-      {
-        id: 3,
-        name: "Discounted Stay",
-        description:
-          "Enjoy luxurious stays with amazing discounts at prime locations.",
-        price: 3000.0,
-        rating: 4.7,
-        location: "El Gouna, Red Sea, Egypt",
-        image: require("../../../assets/display/image28.png"),
-      },
-    ],
-  },
-  {
-    name: "New king",
-    data: [
-      {
-        id: 4,
-        name: "King's Suite",
-        description:
-          "A royal suite experience with exclusive amenities and breathtaking views.",
-        price: 12000.0,
-        rating: 4.9,
-        location: "Aswan, Egypt",
-        image: require("../../../assets/display/food1.jpg"),
-      },
-    ],
-  },
-  {
-    name: "National Parks",
-    data: [
-      {
-        id: 5,
-        name: "National Park Retreat",
-        description:
-          "Explore nature at its best with a stay amidst the lush greenery of national parks.",
-        price: 5800.0,
-        rating: 4.6,
-        location: "Wadi El Gemal National Park, Egypt",
-        image: require("../../../assets/display/image16.png"),
-      },
-    ],
-  },
-];
-
-const tabs = [
-  {
-    title: "Picks for you",
-  },
-  {
-    title: "Discount",
-  },
-  {
-    title: "New king",
-  },
-];
+import { tabsData, tabs } from "./tabsData";
 
 const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
-  const [activeTab, setActiveTab] = React.useState(tabs[0]);
-  const products = useSelector((state) => state.product.product);
+  const products = useSelector((state) => state.menuItem.menuItem);
   const dispatch = useDispatch();
   const imageView = menuCardItem?.dashboardFormSchemaParameters?.find(
     (item: any) => item?.parameterType === "imagePath"
   );
+  const activeTab = useSelector((state) => state.menuItem.currentCategory);
 
   const text = menuCardItem?.dashboardFormSchemaParameters?.find(
     (item: any) =>
@@ -207,28 +92,22 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
   useEffect(() => {
     // if (products.length > 0) return;
     //! set here the conditions of is have new products and online users
-    const data = tabsData.find(
-      (tab) => tab.name.toLowerCase() === activeTab.title.toLowerCase()
-    ).data;
+    const data = tabsData.filter((tab) => tab.categoryId === activeTab.id);
+
     const fetchProducts = () => {
-      dispatch(getAllProducts(data));
+      dispatch(getAllMenuItems(data));
     };
     fetchProducts();
-  }, [activeTab]);
+  }, []);
   // console.log("====================================");
   // console.log(products);
   // console.log("====================================");
   return (
-    <Box className="md:px-0 -mt-4" style={{ marginBottom: 150 }}>
-      <HomestayInfoTabs
-        tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        setRow={setRow}
-      />
+    <Box className="md:px-0 -mt-4" style={{ marginBottom: 110 }}>
+      <HomestayInfoTabs tabs={tabs} setRow={setRow} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack>
-          {products.map((image: any, index: any) => {
+          {products?.map((image: any, index: any) => {
             return (
               <MenuCardView
                 key={index}
@@ -254,14 +133,10 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
 
 // const schemaActions =
 
-const HomestayInfoTabs = ({
-  tabs,
-  activeTab,
-  setActiveTab,
-  row,
-  setRow,
-}: any) => {
+const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
   const { isRTL } = useContext(LocalizationContext);
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.menuItem.currentCategory);
   // const schemaActionsParams = data?.map((item: any) =>
   //   item?.dashboardFormSchemaActionQueryParams.map(
   //     (param: any) => param.dashboardFormParameterField
@@ -287,6 +162,10 @@ const HomestayInfoTabs = ({
   //   keyword : 'string',
   //   filter:'asdawd'
   // }
+  // useEffect(() => {
+  //   // if (products.length > 0) return;
+  //   //! set here the conditions of is have new products and online users
+  // }, []);
   return (
     <Box className="border-b border-outline-50 md:border-b-0 md:border-transparent">
       <Box className="py-5">
@@ -313,7 +192,16 @@ const HomestayInfoTabs = ({
                     ? "hover:border-accent"
                     : "hover:border-accent-hover"
                 }`}
-                onPress={() => setActiveTab(tab)}
+                onPress={() => {
+                  const data = tabsData.filter(
+                    (data) => data.categoryId === tab.id
+                  );
+                  const fetchProducts = () => {
+                    dispatch(getAllMenuItems(data));
+                    dispatch(updateCategory(tab));
+                  };
+                  fetchProducts();
+                }}
               >
                 <Text
                   size="sm"

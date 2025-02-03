@@ -1,39 +1,14 @@
-import React, { useRef, useState, useContext } from "react";
-import {
-  Box,
-  HStack,
-  Center,
-  Image,
-  Icon,
-  Pressable,
-  ImageBackground,
-  Card,
-  VStack,
-  Text,
-  ButtonText,
-  Button,
-} from "../../../components/ui";
-import { Dimensions, ScrollView, View } from "react-native";
-import {
-  AxeIcon,
-  BoxIcon,
-  CheckIcon,
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  LocateIcon,
-  PinIcon,
-  StarIcon,
-  UserCheck,
-} from "lucide-react-native";
-import { AnimatePresence, Motion } from "@legendapp/motion";
-import Carousel from "react-native-snap-carousel";
-import { moderateScale, scale } from "react-native-size-matters";
-import { CarouselBox } from "../../components/cards/CarouselBox";
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
+import Carousel from "react-native-reanimated-carousel";
+import AnimatedDotsCarousel from "react-native-animated-dots-carousel";
+import { Image } from "../../../components/ui";
+import Test from "../../components/cards/Test";
 
+const { width } = Dimensions.get("window");
 const data = [
   {
-    src: require("../../../assets/display/food.jpg"),
+    src: require("../../../assets/display/food1.jpg"),
   },
   {
     src: require("../../../assets/display/food.jpg"),
@@ -55,168 +30,94 @@ const data = [
     src: require("../../../assets/display/food.jpg"),
   },
 ];
-
-const HomeCarousel = ({ menuCardItem, row }: any) => {
-  const [likes, setLikes] = useState(false);
+const MyCarousel = () => {
+  const [index, setIndex] = useState(0);
   const scrollViewRef = useRef(null);
-  const scrollAmount = 400;
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [isContentAtRight, setIsContentAtRight] = useState(true);
 
-  const handleScrollLeft = () => {
-    const newScrollPosition = scrollPosition - scrollAmount;
-    if (scrollViewRef.current) {
-      // @ts-ignore
-      scrollViewRef?.current?.scrollTo({
-        x: newScrollPosition,
-        animated: true,
-      });
-      setScrollPosition(newScrollPosition);
-    }
-  };
+  // Auto-scroll logic (fixes autoplay on Web)
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setIndex((prevIndex) => (prevIndex + 1) % data.length);
+  //   }, 3000); // Change slide every 3 seconds
 
-  const handleScrollRight = () => {
-    const newScrollPosition = scrollPosition + scrollAmount;
-    if (scrollViewRef.current)
-      // @ts-ignore
-      scrollViewRef?.current?.scrollTo({
-        x: newScrollPosition,
-        animated: true,
-      });
-    setScrollPosition(newScrollPosition);
-  };
+  //   return () => clearInterval(interval);
+  // }, []);
 
-  const imageView = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) => item?.parameterType === "imagePath"
-  );
-
-  const text = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) =>
-      item?.parameterType === "text" &&
-      !item.isIDField &&
-      item.parameterField === "menuItemName"
-  );
-
-  const description = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) =>
-      item?.parameterType === "text" &&
-      item.parameterField === "menuItemDescription"
-  );
-
-  const numberOfIndividuals = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) => item?.parameterType === "numberOfIndividuals"
-  );
-
-  const rate = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) => item?.parameterType === "rate"
-  );
-
-  const likesView = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) => item?.parameterType === "likes"
-  );
-
-  const dislikes = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) => item?.parameterType === "dislikes"
-  );
-
-  const orders = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) => item?.parameterType === "orders"
-  );
-
-  const reviews = menuCardItem?.dashboardFormSchemaParameters?.find(
-    (item: any) => item?.parameterType === "reviews"
-  );
-
-  const checkContentAtLeft = () => {
-    if (scrollPosition > 0) {
-      return true;
-    }
-    return false;
-  };
-
-  const isCloseToRight = (event: any) => {
-    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
-    const isScrollAtEnd =
-      contentOffset.x + layoutMeasurement.width >= contentSize.width;
-    if (isScrollAtEnd) {
-      return true;
-    }
-    return false;
-  };
-  var { width, height } = Dimensions.get("window");
-  // Reusable Carousel Box Component
-
-  // console.log("isContentAtRight");
   return (
-    <Box className="w-full">
-      <CarouselBox
-        image={data[0].src}
-        key={data[0].src}
-        actions={{ likes, setLikes }}
-        title="Delicious Meal"
-        description="A delightful culinary experience."
-      />
-      {/* <Carousel
+    <View style={styles.container}>
+      {/* Main Carousel */}
+      <Carousel
+        width={width}
+        height={200}
         data={data}
-        renderItem={({ item }) => (
-          <CarouselBox
-            image={item.src}
-            key={item.src}
-            title="Delicious Meal"
-            description="A delightful culinary experience."
-          />
-        )}
-        sliderWidth={width}
-        itemWidth={width * 0.8}
-        inactiveSlideOpacity={0.8}
-      /> */}
-
-      <ScrollLeft
-        handleScrollLeft={handleScrollLeft}
-        disabled={!checkContentAtLeft()}
+        scrollAnimationDuration={500}
+        defaultIndex={index}
+        autoPlay={false}
+        onSnapToItem={(newIndex) => setIndex(newIndex)}
+        renderItem={({ item }) => <Test image={item.src} />}
       />
-      <ScrollRight
-        handleScrollRight={handleScrollRight}
-        disabled={!isContentAtRight}
-      />
-    </Box>
+
+      {/* Dots Indicator */}
+      <View style={{ marginTop: 20 }}>
+        <AnimatedDotsCarousel
+          length={data.length}
+          currentIndex={index}
+          scrollableDotsConfig={{
+            setIndex,
+            onNewIndex: (newIndex) => {
+              scrollViewRef?.current?.scrollTo?.({
+                x: newIndex * width,
+                animated: false,
+              });
+            },
+            containerBackgroundColor: "rgba(230,230,230, 0.5)",
+            container: {
+              alignItems: "center",
+              borderRadius: 15,
+              height: 30,
+              justifyContent: "center",
+              paddingHorizontal: 15,
+            },
+          }}
+          maxIndicators={4}
+          interpolateOpacityAndColor={true}
+          activeIndicatorConfig={{
+            color: "#111111",
+            margin: 3,
+            opacity: 1,
+            size: 8,
+          }}
+          inactiveIndicatorConfig={{
+            color: "#111",
+            margin: 3,
+            opacity: 0.5,
+            size: 8,
+          }}
+          decreasingDots={[
+            {
+              config: { color: "#111", margin: 3, opacity: 0.5, size: 6 },
+              quantity: 1,
+            },
+            {
+              config: { color: "#111", margin: 3, opacity: 0.5, size: 4 },
+              quantity: 1,
+            },
+          ]}
+        />
+      </View>
+    </View>
   );
 };
 
-const ScrollLeft = ({ handleScrollLeft, disabled }: any) => {
-  return (
-    <Center className="absolute left-0 h-full hidden md:flex">
-      <Pressable
-        className={`p-1 ml-3 rounded-full border-outline-300 border bg-background-50 md:-ml-[16px] hover:bg-background-100 ${
-          disabled
-            ? "data-[disabled=true]:opacity-0"
-            : "data-[disabled=true]:opacity-100"
-        }`}
-        disabled={disabled}
-        onPress={handleScrollLeft}
-      >
-        <Icon as={ChevronLeft} size="lg" color={"#535252"} />
-      </Pressable>
-    </Center>
-  );
-};
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  slide: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#9DD6EB",
+  },
+  text: { color: "#fff", fontSize: 24, fontWeight: "bold" },
+});
 
-const ScrollRight = ({ handleScrollRight, disabled }: any) => {
-  return (
-    <Center className="absolute right-0 h-full hidden md:flex">
-      <Pressable
-        className={`p-1 ml-3 rounded-full border-outline-300 border bg-background-50 md:-mr-4 hover:bg-background-100 ${
-          disabled
-            ? "data-[disabled=true]:opacity-0"
-            : "data-[disabled=true]:opacity-100"
-        }`}
-        onPress={handleScrollRight}
-        disabled={disabled}
-      >
-        <Icon as={ChevronRight} size="lg" color={"#535252"} />
-      </Pressable>
-    </Center>
-  );
-};
-
-export default HomeCarousel;
+export default MyCarousel;

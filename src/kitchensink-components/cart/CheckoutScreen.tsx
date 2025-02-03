@@ -1,23 +1,44 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Icon } from "../../../components/ui";
 import { Truck, MapPin, CreditCard } from "lucide-react-native";
 import { AntDesign } from "@expo/vector-icons";
 import GoBackHeader from "../../components/header/GoBackHeader";
 import { useSelector } from "react-redux";
-
+import { LocalizationContext } from "../../../context/LocalizationContext";
+import BranchesByLocationMap from "../../components/maps/BranchesByLocationMap";
+//!localization
 export default function CheckoutScreen() {
   const [selectedPayment, setSelectedPayment] = useState("visa");
+  const { localization } = useContext(LocalizationContext);
   const total = useSelector((state) => state.cart.totalAmount);
-
+  const branches = [
+    {
+      LocationLatitudePoint: "37.7749",
+      LocationLongitudePoint: "-122.4194",
+      name: "San Francisco",
+      description: "Main Branch",
+    },
+    {
+      LocationLatitudePoint: "34.0522",
+      LocationLongitudePoint: "-118.2437",
+      name: "Los Angeles",
+    },
+    {
+      LocationLatitudePoint: "40.7128",
+      LocationLongitudePoint: "-74.0060",
+      name: "New York City",
+      description: "East Coast Branch",
+    },
+  ];
   return (
     <View className="flex-1 bg-body">
       {/* Header */}
       <GoBackHeader subTitle={"McDonald's"} title={"Checkout"} />
-      <View className="my-2">
-        <Text>map</Text>
-      </View>
       <ScrollView>
+        <View className="my-2">
+          {/* <BranchesByLocationMap branches={branches} /> */}
+        </View>
         {/* Delivery Address */}
         <View className="mt-4 bg-white p-4 border border-card rounded-xl">
           <View className="flex-row justify-between">
@@ -101,15 +122,21 @@ export default function CheckoutScreen() {
           <Text className="text-xl font-semibold mb-2">Payment summary</Text>
           <View className="flex-row justify-between">
             <Text className="text-lg">Subtotal</Text>
-            <Text className="text-lg">EGP {total}</Text>
+            <Text className="text-lg">
+              {localization.menu.currency} {total}
+            </Text>
           </View>
           <View className="flex-row justify-between mt-2">
             <Text className="text-lg">Delivery fee</Text>
-            <Text className="text-lg">EGP {total}</Text>
+            <Text className="text-lg">
+              {localization.menu.currency} {total}
+            </Text>
           </View>
           <View className="flex-row justify-between mt-2">
             <Text className="text-lg font-bold">Total amount</Text>
-            <Text className="text-lg font-bold">EGP {total}</Text>
+            <Text className="text-lg font-bold">
+              {localization.menu.currency} {total}
+            </Text>
           </View>
           <Text className="mt-4 text-sm">
             By placing this order you agree to the Credit Card{" "}

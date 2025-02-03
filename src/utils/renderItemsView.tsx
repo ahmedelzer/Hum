@@ -20,7 +20,7 @@ const RenderItemsView = ({ dashboardItemId, routePath }: any) => {
     case "Home":
       return SetResponsiveContainer(<HomestayPage />, true);
     case "Profile":
-      return <MobileProfilePage />;
+      return SetResponsiveContainer(<MobileProfilePage />, true);
     case "test":
       return SetResponsiveContainer(<SettingsScreen />, true);
     default:

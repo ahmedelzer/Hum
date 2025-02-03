@@ -1,10 +1,16 @@
 import React from "react";
+import { Platform } from "react-native";
 import { SafeAreaView, View, StyleSheet, Dimensions } from "react-native";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 
 const ResponsiveContainer = ({ children, style, setMargin }) => {
   return (
-    <SafeAreaView style={styles.safeArea} className="bg-body !text-text">
+    <SafeAreaView
+      style={styles.safeArea}
+      className={
+        `${Platform.OS === "web" && "container"}` + " bg-body !text-text"
+      }
+    >
       <View style={[style, styles.container, setMargin && styles.setMargin]}>
         {children}
       </View>

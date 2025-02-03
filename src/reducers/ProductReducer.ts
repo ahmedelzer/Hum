@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { tabs } from "../components/menu-components/tabsData";
 
 // Utility functions for AsyncStorage
 const saveProductsToStorage = async (products) => {
@@ -25,11 +26,14 @@ export const productSlice = createSlice({
   name: "product",
   initialState: {
     product: [],
+    allProducts: [],
+    currentCategory: tabs[0],
   },
   reducers: {
     getProducts: (state, action) => {
       //!use it when change in products like loading new products
       state.product.push({ ...action.payload });
+      state.allProducts.push({ ...action.payload });
       saveProductsToStorage(state.product); // Save to storage
     },
     getAllProducts: (state, action) => {
@@ -46,23 +50,11 @@ export const productSlice = createSlice({
         saveProductsToStorage(state.product); // Save to storage
       }
     },
-    decrementQuantity: (state, action) => {
-      const itemPresent = state.product.find(
-        (item) => item.id === action.payload.id
-      );
-      if (itemPresent) {
-        if (itemPresent.quantity === 1) {
-          state.product = state.product.filter(
-            (item) => item.id !== action.payload.id
-          );
-        } else {
-          itemPresent.quantity--;
-        }
-        saveProductsToStorage(state.product); // Save to storage
-      }
-    },
     setProductsFromStorage: (state, action) => {
       state.product = action.payload;
+    },
+    updateCategory: (state, action) => {
+      state.currentCategory = action.payload;
     },
   },
 });
@@ -77,9 +69,9 @@ export const loadProductsFromStorage = () => async (dispatch) => {
 export const {
   getProducts,
   updateQuantity,
-  decrementQuantity,
   setProductsFromStorage,
   getAllProducts,
+  updateCategory,
 } = productSlice.actions;
 
 export default productSlice.reducer;

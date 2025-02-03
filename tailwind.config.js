@@ -18,15 +18,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        body: "#FFFFFF",
-        card: "#e5e7eb",
-        text: "#111111",
+        body: "var(--body)",
+        card: "var(--card)",
+        text: "var(--text)",
         accent: {
-          DEFAULT: "#FF6700",
-          hover: "#FF4500",
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
         },
         primary: {
-          custom: "#FF8C42",
+          custom: "var(--primary)",
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
           50: "rgb(var(--color-primary-50)/<alpha-value>)",
           100: "rgb(var(--color-primary-100)/<alpha-value>)",

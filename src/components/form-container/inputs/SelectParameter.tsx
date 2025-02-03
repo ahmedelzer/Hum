@@ -1,67 +1,82 @@
 import { AntDesign } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { StyleSheet, Text } from "react-native";
-import { View } from "react-native";
+import { Controller } from "react-hook-form";
+import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-
-function SelectParameter() {
-  const [selectedLanguage, SetSelectedLanguage] = useState(null); // or an appropriate default value
+//!localization
+function SelectParameter({
+  values = [], // Array of objects with { label, value }
+  value = null, // Current selected value
+  fieldName,
+  enable = true,
+  control,
+  ...props
+}) {
+  const [selectedValue, setSelectedValue] = useState(value); // Selected value
   const [isFocus, setIsFocus] = useState(false);
+  // Prepare dropdown options
+  const dropdownData = values.map((val) => ({
+    label: val, // Display value
+    value: val, // Actual value
+  }));
   const renderLabel = () => {
-    if (selectedLanguage || isFocus) {
+    if (selectedValue || isFocus) {
       return (
         <Text style={[styles.label, isFocus && { color: "blue" }]}>
-          Dropdown label
+          {fieldName || "Select an option"}
         </Text>
       );
     }
     return null;
   };
-  const data = [
-    { label: "Item 1", value: "1" },
-    { label: "Item 2", value: "2" },
-    { label: "Item 3", value: "3" },
-    { label: "Item 4", value: "4" },
-    { label: "Item 5", value: "5" },
-    { label: "Item 6", value: "6" },
-    { label: "Item 7", value: "7" },
-    { label: "Item 8", value: "8" },
-  ];
+  console.log(value);
   return (
     <View>
       {/* {renderLabel()} */}
-      <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={data}
-        search
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Select item" : "..."}
-        searchPlaceholder="Search..."
-        value={selectedLanguage}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          SetSelectedLanguage(item.value);
-          setIsFocus(false);
+      <Controller
+        control={control}
+        rules={{
+          required: false,
         }}
-        renderLeftIcon={() => (
-          <AntDesign
-            style={styles.icon}
-            color="black"
-            name="Safety"
-            size={20}
+        name={fieldName}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Dropdown
+            style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={dropdownData} // Map values dynamically
+            search
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isFocus ? "Select an item" : "..."}
+            searchPlaceholder="Search..."
+            value={selectedValue}
+            disabled={!enable} // Disable dropdown if not enabled
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={(item) => {
+              setSelectedValue(item.value);
+              onChange(item.value); // Call onChange handler
+              setIsFocus(false);
+            }}
+            // renderLeftIcon={() => (
+            //   <AntDesign
+            //     style={styles.icon}
+            //     color="black"
+            //     name="Safety"
+            //     size={20}
+            //   />
+            // )}
           />
         )}
       />
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     marginTop: 100,
@@ -102,4 +117,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
 export default SelectParameter;

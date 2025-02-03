@@ -1,5 +1,12 @@
-1-make the cards of the app and handle card o menu items
-2-make the adds of home page images only
-3-mage cart with menu page 
-4-add icon of the cart on all screens
-5-when press on the menuitem display it in a popup with the card of home
+1-make counter for cart icon and nofication//Done
+2-make swiper of home page more efficient and dynamic//Done
+4-make the card of Details more friendly //not the best
+5-make count of menu item get from cart and delete it from menu items//Done
+6-finish the profile screen and set it the language init //Done
+8-make nofication screen and like it by all nofication icons//Done
+3-make map in checkout and appear the marker//do not work
+7-short cats schema from server 
+9-make application woke in web browser // the proplem in the icons lib
+10-run app in foreground
+11-localization
+12-clear logs and un useable files

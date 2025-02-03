@@ -2,6 +2,7 @@ import React from "react";
 import { Image } from "react-native";
 import { Text, VStack, Card, HStack, Icon } from "../../../components/ui";
 import { SquareArrowUpRight } from "lucide-react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const shortcuts = [
   {
@@ -55,8 +56,13 @@ const HomeContent = () => {
               <Text className="mt-2 text-sm font-bold">{shortcut.name}</Text>
             </VStack>
             <Icon
-              as={SquareArrowUpRight}
-              className="absolute bottom-1 left-1 w-4 h-4"
+              as={() => (
+                <MaterialIcons
+                  name="launch"
+                  className="absolute bottom-1 left-1 w-4 h-4 !text-text"
+                  size={16}
+                />
+              )}
             />
           </Card>
         ))}

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   TextInput,
   TouchableOpacity,
   I18nManager,
@@ -15,19 +14,19 @@ import {
   decrementQty,
   incrementQty,
 } from "../../reducers/CartReducer";
-import { decrementQuantity } from "../../reducers/ProductReducer";
 import { useNavigation } from "@react-navigation/native";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import { moderateScale, scale } from "react-native-size-matters";
 import SuggestCard from "../../components/cards/SuggestCard";
 import { AddToCartSecondaryButton } from "./AddToCartButton";
 import GoBackHeader from "../../components/header/GoBackHeader";
+import { Image } from "../../../components/ui";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart.cart);
   const total = useSelector((state) => state.cart.totalAmount);
   const navigation = useNavigation();
-  const { isRTL } = useContext(LocalizationContext);
+  const { isRTL, localization } = useContext(LocalizationContext);
   const dispatch = useDispatch();
   const suggestions = [
     {
@@ -58,9 +57,6 @@ const CartPage = () => {
   const pressHandler = () => {
     navigation.navigate("HomeScreen");
   };
-  console.log("====================================");
-  console.log(cart);
-  console.log("====================================");
   const addItemToCart = (item) => {
     dispatch(addToCart(item)); // cart array being used
     // dispatch(incrementQuantity(item)); // product array being used
@@ -83,15 +79,19 @@ const CartPage = () => {
       <ScrollView className="flex-1  py-2">
         {cart.map((item) => (
           <View key={item.id} className="mb-5 flex-row items-start">
-            <Image
-              source={{ uri: item.image }}
-              // className="w-24 h-24 rounded-md"
+            <View
               style={{
                 width: scale(80),
                 height: scale(80),
                 borderRadius: moderateScale(10),
               }}
-            />
+            >
+              <Image
+                source={item.image}
+                className="w-full h-full rounded-md"
+                alt=""
+              />
+            </View>
 
             <View className="ml-4 flex-1 items-start">
               <Text className="font-semibold text-lg text-primary-custom">
@@ -130,7 +130,9 @@ const CartPage = () => {
               <AddToCartSecondaryButton item={item} />
               {/* </View> */}
             </View>
-            <Text className="text-lg font-semibold">{item.price}</Text>
+            <Text className="text-lg font-semibold">
+              {localization.menu.currency} {item.price}
+            </Text>
           </View>
         ))}
 
@@ -192,7 +194,9 @@ const CartPage = () => {
           </View>
           <View className="flex-row mt-2 items-center justify-between">
             <Text className="text-md ">Total Amount</Text>
-            <Text className="text-md">EGP {total}</Text>
+            <Text className="text-md">
+              {localization.menu.currency} {total}
+            </Text>
           </View>
           {/* <View className="flex-row mt-2 items-center justify-between">
             <Text className="text-md ">Payment summary</Text>

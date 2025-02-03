@@ -11,10 +11,13 @@ import { SetResponsiveContainer } from "../utils/SetResponsiveContainer";
 import { getTabBarVisibility } from "../utils/getTabBarVisibility";
 import RenderItemsView from "../utils/renderItemsView";
 import { RootStackParamList } from "./RootStack";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import MenuFilter from "../components/filters/MenuFilter";
+import { createStackNavigator } from "@react-navigation/stack";
+import NotificationScreen from "../components/notification/NotificationScreen";
 
-const Stack = createNativeStackNavigator();
+const Stack =
+  Platform.OS === "web" ? createStackNavigator() : createNativeStackNavigator();
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
 // Define the TestStack with HomeScreen and CartPage
@@ -105,6 +108,10 @@ const BottomBarTabs: FC = () => {
         <Stack.Screen
           name="CheckoutScreen"
           component={() => SetResponsiveContainer(<CheckoutScreen />, true)}
+        />
+        <Stack.Screen
+          name="NotificationScreen"
+          component={() => SetResponsiveContainer(<NotificationScreen />, true)}
         />
       </Stack.Navigator>
     );

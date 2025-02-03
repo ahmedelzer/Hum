@@ -1,0 +1,171 @@
+export const tabsData = [
+  {
+    id: 1,
+    name: "ImageView Inn",
+    description:
+      "Enjoy a cozy stay with scenic views at ImageView Inn, complete with all modern amenities.",
+    price: 4576.0,
+    rating: 4.9,
+    location: "401 Platte River Rd, Gothenburg, United States",
+    image: require("../../../assets/display/food1.jpg"),
+    quantity: 0,
+    categoryId: "1",
+    keywords: ["salmon", "grilled", "fish", "lemon"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+  {
+    id: 2,
+    name: "Snack Box",
+    description:
+      "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
+    price: 136.0,
+    rating: 4.8,
+    location: "Downtown Cairo, Egypt",
+    image: require("../../../assets/display/food.jpg"),
+    quantity: 0,
+    categoryId: "1",
+
+    keywords: ["snack", "fries", "coleslaw", "pepsi"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+  {
+    id: 3,
+    name: "Snack Box2",
+    description:
+      "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
+    price: 136.0,
+    rating: 4.8,
+    categoryId: "1",
+
+    location: "Downtown Cairo, Egypt",
+    image: require("../../../assets/display/food.jpg"),
+    quantity: 0,
+    keywords: ["snack", "fries", "coleslaw", "pepsi", "meal"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+  {
+    id: 4,
+    name: "Snack Box3",
+    description:
+      "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can (330 ML).",
+    price: 136.0,
+    categoryId: "1",
+
+    rating: 4.8,
+    location: "Downtown Cairo, Egypt",
+    image: require("../../../assets/display/food.jpg"),
+    quantity: 0,
+    keywords: ["snack", "fries", "pepsi", "fast food"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+  {
+    id: 5,
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqg_OBzcVDnKHv1d3hyVk_WlCo43pzit4CJQ&usqp=CAU",
+    name: "Icecream",
+    quantity: 0,
+    categoryId: "1",
+    description:
+      "Snack Box - Original, Medium French Fries, Small Coleslaw, Pepsi Can(330 ML)",
+    price: 136.0,
+    keywords: ["ice cream", "dessert", "sweet", "summer"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+
+  {
+    id: 7,
+    name: "Discounted Stay",
+    description:
+      "Enjoy luxurious stays with amazing discounts at prime locations.",
+    price: 3000.0,
+    rating: 4.7,
+    categoryId: "2",
+    location: "El Gouna, Red Sea, Egypt",
+    image: require("../../../assets/display/image28.png"),
+    quantity: 0,
+    keywords: ["discount", "luxury", "stay", "vacation"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+
+  {
+    id: 8,
+    name: "King's Suite",
+    categoryId: "3",
+
+    description:
+      "A royal suite experience with exclusive amenities and breathtaking views.",
+    price: 12000.0,
+    rating: 4.9,
+    location: "Aswan, Egypt",
+    image: require("../../../assets/display/food1.jpg"),
+    quantity: 0,
+    keywords: ["king", "suite", "luxury", "royal"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+
+  {
+    id: 9,
+    name: "National Park Retreat",
+    description:
+      "Explore nature at its best with a stay amidst the lush greenery of national parks.",
+    price: 5800.0,
+    categoryId: "4",
+
+    rating: 4.6,
+    location: "Wadi El Gemal National Park, Egypt",
+    image: require("../../../assets/display/image16.png"),
+    quantity: 0,
+    keywords: ["nature", "park", "retreat", "vacation"],
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+];
+export const tabs = [
+  {
+    title: "Picks for you",
+    id: "1",
+    description: "Contains all main course dishes.",
+    keywords: ["main course", "dinner", "meal"],
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+  },
+  {
+    id: "2",
+    description: "Contains all main course dishes.",
+    keywords: ["main course", "dinner", "meal"],
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+    title: "Discount",
+  },
+  {
+    id: "3",
+    description: "Contains all main course dishes.",
+    keywords: ["main course", "dinner", "meal"],
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+    title: "New king",
+  },
+  {
+    id: "4",
+    description: "Contains all main course dishes.",
+    keywords: ["main course", "dinner", "meal"],
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+    title: "National Parks",
+  },
+];

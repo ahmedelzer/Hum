@@ -26,7 +26,6 @@ const Explorepage = ({ activeTab, setActiveTab }: any) => {
       {/* mobile */}
       <ScrollView>
         <Box>
-          {/* //!md:hidden */}
           <VStack space="sm">
             {/* <HomeStatusBar /> */}
             {/* <WebSidebar /> */}

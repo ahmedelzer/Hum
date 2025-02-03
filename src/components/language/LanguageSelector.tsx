@@ -138,7 +138,7 @@ const LanguageSelector = () => {
     }) || [];
   const [value, setValue] = useState(null);
   return (
-    <View style={styles.container}>
+    <View style={styles.container} className="bg-body">
       {renderLabel()}
       <Dropdown
         style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
@@ -174,8 +174,6 @@ const LanguageSelector = () => {
 };
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
-    backgroundColor: "white",
     padding: 16,
   },
   dropdown: {

@@ -1,15 +1,8 @@
 import { AnimatePresence, Motion } from "@legendapp/motion";
-import {
-  AxeIcon,
-  BoxIcon,
-  Heart,
-  LocateIcon,
-  StarIcon,
-  UserCheck,
-} from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
 import { moderateScale } from "react-native-size-matters";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   Box,
   Button,
@@ -21,25 +14,25 @@ import {
   Text,
   VStack,
 } from "../../../components/ui";
+//!locaization
 export const CarouselBox = ({ image, title, description, actions }) => {
   const { likes, setLikes } = actions;
+
   return (
     <Box className="justify-center items-center">
       <View>
         <Image
           source={image}
           alt={title}
-          className="w-auto h-[70%] rounded-xl" //!solve the height
+          className="w-auto h-[70%] rounded-xl"
           style={{
-            // width: "60%", // Responsive logo width
-            // height: "60%", // Responsive logo height
             resizeMode: "cover",
-            aspectRatio: 1, // Maintain square aspect ratio
-            borderRadius: moderateScale(10), // Rounded corners
+            aspectRatio: 1,
+            borderRadius: moderateScale(10),
           }}
-          // resizeMode="cover"
         />
       </View>
+
       <Card
         variant="elevated"
         className="absolute bottom-6 w-[90%] md:w-[80%] lg:w-[70%] p-4 rounded-3xl shadow-xl"
@@ -61,14 +54,10 @@ export const CarouselBox = ({ image, title, description, actions }) => {
                 stiffness: 300,
               }}
             >
-              <Icon
-                as={Heart}
-                size="xl"
-                className={`${
-                  likes
-                    ? "fill-red-500 stroke-red-500"
-                    : "fill-gray-500 stroke-white"
-                }`}
+              <MaterialCommunityIcons
+                name="heart"
+                size={24}
+                color={likes ? "red" : "gray"}
               />
             </Motion.View>
           </AnimatePresence>
@@ -84,7 +73,12 @@ export const CarouselBox = ({ image, title, description, actions }) => {
           <HStack space="sm" className="items-center">
             <HStack space="xs" className="items-center">
               {[...Array(4)].map((_, i) => (
-                <Icon key={i} as={StarIcon} size="sm" color="orange" />
+                <MaterialCommunityIcons
+                  key={i}
+                  name="star"
+                  size={16}
+                  color="orange"
+                />
               ))}
             </HStack>
             <Text size="sm" className="ml-2 text-gray-600">
@@ -93,20 +87,32 @@ export const CarouselBox = ({ image, title, description, actions }) => {
             <Text size="sm" className="ml-2 text-gray-600">
               8
             </Text>
-            <Icon as={UserCheck} size="sm" color="green" />
+            <MaterialCommunityIcons
+              name="account-check"
+              size={16}
+              color="green"
+            />
           </HStack>
           <HStack space="lg" className="items-center">
             <Button variant="link">
               <Text className="font-medium text-sm">8</Text>
-              <Icon as={BoxIcon} className="h-4 w-4 ml-1" />
+              <MaterialCommunityIcons
+                name="cube-outline"
+                size={16}
+                className="ml-1 !text-accent"
+              />
             </Button>
             <Button variant="link">
               <Text className="font-medium text-sm">18</Text>
-              <Icon as={AxeIcon} className="h-4 w-4 ml-1" />
+              <MaterialCommunityIcons name="axe" size={16} className="ml-1" />
             </Button>
             <Button variant="link">
               <Text className="font-medium text-sm">Locate</Text>
-              <Icon as={LocateIcon} className="h-4 w-4 ml-1" />
+              <MaterialCommunityIcons
+                name="map-marker"
+                size={16}
+                className="ml-1"
+              />
             </Button>
           </HStack>
         </VStack>

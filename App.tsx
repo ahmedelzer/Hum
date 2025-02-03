@@ -13,6 +13,7 @@ import store from "./src/store/cartStore";
 import Notification from "./src/components/notification/Notification";
 import HeaderParent from "./src/components/header/HeaderParent";
 import TestWithStaticServer from "./src/components/notification/TestWithStaticServer";
+import RenderItemsView from "./src/utils/renderItemsView";
 
 const queryClient = new QueryClient();
 // Task name constant
@@ -52,8 +53,11 @@ export default function App() {
                   >
                     {/* <Notification /> */}
                     {/* <TestWithStaticServer /> */}
-                    <RootStack />
                     {/* <RootStack /> */}
+                    <RootStack />
+                    {/* <View>
+                      <HeaderParent />
+                    </View> */}
                   </SafeAreaView>
                 </AuthProvider>
               </WS_Provider>

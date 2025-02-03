@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { I18nManager, Pressable, TouchableOpacity, View } from "react-native";
 import { scale, moderateScale } from "react-native-size-matters";
 import {
@@ -26,9 +26,10 @@ import {
   decrementQty,
   incrementQty,
 } from "../../reducers/CartReducer";
-import { updateQuantity } from "../../reducers/ProductReducer";
+import { updateQuantity } from "../../reducers/MenuItemReducer";
 import { useNavigation } from "@react-navigation/native";
 import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
+import { LocalizationContext } from "../../../context/LocalizationContext";
 
 const MenuCardView = ({
   imageView,
@@ -43,8 +44,10 @@ const MenuCardView = ({
   item,
 }) => {
   const dispatch = useDispatch();
+  const { localization } = useContext(LocalizationContext);
+
   const cart = useSelector((state) => state.cart.cart);
-  const product = useSelector((state) => state.product.product);
+  const product = useSelector((state) => state.menuItem.menuItem);
   const addItemToCart = (item) => {
     // console.log("====================================");
     dispatch(addToCart(item)); // cart array being used
@@ -55,7 +58,7 @@ const MenuCardView = ({
   // console.log("====================================");
   // console.log(cart, 12333, product);
   // console.log("====================================");
-
+  //!localization
   return (
     <Pressable
       onPress={() => {
@@ -171,7 +174,9 @@ const MenuCardView = ({
             </View>
             {/* <HStack space="lg" className="mt-2"> */}
             <View className="flex flex-row justify-end mt-2">
-              <Text className="text-xl font-bold">{item.price}</Text>
+              <Text className="text-xl font-bold">
+                {localization.menu.currency} {item.price}
+              </Text>
             </View>
             <AddToCartPrimaryButton item={item} />
 

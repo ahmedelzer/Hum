@@ -44,7 +44,7 @@ const SettingsScreen = () => {
   ];
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <BranchesByLocationMap branches={branches} />
+      {/* // <BranchesByLocationMap branches={branches} /> */}
     </SafeAreaView>
   );
   // return <LanguageSelector />;
@@ -68,8 +68,8 @@ export default SettingsScreen;
 // import { GestureHandlerRootView } from "react-native-gesture-handler";
 // import RangeSlider from "../components/form-container/inputs/CustomInputs/RangeSlider";
 // const SettingsScreen = () => {
-//   const MIN_DEFAULT = 10;
-//   const MAX_DEFAULT = 500;
+// const MIN_DEFAULT = 10;
+// const MAX_DEFAULT = 500;
 // const [minValue, setMinValue] = useState(MIN_DEFAULT);
 // const [maxValue, setMaxValue] = useState(MAX_DEFAULT);
 //   return (

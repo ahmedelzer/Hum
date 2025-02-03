@@ -42,7 +42,6 @@ const MenuView = ({ schemas }: any) => {
   const menuCardItem = schemas?.find(
     (schema: any) => schema.schemaType === "menuItemCards"
   );
-  console.log("aaa", schemas);
   return (
     <View className="flex-1 gap-y-4 mx-4">
       <HStack space="2xl" className="items-center">

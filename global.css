@@ -30,6 +30,14 @@
     @apply inline-block rounded border-2 border-accent text-accent hover:border-accent-hover hover:bg-accent hover:bg-opacity-10 hover:text-accent-hover px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal transition duration-150 ease-in-out focus:outline-none focus:ring-0;
   }
 } */
+:root {
+  --body: #ffffff;
+  --text: #111111;
+  --primary: #ff8c42;
+  --card: #e5e7eb;
+  --accent: #ff6700;
+  --accent-hover: #ff4500;
+}
 body {
   @apply font-primary overflow-hidden h-full bg-body !text-text;
 }

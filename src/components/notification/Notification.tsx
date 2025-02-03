@@ -3,7 +3,7 @@ import { WS_Class } from "../../../components/hooks/ws/WS_Class";
 // import { LocalizationContext } from "../../../context/LocalizationContext";
 // import { WSContext } from "../../../context/WS";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import * as TaskManager from "expo-task-manager";
@@ -14,6 +14,7 @@ import { Icon } from "../../../components/ui";
 import { moderateScale } from "react-native-size-matters";
 import { Bell } from "lucide-react-native";
 import TestBackGroundServices from "./TestBackGroundServices";
+import RedCounter from "../../utils/RedCounter";
 
 // Notification handler
 Notifications.setNotificationHandler({
@@ -120,23 +121,14 @@ function Notification() {
 
   return (
     <View className="flex justify-center items-center">
-      <TouchableOpacity className={`relative flex items-center justify-center`}>
-        {notificationsNewNum > 0 && (
-          <View
-            className={`absolute top-0 right-0 bg-red-500 rounded-full w-5 h-5 flex items-center justify-center`}
-          >
-            <Text className={`text-white text-xs font-bold`}>
-              {notificationsNewNum}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
       {/* <TestBackGroundServices /> */}
       <TouchableOpacity
-        onPress={() => navigation.navigate("Cart")}
+        onPress={() => navigation.navigate("NotificationScreen")}
         className="p-2 rounded-lg bg-accent items-center justify-center"
       >
-        <Icon as={Bell} size={"md"} className="text-body" />
+        {/* <Icon as={Bell} size={"md"}  /> */}
+        <MaterialIcons name="notifications" size={24} className="!text-body" />
+        {notificationsNewNum > 0 && <RedCounter count={notificationsNewNum} />}
       </TouchableOpacity>
       {/* bell-dot */}
     </View>

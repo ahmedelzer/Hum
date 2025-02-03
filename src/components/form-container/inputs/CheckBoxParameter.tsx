@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import {
   CheckboxGroup,
   Checkbox,
@@ -11,75 +11,73 @@ import {
   InputField,
 } from "../../../../components/ui";
 import { CheckIcon } from "lucide-react-native";
+import { Controller } from "react-hook-form";
 
 export default function CheckBoxParameter({
-  values,
-  value,
+  values = [], // Values to display as checkboxes
+  value = [], // Current selected values
   fieldName,
-  enable,
-  onChange,
+  enable = true, // Whether the checkboxes are enabled
+  control,
   ...props
 }) {
-  const [isChecked, setIsChecked] = useState(false);
-  // const [values, setValues] = useState([]); // Track selected checkbox values
-  const handleChange = () => {
-    setIsChecked(!isChecked); // Toggle the checkbox state
+  const [selectedValues, setSelectedValues] = useState(value);
+
+  const handleCheckboxChange = (selectedKeys, formOnChange) => {
+    setSelectedValues(selectedKeys); // Update local state
+
+    // Trigger form state change via react-hook-form
+    if (formOnChange) {
+      formOnChange(selectedKeys); // Pass the selected values to react-hook-form
+    }
   };
 
   return (
-    <View>
-      <CheckboxGroup
-        value={values}
-        onChange={(keys) => {
-          setValues(keys); // Update selected values
-        }}
-      >
-        <VStack space="xl">
-          {/* Checkbox for "Framer" */}
-          <Checkbox value="framer">
-            <CheckboxIndicator>
-              <CheckboxIcon as={CheckIcon} />
-            </CheckboxIndicator>
-            <CheckboxLabel>Framer</CheckboxLabel>
-          </Checkbox>
+    <Controller
+      control={control}
+      rules={{
+        required: false,
+      }}
+      name={fieldName} // Ensure the Controller works with the fieldName
+      render={({ field: { onChange: formOnChange, onBlur } }) => (
+        <View>
+          <CheckboxGroup
+            value={selectedValues}
+            onChange={(selectedKeys) =>
+              handleCheckboxChange(selectedKeys, formOnChange)
+            } // Pass formOnChange to update form state
+            isDisabled={!enable} // Disable the group if not enabled
+          >
+            <VStack space="xl">
+              {values.map((item, index) => (
+                <Checkbox key={index} value={item}>
+                  <CheckboxIndicator>
+                    <CheckboxIcon as={CheckIcon} />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>{item}</CheckboxLabel>
+                </Checkbox>
+              ))}
+            </VStack>
+          </CheckboxGroup>
 
-          {/* Checkbox for "Invision Studio" */}
-          <Checkbox value="invision">
-            <CheckboxIndicator>
-              <CheckboxIcon as={CheckIcon} />
-            </CheckboxIndicator>
-            <CheckboxLabel>Invision Studio</CheckboxLabel>
-          </Checkbox>
-
-          {/* Checkbox for "Adobe XD" */}
-          <Checkbox value="adobe">
-            <CheckboxIndicator>
-              <CheckboxIcon as={CheckIcon} />
-            </CheckboxIndicator>
-            <CheckboxLabel>Adobe XD</CheckboxLabel>
-          </Checkbox>
-        </VStack>
-      </CheckboxGroup>
-      <Input
-        variant="outline"
-        className={"w-0 h-0 opacity-0"}
-        size="md"
-        isDisabled={false}
-        // isInvalid={props.invalidInput}
-        isReadOnly={false}
-      >
-        <InputField
-          className={"w-0 h-0 opacity-0"}
-          value={value}
-          onChangeText={onChange}
-          // onBlur={onBlur}
-          defaultValue={value}
-          // onFocus={onFocus}
-          // {...props}
-          // placeholder={props.placeholder}
-          // style={[inputStyle, props.style]}
-        />
-      </Input>
-    </View>
+          {/* Hidden input to pass the selected values */}
+          <Input
+            variant="outline"
+            className={"w-0 h-0 opacity-0"}
+            size="md"
+            isDisabled={false}
+            isReadOnly={true}
+          >
+            <InputField
+              className={"w-0 h-0 opacity-0"}
+              value={JSON.stringify(selectedValues)} // Pass the selected values as a string
+              editable={false} // Make the field non-editable
+              onChangeText={() => {}}
+              defaultValue={JSON.stringify(selectedValues)} // Ensure that it reflects the selected values
+            />
+          </Input>
+        </View>
+      )}
+    />
   );
 }

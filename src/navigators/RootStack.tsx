@@ -9,6 +9,10 @@ import { retrieveSecureValue } from "../store/zustandStore";
 import { useAuth } from "../../context/auth";
 import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
 import StackNavigator from "./StackNavigator";
+import HeaderParent from "../components/header/HeaderParent";
+import RenderItemsView from "../utils/renderItemsView";
+import { FontAwesome } from "@expo/vector-icons";
+import { SquareArrowUpRight } from "lucide-react-native";
 
 // types
 export type RootStackParamList = {
@@ -26,12 +30,22 @@ export type RootStackParamList = {
 };
 ``;
 //todo: make with pixel rexio padding or margin top with  platforms
+const linking = {
+  prefixes: ["http://localhost:19006", "https://your-app.web.app"],
+  config: {
+    screens: {
+      Home: "",
+      Profile: "profile/:userId",
+      Settings: "settings",
+    },
+  },
+};
 
 const Stack = createStackNavigator<RootStackParamList>();
 const RootStack: FC = (props: any) => {
   const { user, loading } = useAuth();
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {/* {!loading ? (
         user ? (
           <BottomBarTabs />
@@ -43,6 +57,23 @@ const RootStack: FC = (props: any) => {
       )} */}
       {/* <OutsideStack /> */}
       <BottomBarTabs />
+      {/* <HeaderParent /> */}
+      {/* <RenderItemsView
+        dashboardItemId={"dynamicMenuItemsView"}
+        routePath={"Home"}
+      /> */}
+      {/* <FontAwesome name="group" size={24} color={"black"} /> */}
+      {/* //that works in web */}
+      {/* <SquareArrowUpRight
+        size={16}
+        color="black"
+        style={{
+          position: "absolute",
+          bottom: 4,
+          left: 4,
+        }}
+      /> */}
+      {/* //thats not works in web */}
       {/* <StackNavigator /> */}
     </NavigationContainer>
   );

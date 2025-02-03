@@ -42,20 +42,13 @@ import FormContainer from "../form-container/FormContainer";
 import { loginFormSchema } from "../../kitchensink-components/auth/signin/loginSchema";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
-
-const SearchBarFilter = ({ schema }: any) => {
+import { MaterialIcons } from "@expo/vector-icons";
+const SearchBarFilter = ({ schema, setRow, row }: any) => {
   const navigation = useNavigation();
   // console.log(schema, "schema from search bar filter");
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
   const searchFilter = schema?.dashboardFormSchemaParameters?.find(
     (item: any) => item?.isIDField && item?.parameterType === "collapse"
   );
-
-  const [values, setValues] = useState(["Eng"]);
   return (
     <Menu
       className="mx-4 self-center rounded-xl"
@@ -69,10 +62,24 @@ const SearchBarFilter = ({ schema }: any) => {
           <Button
             {...triggerProps}
             size="sm"
-            className="rounded-full"
-            onPress={() => navigation.navigate("MenuFilter")}
+            className="rounded-full !bg-text"
+            onPress={() => {
+              // Define the props you want to send
+              // const params = {
+              //   filterRow: filterRow,
+              //   setFilterRow: setFilterRow,
+              // };
+
+              // Navigate to "MenuFilter" and pass the params
+              navigation.navigate("MenuFilter");
+            }}
           >
-            <Icon as={FilterIcon} size="lg" color="#f2f2f2" />
+            {/* <Icon as={FilterIcon} size="lg" color="#f2f2f2" /> */}
+            <MaterialIcons
+              name="filter-list"
+              size={24}
+              className="!text-body"
+            />
           </Button>
         );
       }}

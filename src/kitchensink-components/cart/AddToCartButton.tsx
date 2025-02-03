@@ -3,7 +3,6 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../reducers/CartReducer";
-import { updateQuantity } from "../../reducers/ProductReducer";
 import {
   StarIcon,
   User2Icon,
@@ -14,11 +13,11 @@ import {
 } from "lucide-react-native";
 import { Icon } from "../../../components/ui";
 import { Pressable } from "react-native";
+import { updateQuantity } from "../../reducers/MenuItemReducer";
 const AddToCartSecondaryButton = ({ item }) => {
   const dispatch = useDispatch();
   const addItemToCart = (item) => {
     dispatch(addToCart(item)); // cart array being used
-    dispatch(updateQuantity(item)); // product array being used
   };
   return (
     <View className="flex-row items-center mt-2">
@@ -54,14 +53,13 @@ const AddToCartSecondaryButton = ({ item }) => {
 const AddToCartPrimaryButton = ({ item }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
-
+  const haveOnCart = cart.find((value) => value.id === item.id);
   const addItemToCart = (item) => {
     dispatch(addToCart(item)); // cart array being used
-    dispatch(updateQuantity(item)); // product array being used
   };
   return (
     <View>
-      {cart.some((value) => value.id === item.id) ? (
+      {haveOnCart ? (
         <Pressable className="flex flex-row bg-accent justify-between items-center rounded-md mt-2 p-2">
           <Pressable
             onPress={() => {
@@ -88,7 +86,7 @@ const AddToCartPrimaryButton = ({ item }) => {
               }}
             >
               {/* {GetQuantity(item.id)} */}
-              {item.quantity}
+              {haveOnCart.quantity}
             </Text>
           </Pressable>
 

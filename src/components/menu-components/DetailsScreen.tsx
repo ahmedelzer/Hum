@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import GoBackHeader from "../header/GoBackHeader";
+import { CarouselBox } from "../cards/CarouselBox";
+import { SetResponsiveContainer } from "../../utils/SetResponsiveContainer";
+import ResponsiveContainer from "../../kitchensink-components/auth/layout/ResponsiveContainer";
 const DetailsScreen = ({ route }) => {
   const item = route.params;
+  const [likes, setLikes] = useState(4);
   return (
-    <SafeAreaView className="bg-body">
-      <GoBackHeader subTitle={""} title={"Details"} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="justify-center items-center h-[250px]">
+    <ResponsiveContainer setMargin={true} style={""}>
+      <SafeAreaView className="bg-body">
+        <GoBackHeader subTitle={""} title={"Details"} />
+        <CarouselBox actions={{ likes, setLikes }} {...item} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* <View className="justify-center items-center h-[250px]">
           <Image source={item.image} style={{ height: 220, width: 220 }} />
         </View>
         <View style={style.details} className="bg-card">
@@ -23,16 +29,17 @@ const DetailsScreen = ({ route }) => {
               {item.name}
             </Text>
             <View style={style.iconContainer}>
-              {/* <Icon name="favorite-border" color={COLORS.primary} size={25} /> */}
+              <Icon name="favorite-border" color={COLORS.primary} size={25} />
             </View>
           </View>
           <Text style={style.detailsText}>{item.description}</Text>
           <View style={{ marginTop: 40, marginBottom: 40 }}>
-            {/* <SecondaryButton title="Add To Cart" /> */}
+            <SecondaryButton title="Add To Cart" />
           </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </View> */}
+        </ScrollView>
+      </SafeAreaView>
+    </ResponsiveContainer>
   );
 };
 
