@@ -1,67 +1,69 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.HUM-App">
- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
-    <application
-      android:name=".MainApplication"
-      android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
-      android:theme="@style/AppTheme"
-      android:supportsRtl="true">
-  <meta-data
-    android:name="com.supersami.foregroundservice.notification_channel_name"
-    android:value="Sticky Title"
-  />
-  <meta-data
-    android:name="com.supersami.foregroundservice.notification_channel_description"
-    android:value="Sticky Description."
-  />
-  <meta-data
-    android:name="com.supersami.foregroundservice.notification_color"
-    android:resource="@color/blue"
-  />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.HumApp" xmlns:tools="http://schemas.android.com/tools">
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true">
+    <meta-data android:name="com.supersami.foregroundservice.notification_channel_description" android:value="Sticky Description."/>
+    <meta-data android:name="com.supersami.foregroundservice.notification_channel_name" android:value="Sticky Title"/>
+    <meta-data android:name="com.supersami.foregroundservice.notification_color" android:resource="@color/blue"/>
+    <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
+    <meta-data android:name="expo.modules.updates.EXPO_SDK_VERSION" android:value="52.0.0"/>
+    <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
+    <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
+    <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://exp.host/@ahmedashrafabsh/HUM-App"/>
+    <service android:name="com.supersami.foregroundservice.ForegroundService"/>
+    <service android:name="com.supersami.foregroundservice.ForegroundServiceTask"/>
+    <service android:name="com.zinspector.foregroundservice.ForegroundService"/>
+    <service android:name="com.zinspector.foregroundservice.ForegroundServiceTask"/>
+    <activity android:name=".MainActivity" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="com.HumApp"/>
+        <data android:scheme="exp+hum-app"/>
+      </intent-filter>
+    </activity>
+    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
+    
+  
+  
+  
  
-  <service android:name="com.supersami.foregroundservice.ForegroundService"></service> // also define android:foregroundServiceType="" according to your use case
-  <service android:name="com.supersami.foregroundservice.ForegroundServiceTask"></service> // also define android:foregroundServiceType="" according to your use case
+   // also define android:foregroundServiceType="" according to your use case
+   // also define android:foregroundServiceType="" according to your use case
 
-      <activity
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-        android:launchMode="singleTask"
-        android:windowSoftInputMode="adjustResize">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-      </activity>
-      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-      <service android:name="com.zinspector.foregroundservice.ForegroundService" />
-        <service android:name="com.zinspector.foregroundservice.ForegroundServiceTask" />
-         <receiver
-        android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions"
-        android:permission="com.google.android.c2dm.permission.SEND">
-        <intent-filter>
-            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-            <category android:name="${applicationId}" />
-        </intent-filter>
+      
+      
+      
+        
+         
+    
+    
+    <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" android:permission="com.google.android.c2dm.permission.SEND">
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+        <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+        <category android:name="${applicationId}"/>
+      </intent-filter>
     </receiver>
-    <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver"
-        android:exported="false">
-        <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED" />
-            <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-            <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-        </intent-filter>
+    <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+      </intent-filter>
     </receiver>
-    </application>
-
+  </application>
 </manifest>
