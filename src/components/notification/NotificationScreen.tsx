@@ -8,9 +8,10 @@ import {
   Icon,
   Divider,
 } from "../../../components/ui";
-import { Bell, ChevronRight } from "lucide-react-native";
+import { Bell } from "lucide-react-native";
 import GoBackHeader from "../header/GoBackHeader";
 import { CollapsibleSection } from "../../utils/Collapsible";
+import { Feather } from "@expo/vector-icons";
 
 const notifications = [
   {
@@ -45,7 +46,7 @@ export default function NotificationScreen() {
         {/* <Heading className="mb-3">Notifications</Heading> */}
         <CollapsibleSection
           title="Recent Notifications"
-          icon={Bell}
+          icon={() => <Feather name="bell" size={24} className="text-text" />}
           expandedSection={expandedSection}
           toggleSection={toggleSection}
         >
@@ -54,7 +55,12 @@ export default function NotificationScreen() {
               <View key={item.id} className="mb-2">
                 <HStack className="justify-between items-center p-3 bg-card rounded-lg">
                   <HStack space="md">
-                    <Icon as={Bell} className="text-primary-custom" />
+                    <Icon
+                      as={() => (
+                        <Feather name="bell" size={24} className="text-text" />
+                      )}
+                      className="text-primary-custom"
+                    />
                     <VStack>
                       <Text className="font-bold text-text">{item.title}</Text>
                       <Text className="text-primary-custom">

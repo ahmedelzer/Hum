@@ -1,4 +1,4 @@
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -73,7 +73,8 @@ const AddToCartPrimaryButton = ({ item }) => {
                 paddingHorizontal: 10,
               }}
             >
-              <Icon as={Minus} size={"md"} className="text-body" />
+              {/* <Icon as={Minus} size={"md"}  /> */}
+              <Feather name="minus" size={24} className="!text-body" />
             </Text>
           </Pressable>
 
@@ -103,7 +104,8 @@ const AddToCartPrimaryButton = ({ item }) => {
                 paddingHorizontal: 10,
               }}
             >
-              <Icon as={Plus} size={"md"} className="text-body" />
+              {/* <Icon as={Plus} size={"md"} /> */}
+              <Feather name="plus" size={24} className="!text-body" />
             </Text>
           </Pressable>
         </Pressable>
@@ -112,7 +114,7 @@ const AddToCartPrimaryButton = ({ item }) => {
           onPress={() => addItemToCart({ ...item, addQuantity: 1 })}
           className="mt-2 p-2 rounded-lg bg-accent items-center justify-center"
         >
-          <Icon as={Plus} size={"md"} className="text-body" />
+          <Feather name="plus" size={22} className="!text-body" />
         </TouchableOpacity>
       )}
     </View>

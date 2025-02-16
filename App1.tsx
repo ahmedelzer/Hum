@@ -1,42 +1,19 @@
 import React, { useEffect } from "react";
-import { Button, View } from "react-native";
-import ReactNativeForegroundService from "@supersami/rn-foreground-service";
-import TestWithStaticServer from "./src/components/notification/TestWithStaticServer";
+import { View, Text } from "react-native";
+import WebSocketClient from "./src/components/notification/TestWithStaticServer";
+import { registerBackgroundFetch } from "./src/components/notification/registerBackgroundFetch";
 
-export default function App() {
+const App = () => {
   useEffect(() => {
-    ReactNativeForegroundService.add_task(() => log(), {
-      delay: 1000,
-      onLoop: true,
-      taskId: "taskid",
-      onError: (e) => console.log(`Error logging:`, e),
-    });
+    registerBackgroundFetch();
   }, []);
 
-  const startTask = () => {
-    ReactNativeForegroundService.start({
-      id: 1244,
-      title: "Foreground Service",
-      message: "Service is running",
-      icon: "ic_launcher",
-      button: true,
-      buttonText: "Stop",
-      buttonOnPress: "stopService",
-      color: "#000000",
-    });
-  };
-
-  const stopTask = () => {
-    ReactNativeForegroundService.stopAll();
-  };
-
   return (
-    <View style={{ marginTop: 50 }}>
-      <Button onPress={startTask} title="Start Foreground Service" />
-      <Button onPress={stopTask} title="Stop Foreground Service" />
-      <TestWithStaticServer />
+    <View>
+      <Text>Expo WebSocket Notifications</Text>
+      <WebSocketClient />
     </View>
   );
-}
+};
 
-const log = () => console.log("Hello World");
+export default App;

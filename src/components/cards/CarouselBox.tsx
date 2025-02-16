@@ -67,7 +67,7 @@ export const CarouselBox = ({ image, title, description, actions }) => {
           <Text bold size="sm" className="text-primary">
             {title}
           </Text>
-          <Text size="sm" className="text-gray-500">
+          <Text size="sm" className="text-primary-custom">
             {description}
           </Text>
           <HStack space="sm" className="items-center">
@@ -81,10 +81,10 @@ export const CarouselBox = ({ image, title, description, actions }) => {
                 />
               ))}
             </HStack>
-            <Text size="sm" className="ml-2 text-gray-600">
+            <Text size="sm" className="ml-2 text-card">
               4.5
             </Text>
-            <Text size="sm" className="ml-2 text-gray-600">
+            <Text size="sm" className="ml-2 text-card">
               8
             </Text>
             <MaterialCommunityIcons

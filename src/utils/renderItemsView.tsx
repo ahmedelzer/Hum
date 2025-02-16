@@ -15,14 +15,14 @@ const RenderItemsView = ({ dashboardItemId, routePath }: any) => {
     dashboardItemId,
   });
   switch (routePath) {
-    case "dynamicMenuItemsView":
+    case "MenuView":
       return SetResponsiveContainer(<MenuView schemas={data} />, true);
     case "Home":
       return SetResponsiveContainer(<HomestayPage />, true);
     case "Profile":
       return SetResponsiveContainer(<MobileProfilePage />, true);
-    case "test":
-      return SetResponsiveContainer(<SettingsScreen />, true);
+    // case "test":
+    //   return SetResponsiveContainer(<SettingsScreen />, true);
     default:
       return <HomestayPage />;
   }

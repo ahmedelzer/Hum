@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import GoBackHeader from "../header/GoBackHeader";
 import { CarouselBox } from "../cards/CarouselBox";
 import { SetResponsiveContainer } from "../../utils/SetResponsiveContainer";
 import ResponsiveContainer from "../../kitchensink-components/auth/layout/ResponsiveContainer";
+import { LocalizationContext } from "../../../context/LocalizationContext";
 const DetailsScreen = ({ route }) => {
+  const { localization } = useContext(LocalizationContext);
   const item = route.params;
   const [likes, setLikes] = useState(4);
   return (
     <ResponsiveContainer setMargin={true} style={""}>
       <SafeAreaView className="bg-body">
-        <GoBackHeader subTitle={""} title={"Details"} />
+        <GoBackHeader
+          subTitle={localization.Hum_screens.menu.details.header.subTitle}
+          title={localization.Hum_screens.menu.details.header.title}
+        />
         <CarouselBox actions={{ likes, setLikes }} {...item} />
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* <View className="justify-center items-center h-[250px]">

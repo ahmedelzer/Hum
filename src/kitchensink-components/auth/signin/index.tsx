@@ -1,48 +1,31 @@
-import React, { useContext, useState } from "react";
-import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
-import { HStack } from "@/components/ui/hstack";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-import { LinkText } from "@/components/ui/link";
-import {
-  Checkbox,
-  CheckboxIcon,
-  CheckboxIndicator,
-  CheckboxLabel,
-} from "@/components/ui/checkbox";
-import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
-import {
-  DevSettings,
-  Keyboard,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { AlertTriangle, CheckIcon } from "lucide-react-native";
-import { GoogleIcon } from "./assets/icons/google";
-import { Pressable } from "@/components/ui/pressable";
-import { useNavigation } from "@react-navigation/native";
-import { AuthLayout } from "../layout";
 import { Image } from "@/components/ui";
-import { loginFormSchema } from "./loginSchema";
-import schemaActions from "./LoginSchemaActions.json";
+import { Button, ButtonText } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
+import { LinkText } from "@/components/ui/link";
+import { Pressable } from "@/components/ui/pressable";
+import { Text } from "@/components/ui/text";
+import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import { VStack } from "@/components/ui/vstack";
 import FormContainer from "@/src/components/form-container/FormContainer";
 import { onApply } from "@/src/components/form-container/OnApplay";
-import { Controller, useForm } from "react-hook-form";
-import { saveSecureValue } from "../../../store/zustandStore";
+import { useNavigation } from "@react-navigation/native";
+import { jwtDecode } from "jwt-decode";
+import React, { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Keyboard, TouchableOpacity } from "react-native";
 import {
   CloseIcon,
   HelpCircleIcon,
   Icon,
   ToastDescription,
 } from "../../../../components/ui";
+import { useAuth } from "../../../../context/auth";
 import { LocalizationContext } from "../../../../context/LocalizationContext";
 import { SetReoute } from "../../../../request";
-import { useAuth } from "../../../../context/auth";
-import { jwtDecode } from "jwt-decode";
+import { AuthLayout } from "../layout";
+import { loginFormSchema } from "./loginSchema";
+import schemaActions from "./LoginSchemaActions.json";
 
 const ACTION_SCHEMA = [
   {

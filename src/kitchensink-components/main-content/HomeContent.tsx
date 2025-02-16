@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Image } from "react-native";
 import { Text, VStack, Card, HStack, Icon } from "../../../components/ui";
 import { SquareArrowUpRight } from "lucide-react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { LocalizationContext } from "../../../context/LocalizationContext";
 
 const shortcuts = [
   {
@@ -32,11 +33,12 @@ const shortcuts = [
 ];
 
 const HomeContent = () => {
+  const { localization } = useContext(LocalizationContext);
   return (
     <>
       <HStack className="flex-1 items-center justify-between">
-        <Text>Shortcuts</Text>
-        <Text className="color-neutral-400">4</Text>
+        <Text>{localization.Hum_screens.home.shortcuts}</Text>
+        <Text className="text-primary-custom">{shortcuts.length}</Text>
       </HStack>
       <HStack className="flex-wrap flex-row flex mx-2">
         {shortcuts.map((shortcut) => (
@@ -45,12 +47,12 @@ const HomeContent = () => {
             style={{
               borderRadius: 12,
             }}
-            className="relative w-1/3 aspect-square shrink border-[4px] border-[#f2f2f2]"
+            className="relative w-1/3 aspect-square shrink border-[4px] border-card"
           >
             <VStack className="items-center">
               <Image
                 source={require("../../../assets/display/image11.png")}
-                className="h-12 aspect-square rounded-full"
+                className="!h-12 !w-12 aspect-square rounded-full"
                 resizeMode="cover"
               />
               <Text className="mt-2 text-sm font-bold">{shortcut.name}</Text>

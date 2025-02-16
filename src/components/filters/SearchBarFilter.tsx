@@ -1,48 +1,7 @@
-import { View } from "react-native";
-import React, { useState } from "react";
-import {
-  ButtonGroup,
-  ButtonIcon,
-  Icon,
-  Button,
-  Menu,
-  AddIcon,
-  ButtonText,
-  MenuItem,
-  MenuItemLabel,
-  Center,
-  Box,
-  Accordion,
-  AccordionContent,
-  AccordionContentText,
-  AccordionHeader,
-  AccordionIcon,
-  AccordionItem,
-  AccordionTitleText,
-  AccordionTrigger,
-  Divider,
-  Checkbox,
-  CheckboxGroup,
-  CheckboxIcon,
-  CheckboxIndicator,
-  CheckboxLabel,
-  VStack,
-} from "@/components/ui";
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  EditIcon,
-  FilterIcon,
-  GlobeIcon,
-  PlayIcon,
-  SettingsIcon,
-} from "lucide-react-native";
-import FormContainer from "../form-container/FormContainer";
-import { loginFormSchema } from "../../kitchensink-components/auth/signin/loginSchema";
-import { useForm } from "react-hook-form";
-import { useNavigation } from "@react-navigation/native";
+import { Button, Menu } from "@/components/ui";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
 const SearchBarFilter = ({ schema, setRow, row }: any) => {
   const navigation = useNavigation();
   // console.log(schema, "schema from search bar filter");

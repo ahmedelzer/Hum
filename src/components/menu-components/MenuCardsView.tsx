@@ -1,18 +1,38 @@
-import React, { useContext, useEffect } from "react";
-import { I18nManager, ScrollView } from "react-native";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
+import { I18nManager, ScrollView, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { Box, HStack, Pressable, Text, VStack } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
-import MenuCardView from "./MenuCardView";
 import {
   getAllMenuItems,
   updateCategory,
 } from "../../reducers/MenuItemReducer";
-import { useDispatch, useSelector } from "react-redux";
-import { tabsData, tabs } from "./tabsData";
+import { initialState } from "../Pagination/initialState";
+import reducer from "../Pagination/reducer";
+import MenuCardView from "./MenuCardView";
+import { tabs, tabsData } from "./tabsData";
+// import { createRowCache } from "@devexpress/dx-react-grid";
+import { useNavigation } from "@react-navigation/native";
+import { SetResponsiveContainer } from "../../utils/SetResponsiveContainer";
+import ActionBar from "../cards/ActionBar";
+import HeaderParent from "../header/HeaderParent";
+import { createRowCache } from "../Pagination/createRowCache";
+const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
   const products = useSelector((state) => state.menuItem.menuItem);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
   const imageView = menuCardItem?.dashboardFormSchemaParameters?.find(
     (item: any) => item?.parameterType === "imagePath"
   );
@@ -102,10 +122,103 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
   // console.log("====================================");
   // console.log(products);
   // console.log("====================================");
+  const [state, reducerDispatch] = useReducer(
+    reducer,
+    initialState(10, "products")
+  );
+  const [currentSkip, setCurrentSkip] = useState(1);
+  const observerRef = useRef();
+  // const dataSourceAPI = (query, skip, take) => {
+  //   SetReoute(serviceSchema.projectProxyRoute);
+  //   return buildApiUrl(query, {
+  //     pageIndex: skip + 1,
+  //     pageSize: take,
+  //     ServiceCategoryID: serviceCategoryID,
+  //   });
+  // };
+  const cache = createRowCache(VIRTUAL_PAGE_SIZE);
+  // const getAction =
+  //   serviceSchemaActions &&
+  //   serviceSchemaActions.find(
+  //     (action) => action.dashboardFormActionMethodType === "Get"
+  //   );
+
+  const { rows, skip, totalCount, loading } = state;
+  const observerCallback = useCallback(
+    (entries) => {
+      const [entry] = entries;
+      if (entry.isIntersecting) {
+        console.log("Intersecting");
+      }
+      // if (entry.isIntersecting && rows.length < totalCount && !loading) {
+      //   getRemoteRows(currentSkip, VIRTUAL_PAGE_SIZE * 2, dispatch);//todo change dispatch by reducerDispatch
+      //   setCurrentSkip(currentSkip + 1);
+      // }
+    },
+    [rows, totalCount, loading, skip]
+  );
+  // useEffect(() => {
+  //   LoadData(
+  //     state,
+  //     dataSourceAPI,
+  //     getAction,
+  //     cache,
+  //     updateRows(dispatch, cache, state),
+  //     dispatch
+  //   );
+  // });
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(observerCallback, {
+  //     root: null,
+  //     rootMargin: "0px",
+  //     threshold: 0.1, // Trigger when 10% of the element is visible
+  //   });
+
+  //   if (observerRef.current) {
+  //     observer.observe(observerRef.current);
+  //   }
+
+  //   return () => {
+  //     if (observerRef.current) {
+  //       observer.unobserve(observerRef.current);
+  //     }
+  //   };
+  // }, [observerCallback]);
+  const handleScroll = (event) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const isScrolledToBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+    if (isScrolledToBottom && !loading) {
+      console.log("Loading more items...");
+
+      setTimeout(() => {
+        // setLoading(false);
+      }, 1000); // Simulating an API call delay
+    }
+  };
+  useEffect(() => {
+    //todo:here when ws get messages like updates and delete
+    //make that
+    // if(WSOperation)
+  }, []);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () =>
+        selectedItems.length > 0 ? (
+          <ActionBar
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+        ) : (
+          SetResponsiveContainer(<HeaderParent />, false)
+        ),
+    });
+  }, [selectedItems, navigation]);
   return (
-    <Box className="md:px-0 -mt-4" style={{ marginBottom: 110 }}>
+    <Box className="md:px-0 -mt-4" style={{ paddingBottom: 180 }}>
       <HomestayInfoTabs tabs={tabs} setRow={setRow} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={handleScroll}>
         <VStack>
           {products?.map((image: any, index: any) => {
             return (
@@ -121,11 +234,20 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
                 dislikes={dislikes}
                 orders={orders}
                 reviews={reviews}
+                setSelectedItems={setSelectedItems}
+                selectedItems={selectedItems}
                 // index={index}
               />
             );
           })}
         </VStack>
+        {rows && <View ref={observerRef} className={"h-px"} />}
+        {loading && (
+          <View className="text-center">
+            {/* <DotsLoading /> */}
+            <Text>Loading...</Text>
+          </View>
+        )}
       </ScrollView>
     </Box>
   );
@@ -223,49 +345,3 @@ const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
 };
 
 export default MenuCardsView;
-
-// <Box
-//   key={`${tab.titel} + ${index}`}
-//   style={{
-//     maxWidth: "47%",
-//   }}
-//   className={`my-2 lg:my-0 ${
-//     index === 0 ? "lg:ml-0" : "lg:ml-2"
-//   } ${index === tab.data.length - 1 ? "lg:mr-0" : "lg:mr-2"}`}>
-//   <Pressable>
-//     {(props: any) => {
-//       return (
-//         <VStack className="w-full m-0">
-//           <Box className="overflow-hidden rounded-md aspect-square ">
-//             {imageView && (
-//               <Image
-//                 source={image.src}
-//                 className={`w-full h-72 ${
-//                   props.hovered
-//                     ? "scale-[1.04] opacity-90"
-//                     : "scale-100 opacity-100"
-//                 }`}
-//                 alt="Explore"
-//               />
-//             )}
-//           </Box>
-//           {props.hovered && (
-//             <Box className="absolute bg-[#181718] opacity-30 w-full h-full cursor-pointer" />
-//           )}
-//           <VStack className="mt-1">
-//             {text && (
-//               <Text size="sm" className="font-semibold">
-//                 {image.title}
-//               </Text>
-//             )}
-//             {description && (
-//               <Text size="sm">
-//                 {description.parameterTitel}
-//               </Text>
-//             )}
-//           </VStack>
-//         </VStack>
-//       );
-//     }}
-//   </Pressable>
-// </Box>

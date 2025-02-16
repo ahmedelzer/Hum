@@ -1,5 +1,6 @@
 // const gluestackPlugin = require("@gluestack-ui/nativewind-utils/tailwind-plugin");
 import gluestackPlugin from "@gluestack-ui/nativewind-utils/tailwind-plugin";
+import { theme } from "./src/Theme";
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "media",
@@ -18,15 +19,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        body: "var(--body)",
-        card: "var(--card)",
-        text: "var(--text)",
+        body: theme.body,
+        card: theme.card,
+        text: theme.text,
         accent: {
-          DEFAULT: "var(--accent)",
-          hover: "var(--accent-hover)",
+          DEFAULT: theme.accent,
+          hover: theme.accentHover,
         },
         primary: {
-          custom: "var(--primary)",
+          custom: theme.primary,
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
           50: "rgb(var(--color-primary-50)/<alpha-value>)",
           100: "rgb(var(--color-primary-100)/<alpha-value>)",

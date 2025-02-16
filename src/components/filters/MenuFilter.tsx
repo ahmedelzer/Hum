@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import GoBackHeader from "../header/GoBackHeader";
 import FormContainer from "../form-container/FormContainer";
 import { useForm } from "react-hook-form";
@@ -8,6 +8,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { updateFilters } from "../../reducers/FilterReducer";
 import { tabsData } from "../menu-components/tabsData";
+import { LocalizationContext } from "../../../context/LocalizationContext";
 
 export default function MenuFilter() {
   const [updateKey, setUpdateKey] = useState(1);
@@ -17,6 +18,7 @@ export default function MenuFilter() {
     formState: { errors },
     reset,
   } = useForm();
+  const { localization } = useContext(LocalizationContext);
 
   const filterRow = useSelector((state) => state.filter.filterRow); // Read filterRow from Redux
   const dispatch = useDispatch();
@@ -83,14 +85,19 @@ export default function MenuFilter() {
   return (
     <View className="flex-1 bg-body">
       {/* Header */}
-      <GoBackHeader title="Filters" />
+      <GoBackHeader
+        title={localization.Hum_screens.menu.filter.header.title}
+        subTitle={localization.Hum_screens.menu.filter.header.title.subTitle}
+      />
 
       {/* Clear All Button */}
       <TouchableOpacity
         className="flex flex-row items-end justify-end my-1"
         onPress={handleClearAll}
       >
-        <Text className="text-2xl font-bold text-accent">Clear all</Text>
+        <Text className="text-2xl font-bold text-accent">
+          {localization.Hum_screens.menu.filter.clearButton}
+        </Text>
       </TouchableOpacity>
 
       {/* Form Content */}
@@ -105,13 +112,13 @@ export default function MenuFilter() {
       </ScrollView>
 
       {/* Footer Button */}
-      <View className="p-2 bg-white border-t border-card">
+      <View className="p-2 bg-body border-t border-card">
         <TouchableOpacity
           className="bg-accent py-3 rounded-lg"
           onPress={handleSubmit(onSubmit)}
         >
-          <Text className="text-white text-center text-lg font-semibold">
-            Apply Filter
+          <Text className="text-body text-center text-lg font-semibold">
+            {localization.Hum_screens.menu.filter.applyButton}
           </Text>
         </TouchableOpacity>
       </View>

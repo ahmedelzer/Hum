@@ -15,13 +15,15 @@ import { Platform, View } from "react-native";
 import MenuFilter from "../components/filters/MenuFilter";
 import { createStackNavigator } from "@react-navigation/stack";
 import NotificationScreen from "../components/notification/NotificationScreen";
+import { theme } from "../Theme";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Stack =
   Platform.OS === "web" ? createStackNavigator() : createNativeStackNavigator();
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
 // Define the TestStack with HomeScreen and CartPage
-
+//!localization
 const BottomBarTabs: FC = () => {
   const dummyArr = [
     {
@@ -31,9 +33,9 @@ const BottomBarTabs: FC = () => {
       projectProxyRoute: "HumMenu",
     },
     {
-      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee81",
+      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee82",
       dashboardMenuItemName: "MenuItem",
-      routePath: "dynamicMenuItemsView",
+      routePath: "MenuView",
       projectProxyRoute: "HumMenu",
     },
     {
@@ -42,12 +44,7 @@ const BottomBarTabs: FC = () => {
       routePath: "test", // Using the test route for nested navigators
       projectProxyRoute: "HumMenu",
     },
-    {
-      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee82",
-      dashboardMenuItemName: "MenuItem2",
-      routePath: "MenuView",
-      projectProxyRoute: "HumMenu",
-    },
+
     {
       dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee84",
       dashboardMenuItemName: "MenuItem42",
@@ -56,25 +53,40 @@ const BottomBarTabs: FC = () => {
     },
   ];
 
+  // const homeIcon = ({ color }: { focused: boolean; color: string }) => (
+  //   <Icon as={Home} size="lg" color={color} />
+  // );
+  // const accountIcon = ({ color }: { focused: boolean; color: string }) => (
+  //   <Icon as={User} size="lg" color={color} />
+  // );
+  // const messageIcon = ({ color }: { focused: boolean; color: string }) => (
+  //   <Icon as={Mail} size="lg" color={color} />
+  // );
+  // const menuIcon = ({ color }: { focused: boolean; color: string }) => (
+  //   <Icon as={Menu} size="lg" color={color} />
+  // );
   const homeIcon = ({ color }: { focused: boolean; color: string }) => (
-    <Icon as={Home} size="lg" color={color} />
+    <MaterialCommunityIcons name="home" size={24} color={color} />
   );
   const accountIcon = ({ color }: { focused: boolean; color: string }) => (
-    <Icon as={User} size="lg" color={color} />
+    <MaterialCommunityIcons name="account" size={24} color={color} />
   );
   const messageIcon = ({ color }: { focused: boolean; color: string }) => (
-    <Icon as={Mail} size="lg" color={color} />
+    <MaterialCommunityIcons name="email" size={24} color={color} />
   );
   const menuIcon = ({ color }: { focused: boolean; color: string }) => (
-    <Icon as={Menu} size="lg" color={color} />
+    <MaterialCommunityIcons name="menu" size={24} color={color} />
   );
+
   const MargeStackWithTabs = (item) => {
-    const RenderComponent = () => (
-      <RenderItemsView
-        dashboardItemId={item.dashboardItemID}
-        routePath={item.routePath}
-      />
-    );
+    function RenderComponent() {
+      return (
+        <RenderItemsView
+          dashboardItemId={item.dashboardItemID}
+          routePath={item.routePath}
+        />
+      );
+    }
 
     return (
       <Stack.Navigator
@@ -140,7 +152,16 @@ const BottomBarTabs: FC = () => {
   };
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      id={undefined}
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: theme.body, // Dark blue-gray background
+        },
+        tabBarActiveTintColor: theme.accent, // Bright yellow for active tab text/icon
+        tabBarInactiveTintColor: theme.text, // Light gray for inactive tab text/icon
+      }}
+    >
       {dummyArr.map((item: any) => (
         <Tab.Screen
           key={item.dashboardMenuItemName}

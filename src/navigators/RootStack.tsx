@@ -13,6 +13,7 @@ import HeaderParent from "../components/header/HeaderParent";
 import RenderItemsView from "../utils/renderItemsView";
 import { FontAwesome } from "@expo/vector-icons";
 import { SquareArrowUpRight } from "lucide-react-native";
+import HomestayPage from "../kitchensink-components/HomestayPage";
 
 // types
 export type RootStackParamList = {
@@ -57,24 +58,7 @@ const RootStack: FC = (props: any) => {
       )} */}
       {/* <OutsideStack /> */}
       <BottomBarTabs />
-      {/* <HeaderParent /> */}
-      {/* <RenderItemsView
-        dashboardItemId={"dynamicMenuItemsView"}
-        routePath={"Home"}
-      /> */}
-      {/* <FontAwesome name="group" size={24} color={"black"} /> */}
-      {/* //that works in web */}
-      {/* <SquareArrowUpRight
-        size={16}
-        color="black"
-        style={{
-          position: "absolute",
-          bottom: 4,
-          left: 4,
-        }}
-      /> */}
-      {/* //thats not works in web */}
-      {/* <StackNavigator /> */}
+      {/* <HomestayPage /> */}
     </NavigationContainer>
   );
 };

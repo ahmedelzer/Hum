@@ -4,9 +4,21 @@
 5-make count of menu item get from cart and delete it from menu items//Done
 6-finish the profile screen and set it the language init //Done
 8-make nofication screen and like it by all nofication icons//Done
-3-make map in checkout and appear the marker//do not work
+3-make map in checkout and appear the marker//done
 7-short cats schema from server 
 9-make application woke in web browser // the proplem in the icons lib
 10-run app in foreground
-11-localization
+11-localization//all done but still checkout and profile
 12-clear logs and un useable files
+13-make sure of lazy loading//done
+14-make foreground server in background //done
+15-make functionality of WS insert delete //done
+16-on delete operation remove item if in items but in cart hint the customer is out of stock
+//
+17-make section on menu screen the form tow schema and three parts 1-plus 2-drowdownList 3-drowdownList 
+the first drowdownlist is to add places to get orders like beni sowif naser alhagnagiga street
+the scound drowdownlist is dependet to the frist drowdownlist to suggest to him the available branches
+plus is to save the places//done
+18-make in home screen add sction able to display videos&screen//done
+19-appear under section of shortcuts the faovert menu items //done
+20-make the tab button match with theme //done

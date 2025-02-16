@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Icon } from "../../../components/ui";
-import { Truck, MapPin, CreditCard } from "lucide-react-native";
-import { AntDesign } from "@expo/vector-icons";
+// import { Truck, MapPin, CreditCard } from "lucide-react-native";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import GoBackHeader from "../../components/header/GoBackHeader";
 import { useSelector } from "react-redux";
 import { LocalizationContext } from "../../../context/LocalizationContext";
@@ -36,14 +36,14 @@ export default function CheckoutScreen() {
       {/* Header */}
       <GoBackHeader subTitle={"McDonald's"} title={"Checkout"} />
       <ScrollView>
-        <View className="my-2">
-          {/* <BranchesByLocationMap branches={branches} /> */}
+        <View className="my-2 w-full h-[500]">
+          <BranchesByLocationMap branches={branches} />
         </View>
         {/* Delivery Address */}
-        <View className="mt-4 bg-white p-4 border border-card rounded-xl">
+        <View className="mt-4 bg-body p-4 border border-card rounded-xl">
           <View className="flex-row justify-between">
             <View className="flex-row items-center">
-              <Icon as={MapPin} size="3xl" className="text-text" />
+              <Feather name="map-pin" size={24} className="text-text" />
               <View className="ml-3">
                 <Text className="text-lg font-bold">
                   Apartment (Adnan El Malky)
@@ -60,10 +60,11 @@ export default function CheckoutScreen() {
         </View>
 
         {/* Delivery Info */}
-        <View className="mt-4 bg-white p-4 border border-card rounded-xl">
+        <View className="mt-4 bg-body p-4 border border-card rounded-xl">
           <View className="flex-row justify-between items-center">
             <View className="flex-row items-center">
-              <Icon as={Truck} size="3xl" className="text-text" />
+              {/* <Icon as={Truck} size="3xl" /> */}
+              <Feather name="truck" size={24} className="text-text" />
               <View className="ml-3">
                 <Text className="text-lg font-bold">Delivery</Text>
                 <Text className="text-sm text-card">
@@ -91,7 +92,9 @@ export default function CheckoutScreen() {
             <AntDesign
               name="checkcircle"
               size={20}
-              color={selectedPayment === "visa" ? "#FF6600" : "#ccc"}
+              className={
+                selectedPayment === "visa" ? "!text-accent" : "!text-card"
+              }
             />
             <Text className="ml-4 font-semibold text-lg">VISA xxxx-1191</Text>
           </TouchableOpacity>
@@ -102,7 +105,7 @@ export default function CheckoutScreen() {
               selectedPayment === "newCard" ? "border-accent" : "border-card"
             } rounded-xl mb-2`}
           >
-            <AntDesign name="pluscircle" size={20} color="#ccc" />
+            <AntDesign name="pluscircle" size={20} className="!text-card" />
             <Text className="ml-4 font-semibold text-lg">Add new card</Text>
           </TouchableOpacity>
 
@@ -112,13 +115,13 @@ export default function CheckoutScreen() {
               selectedPayment === "cash" ? "border-accent" : "border-card"
             } rounded-xl`}
           >
-            <AntDesign name="wallet" size={20} color="#ccc" />
+            <AntDesign name="wallet" size={20} className="!text-card" />
             <Text className="ml-4 font-semibold text-lg">Cash</Text>
           </TouchableOpacity>
         </View>
 
         {/* Payment Summary */}
-        <View className="mt-4 bg-white p-4 rounded-xl">
+        <View className="mt-4 bg-body p-4 rounded-xl">
           <Text className="text-xl font-semibold mb-2">Payment summary</Text>
           <View className="flex-row justify-between">
             <Text className="text-lg">Subtotal</Text>
@@ -146,9 +149,9 @@ export default function CheckoutScreen() {
       </ScrollView>
 
       {/* Footer Button */}
-      <View className="p-4 bg-white border-t border-card">
+      <View className="p-4 bg-body border-t border-card">
         <TouchableOpacity className="bg-accent py-4 rounded-lg">
-          <Text className="text-white text-center text-lg font-semibold">
+          <Text className="text-body text-center text-lg font-semibold">
             Place order
           </Text>
         </TouchableOpacity>

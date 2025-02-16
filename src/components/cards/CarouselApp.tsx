@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import AnimatedDotsCarousel from "react-native-animated-dots-carousel";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Test from "./Test";
+import Test from "./AddCard";
 
 const { width, height } = Dimensions.get("window");
 //!when use theme make object of them cause react native doesn’t support CSS variables

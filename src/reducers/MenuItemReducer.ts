@@ -28,6 +28,7 @@ export const menuItemSlice = createSlice({
     menuItem: [],
     allMenuItems: [],
     currentCategory: tabs[0],
+    favoriteItems: [],
   },
   reducers: {
     getMenuItems: (state, action) => {
@@ -56,6 +57,18 @@ export const menuItemSlice = createSlice({
     updateCategory: (state, action) => {
       state.currentCategory = action.payload;
     },
+    updateFavoriteItems: (state, action) => {
+      if (action.payload.ope === "add") {
+        state.favoriteItems.push(...action.payload.items);
+      } else if (action.payload.ope === "delete") {
+        const deleteIds = new Set(action.payload.items.map((item) => item.id));
+        for (let i = state.favoriteItems.length - 1; i >= 0; i--) {
+          if (deleteIds.has(state.favoriteItems[i].id)) {
+            state.favoriteItems.splice(i, 1);
+          }
+        }
+      }
+    },
   },
 });
 
@@ -72,6 +85,7 @@ export const {
   setMenuItemsFromStorage,
   getAllMenuItems,
   updateCategory,
+  updateFavoriteItems,
 } = menuItemSlice.actions;
 
 export default menuItemSlice.reducer;

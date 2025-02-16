@@ -1,59 +1,50 @@
-import { SquareBottomDashedScissors } from "lucide-react-native";
-import React, { useEffect, useRef } from "react";
-import { AppState, Text, View } from "react-native";
-import PushNotification from "react-native-push-notification";
+import React, { useEffect, useState } from "react";
+import * as Notifications from "expo-notifications";
 
-const TestWithStaticServer = () => {
-  const ws = useRef(null);
+const WEBSOCKET_URL = "ws://192.168.1.2:8080"; // Replace with your WebSocket server URL
 
-  const connectWebSocket = () => {
-    ws.current = new WebSocket("ws://192.168.1.2:8080");
+const WebSocketClient = () => {
+  const [ws, setWs] = useState(null);
 
-    ws.current.onopen = () => {
-      console.log("WebSocket Connected");
-      ws.current.send("Hello Server!");
+  useEffect(() => {
+    console.log("Connecting WebSocket...");
+    const socket = new WebSocket(WEBSOCKET_URL);
+
+    socket.onopen = () => {
+      console.log("WebSocket connected");
     };
 
-    ws.current.onmessage = (event) => {
-      console.log("Message from server ", event.data);
-      PushNotification.localNotification({
-        message: event.data,
+    socket.onmessage = async (event) => {
+      console.log("WebSocket message received:", event.data);
+
+      // Send push notification
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "New Message",
+          body: event.data,
+          sound: "default",
+        },
+        trigger: null,
       });
     };
 
-    ws.current.onclose = (e) => {
-      console.log("WebSocket closed", e.reason);
-      reconnectWebSocket();
-    };
-  };
-
-  const reconnectWebSocket = () => {
-    setTimeout(() => {
-      connectWebSocket();
-    }, 5000);
-  };
-
-  useEffect(() => {
-    connectWebSocket();
-
-    const handleAppStateChange = (nextAppState) => {
-      if (nextAppState === "active") {
-        connectWebSocket();
-      }
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error.message);
     };
 
-    AppState.addEventListener("change", handleAppStateChange);
+    socket.onclose = () => {
+      console.log("WebSocket disconnected, reconnecting...");
+      setTimeout(() => setWs(new WebSocket(WEBSOCKET_URL)), 5000); // Reconnect in 5 seconds
+    };
+
+    setWs(socket);
 
     return () => {
-      //   AppState.removeEventListener("change", handleAppStateChange);
-      ws.current.close();
+      socket.close();
     };
   }, []);
-  return (
-    <View>
-      <Text>WebSocket Testing</Text>
-    </View>
-  );
+
+  return null;
 };
 
-export default TestWithStaticServer;
+export default WebSocketClient;

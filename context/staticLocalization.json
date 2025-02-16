@@ -292,5 +292,64 @@
   },
   "menu": {
     "currency": "EGP"
+  },
+  "Hum_screens": {
+    "home": {
+      "shortcuts": "Shortcuts",
+      "faovert": "Faovert Items"
+    },
+    "menu": {
+      "search": { "placeholder": "Search by keywords, name, or description" },
+      "filter": {
+        "header": {
+          "title": "Filters",
+          "subTitle": ""
+        },
+        "clearButton": "Clear All",
+        "applyButton": "Apply Filter"
+      },
+      "details": {
+        "header": {
+          "title": "Details",
+          "subTitle": ""
+        }
+      }
+    },
+    "cart": {
+      "header": {
+        "title": "Cart",
+        "subTitle": "KFC"
+      },
+      "paymentSummary": {
+        "title": "Payment summary",
+        "totalAmount": "Total Amount"
+      },
+      "emptyCart": "cart is empty",
+      "suggests": "You might also like...",
+      "specialRequest": "Special request",
+      "saveOrder": "Save on your order",
+      "saveOrderPlaceholder": "Enter voucher code",
+      "submitButton": "Submit",
+      "addItemsButton": "Add items",
+      "checkoutButton": "Checkout"
+    }
+  },
+  "checkout": {
+    "header": {
+      "title": "Checkout",
+      "subTitle": "subTitle"
+    },
+    "paymentSummary": {
+      "title": "Payment summary",
+      "totalAmount": "Total Amount"
+    },
+    "emptyCart": "cart is empty",
+    "suggests": "You might also like...",
+    "specialRequest": "Special request",
+    "saveOrder": "Save on your order",
+    "saveOrderPlaceholder": "Enter voucher code",
+    "submitButton": "Submit",
+    "addItemsButton": "Add items",
+    "checkoutButton": "Checkout"
   }
 }

@@ -1,29 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  Avatar,
-  AvatarFallbackText,
-  AvatarImage,
-  Card,
-  Divider,
-  FlatList,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-  Icon,
-  Box,
-} from "../../../components/ui";
-import HomestayInformationFold from "@/src/kitchensink-components/main-content/HomestayInformationFold";
-import Searchbar from "../search-bar/Searchbar";
-import SearchBarFilter from "../filters/SearchBarFilter";
 import { useFetchSchemaActions } from "@/src/services/react-query-hooks/FetchSchemaActions";
-import { usePagination } from "@/src/services/react-query-hooks/pagination-hook-menu";
-import { ActivityIndicator, View } from "react-native";
-import { StarIcon } from "lucide-react-native";
-import { Image } from "expo-image";
+import React, { useState } from "react";
+import { View } from "react-native";
+import { HStack } from "../../../components/ui";
+import SearchBarFilter from "../filters/SearchBarFilter";
+import Searchbar from "../search-bar/Searchbar";
+import AddLocation from "./AddLocation";
 import MenuCardsView from "./MenuCardsView";
-import MenuCardView from "./MenuCardView";
-import HomeCarousel from "../../kitchensink-components/main-content/HomeCarousel";
 
 const MenuView = ({ schemas }: any) => {
   const { data, isLoading, isSuccess } = useFetchSchemaActions({
@@ -44,6 +26,9 @@ const MenuView = ({ schemas }: any) => {
   );
   return (
     <View className="flex-1 gap-y-4 mx-4">
+      <View className="flex-row">
+        <AddLocation />
+      </View>
       <HStack space="2xl" className="items-center">
         <View style={{ flex: 1 }}>
           {/* {searchBarSchema && ( */}

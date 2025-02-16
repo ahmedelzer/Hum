@@ -1,30 +1,19 @@
-import React, { useContext, useState } from "react";
-import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-import {
-  FormControl,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-  FormControlLabel,
-  FormControlLabelText,
-} from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
-import { ArrowLeftIcon, Icon } from "@/components/ui/icon";
 import { Button, ButtonText } from "@/components/ui/button";
-import { Keyboard, TouchableOpacity } from "react-native";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { AlertTriangle } from "lucide-react-native";
+import { Heading } from "@/components/ui/heading";
+import { ArrowLeftIcon, Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
+import { Text } from "@/components/ui/text";
+import { useToast } from "@/components/ui/toast";
+import { VStack } from "@/components/ui/vstack";
 import { useNavigation } from "@react-navigation/native";
-import { AuthLayout } from "../layout";
+import React, { useContext } from "react";
+import { useForm } from "react-hook-form";
+import { Keyboard } from "react-native";
+import * as Yup from "yup";
+import { LocalizationContext } from "../../../../context/LocalizationContext";
 import FormContainer from "../../../components/form-container/FormContainer";
 import ForgetSchema from "../../../Schemas/ForgetSchema/ForgetSchema.json";
-import { useForm } from "react-hook-form";
-import { LocalizationContext } from "../../../../context/LocalizationContext";
+import { AuthLayout } from "../layout";
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),

@@ -1,75 +1,60 @@
-import React, { useContext, useState } from "react";
-import { I18nManager, Pressable, TouchableOpacity, View } from "react-native";
-import { scale, moderateScale } from "react-native-size-matters";
+import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import React, { useContext } from "react";
+import { I18nManager, Pressable, View } from "react-native";
+import { moderateScale, scale } from "react-native-size-matters";
+import { useDispatch } from "react-redux";
 import {
   Box,
+  Button,
+  ButtonText,
+  Card,
   HStack,
-  Icon,
   Image,
   Text,
   VStack,
-  Card,
-  Button,
-  ButtonText,
 } from "../../../components/ui";
-import {
-  StarIcon,
-  User2Icon,
-  CogIcon,
-  Container,
-  Plus,
-  Minus,
-} from "lucide-react-native";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addToCart,
-  decrementQty,
-  incrementQty,
-} from "../../reducers/CartReducer";
-import { updateQuantity } from "../../reducers/MenuItemReducer";
-import { useNavigation } from "@react-navigation/native";
-import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 
-const MenuCardView = ({
-  imageView,
-  description,
-  numberOfIndividuals,
-  rate,
-  likes,
-  dislikes,
-  orders,
-  reviews,
-  text,
-  item,
-}) => {
+import { useNavigation } from "@react-navigation/native";
+import { LocalizationContext } from "../../../context/LocalizationContext";
+import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
+
+const MenuCardView = ({ item, selectedItems, setSelectedItems }) => {
   const dispatch = useDispatch();
   const { localization } = useContext(LocalizationContext);
-
-  const cart = useSelector((state) => state.cart.cart);
-  const product = useSelector((state) => state.menuItem.menuItem);
-  const addItemToCart = (item) => {
-    // console.log("====================================");
-    dispatch(addToCart(item)); // cart array being used
-    dispatch(updateQuantity(item)); // product array being used
-  };
   const navigation = useNavigation();
+  const selected = selectedItems.find((selected) => selected.id === item.id);
 
-  // console.log("====================================");
-  // console.log(cart, 12333, product);
-  // console.log("====================================");
-  //!localization
+  // Function to handle long press
+  const handleLongPress = () => {
+    if (selected) {
+      const filterItemsSelected = selectedItems.filter(
+        (selectedItem) => selectedItem.id !== selected.id
+      );
+      setSelectedItems(filterItemsSelected);
+    } else {
+      setSelectedItems((prev) => [...prev, item]);
+    }
+  };
+  const handlePress = () => {
+    if (selectedItems.length > 0) {
+      handleLongPress();
+    } else {
+      navigation.navigate("DetailsProductScreen", item);
+    }
+  };
+
   return (
     <Pressable
-      onPress={() => {
-        console.log("log");
-        navigation.navigate("DetailsProductScreen", item);
-      }}
+      onPress={handlePress}
+      onLongPress={handleLongPress} //todo then change the header of the screen by setting  options like Delete, Archive
     >
-      <Card className="flex flex-row items-cente rounded-xl p-2 my-4 bg-card shadow-md">
+      <Card
+        className={`flex flex-row items-center rounded-xl p-2 my-4 shadow-md ${
+          selected ? "border-2 border-green-500 bg-green-100" : "bg-card"
+        }`}
+      >
         {/* Left side: Image */}
         <View className="w-1/2 flex justify-center items-center">
-          {/* {imageView && ( */}
           <Box
             className="rounded-2xl overflow-hidden"
             style={{
@@ -85,7 +70,6 @@ const MenuCardView = ({
             />
           </Box>
           <HStack space="lg" className="items-center mt-2">
-            {/* {numberOfIndividuals && ( */}
             <Button variant="link">
               <ButtonText
                 className="font-medium text-typography-900"
@@ -93,16 +77,20 @@ const MenuCardView = ({
               >
                 10
               </ButtonText>
-              <Icon
+              {/* <Icon
                 as={User2Icon}
                 className="mx-1"
                 style={{ width: scale(10), height: scale(10) }}
                 color="green"
+              /> */}
+              <Feather
+                name="user"
+                size={16}
+                color="green"
+                style={{ marginHorizontal: scale(1) }}
               />
             </Button>
-            {/* )} */}
 
-            {/* {reviews && ( */}
             <Button variant="link">
               <ButtonText
                 className="font-medium text-typography-900"
@@ -110,15 +98,19 @@ const MenuCardView = ({
               >
                 5
               </ButtonText>
-              <Icon
+              {/* <Icon
                 as={StarIcon}
                 className="mx-1"
                 style={{ width: scale(10), height: scale(10) }}
+              /> */}
+              <FontAwesome
+                name="star"
+                size={16}
+                color="gold"
+                style={{ marginHorizontal: scale(1) }}
               />
             </Button>
-            {/* )} */}
 
-            {/* {orders && ( */}
             <Button variant="link">
               <ButtonText
                 className="font-medium text-typography-900"
@@ -126,61 +118,41 @@ const MenuCardView = ({
               >
                 8
               </ButtonText>
-              <Icon
+              {/* <Icon
                 as={CogIcon}
                 color="purple"
                 className="mx-1"
                 style={{ width: scale(10), height: scale(10) }}
+              /> */}
+              <MaterialIcons
+                name="settings"
+                size={16}
+                color="purple"
+                style={{ marginHorizontal: scale(1) }}
               />
             </Button>
-            {/* )} */}
           </HStack>
-          {/* )} */}
         </View>
 
         {/* Right side: Content */}
         <View className="w-1/2 px-1">
           <VStack>
             <View className={I18nManager.isRTL ? "items-start" : "items-start"}>
-              {/* {text && ( */}
-              <Text
-                bold
-                size="lg"
-                style={
-                  {
-                    // fontSize: moderateScale(16),
-                  }
-                }
-                className="!text-accent font-bold text-xl"
-              >
-                {/* {text?.parameterTitel} Title */}
+              <Text bold size="lg" className="!text-accent font-bold text-xl">
                 {item.name}
               </Text>
-              {/* )} */}
 
-              {/* {description && ( */}
-              <Text
-                className="text-primary-custom text-lg"
-                style={
-                  {
-                    // fontSize: moderateScale(14),
-                  }
-                }
-              >
-                {/* {description?.parameterTitel} Description Description */}
+              <Text className="text-primary-custom text-lg">
                 {item.description}
               </Text>
-              {/* )} */}
             </View>
-            {/* <HStack space="lg" className="mt-2"> */}
+
             <View className="flex flex-row justify-end mt-2">
               <Text className="text-xl font-bold">
                 {localization.menu.currency} {item.price}
               </Text>
             </View>
             <AddToCartPrimaryButton item={item} />
-
-            {/* </HStack> */}
           </VStack>
         </View>
       </Card>

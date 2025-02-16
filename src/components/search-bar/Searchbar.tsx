@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { Box, Icon, Input, InputField, InputSlot } from "@/components/ui";
-import { SearchCodeIcon } from "lucide-react-native";
+import { Box, Input, InputField, InputSlot } from "@/components/ui";
+import React, { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { LocalizationContext } from "../../../context/LocalizationContext";
 import { getAllMenuItems } from "../../reducers/MenuItemReducer";
 import { tabsData } from "../menu-components/tabsData";
 //!localization
 const Searchbar = ({ schema, row, setRow }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const activeTab = useSelector((state) => state.menuItem.currentCategory);
+  const { localization } = useContext(LocalizationContext);
 
   const dispatch = useDispatch();
 
@@ -49,7 +50,7 @@ const Searchbar = ({ schema, row, setRow }) => {
         <InputField
           value={searchTerm}
           onChangeText={handleSearch}
-          placeholder="Search by keywords, name, or description"
+          placeholder={localization.Hum_screens.menu.search.placeholder}
         />
         <InputSlot className="rounded-full h-6 w-6 m-1.5 bg">
           {/* <Icon as={SearchCodeIcon} size="lg" color="#111" /> */}

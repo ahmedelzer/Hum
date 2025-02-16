@@ -11,6 +11,7 @@ function AuthProvider(props) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
+  const [userGust, setUserGust] = useState(false); //TODO:make sure type of  user
 
   useEffect(() => {
     (async function () {
@@ -54,6 +55,8 @@ function AuthProvider(props) {
         CheckPortalMenuItem,
         notifications,
         setNotifications,
+        userGust,
+        setUserGust,
       }}
       {...props}
     />

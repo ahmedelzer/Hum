@@ -25,6 +25,7 @@ import { Image } from "../../../components/ui";
 const CartPage = () => {
   const cart = useSelector((state) => state.cart.cart);
   const total = useSelector((state) => state.cart.totalAmount);
+  const cartLength = cart.length;
   const navigation = useNavigation();
   const { isRTL, localization } = useContext(LocalizationContext);
   const dispatch = useDispatch();
@@ -59,21 +60,14 @@ const CartPage = () => {
   };
   const addItemToCart = (item) => {
     dispatch(addToCart(item)); // cart array being used
-    // dispatch(incrementQuantity(item)); // product array being used
   };
-  if (cart.length < 1) {
-    return (
-      <View className="flex-1 bg-body justify-center items-center">
-        <Text className="font-semibold text-lg text-primary-custom">
-          cart is empty
-        </Text>
-      </View>
-    );
-  }
   return (
     <View className="flex-1 bg-body">
       {/* Header */}
-      <GoBackHeader subTitle={"KFC"} title={"Cart"} />
+      <GoBackHeader
+        subTitle={localization.Hum_screens.cart.header.subTitle}
+        title={localization.Hum_screens.cart.header.title}
+      />
 
       {/* Scrollable Content */}
       <ScrollView className="flex-1  py-2">
@@ -98,48 +92,24 @@ const CartPage = () => {
                 {item.name}
               </Text>
               <Text className="text-sm">{item.description}</Text>
-              {/* <View className="flex-row items-center mt-2"> */}
-              {/* <TouchableOpacity
-                  onPress={() => {
-                    // dispatch(incrementQty(item)); // cart
-                    // dispatch(incrementQuantity(item)); //product
-                    addItemToCart({ ...item, addQuantity: 1 });
-                  }}
-                  className="px-3 py-1 bg-card rounded-full"
-                >
-                  <Text className="text-lg font-bold">+</Text>
-                </TouchableOpacity>
-                <Text className="mx-4 text-lg">{item.quantity}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    addItemToCart({ ...item, addQuantity: -1 });
-                  }}
-                  className={
-                    "px-2 text-body rounded-full " +
-                    `${
-                      item.quantity === 1 ? "py-2 bg-red-500" : "py-1 bg-card"
-                    }`
-                  }
-                >
-                  {item.quantity === 1 ? (
-                    <AntDesign name="delete" size={18} className="text-body" />
-                  ) : (
-                    <Text className="text-lg font-bold">-</Text>
-                  )}
-                </TouchableOpacity> */}
               <AddToCartSecondaryButton item={item} />
-              {/* </View> */}
             </View>
             <Text className="text-lg font-semibold">
               {localization.menu.currency} {item.price}
             </Text>
           </View>
         ))}
-
+        {cartLength < 1 && (
+          <View className="flex-1 bg-body justify-center items-center">
+            <Text className="font-semibold text-lg text-primary-custom">
+              {localization.Hum_screens.cart.emptyCart}
+            </Text>
+          </View>
+        )}
         {/* Suggestions */}
         <View className="flex flex-row">
           <Text className="text-lg font-bold mt-6 items-start">
-            You might also like...
+            {localization.Hum_screens.cart.suggests}
           </Text>
         </View>
         <ScrollView horizontal className="mt-2">
@@ -157,11 +127,11 @@ const CartPage = () => {
         <View className="mt-4">
           <View className="items-start">
             <Text className="text-lg font-bold items-start">
-              Special request
+              {localization.Hum_screens.cart.specialRequest}
             </Text>
           </View>
           <TextInput
-            placeholder="Any special requests?"
+            placeholder={localization.Hum_screens.cart.specialRequest + "?"}
             className={
               "mt-2 bg-card p-3 items-end rounded-lg text-sm border border-body " +
               `${isRTL ? "text-right" : "text-left"}`
@@ -172,40 +142,40 @@ const CartPage = () => {
         {/* Voucher */}
         <View className="mt-4">
           <View className="items-start">
-            <Text className="text-lg font-bold">Save on your order</Text>
+            <Text className="text-lg font-bold">
+              {localization.Hum_screens.cart.saveOrder}
+            </Text>
           </View>
           <View className="flex-row mt-2 items-center">
             <TextInput
-              placeholder="Enter voucher code"
+              placeholder={localization.Hum_screens.cart.saveOrderPlaceholder}
               className={
                 "flex-1 bg-card p-3 rounded-l-lg text-sm border border-body " +
                 `${isRTL ? "text-right" : "text-left"}`
               }
             />
             <TouchableOpacity className="bg-accent px-4 py-3 flex flex-row justify-center items-center h-full rounded-r-lg">
-              <Text className="text-body text-sm">Submit</Text>
+              <Text className="text-body text-sm">
+                {localization.Hum_screens.cart.submitButton}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
         {/* total price */}
         <View className="mt-4 mb-6">
           <View className="items-start">
-            <Text className="text-lg font-bold">Payment summary</Text>
+            <Text className="text-lg font-bold">
+              {localization.Hum_screens.cart.paymentSummary.title}
+            </Text>
           </View>
           <View className="flex-row mt-2 items-center justify-between">
-            <Text className="text-md ">Total Amount</Text>
+            <Text className="text-md ">
+              {localization.Hum_screens.cart.paymentSummary.totalAmount}
+            </Text>
             <Text className="text-md">
               {localization.menu.currency} {total}
             </Text>
           </View>
-          {/* <View className="flex-row mt-2 items-center justify-between">
-            <Text className="text-md ">Payment summary</Text>
-            <Text className="text-md ">Payment summary</Text>
-          </View>
-          <View className="flex-row mt-2 mb-6 items-center justify-between">
-            <Text className="text-md ">Payment summary</Text>
-            <Text className="text-md ">Payment summary</Text>
-          </View> */}
         </View>
       </ScrollView>
 
@@ -215,14 +185,19 @@ const CartPage = () => {
           className="flex-1 bg-card py-3 mr-2 rounded-lg"
           onPress={pressHandler}
         >
-          <Text className="text-center text-text">Add items</Text>
+          <Text className="text-center text-text">
+            {localization.Hum_screens.cart.addItemsButton}
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-1 bg-accent py-3 rounded-lg">
-          <Text
-            className="text-center text-body"
-            onPress={() => navigation.navigate("CheckoutScreen")}
-          >
-            Checkout
+        <TouchableOpacity
+          className={`${
+            cartLength < 1 && "bg-card "
+          } flex-1 bg-accent py-3 rounded-lg`}
+          disabled={cartLength < 1 ? true : false}
+          onPress={() => navigation.navigate("CheckoutScreen")}
+        >
+          <Text className="text-center text-body">
+            {localization.Hum_screens.cart.checkoutButton}
           </Text>
         </TouchableOpacity>
       </View>
