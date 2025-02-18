@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Icon } from "../../../components/ui";
 // import { ShoppingCartIcon } from "lucide-react-native";
 import { moderateScale, scale } from "react-native-size-matters";
-import Notification from "../notification/Notification";
+// import Notification from "../notification/Notification";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import { useSelector } from "react-redux";
 import RedCounter from "../../utils/RedCounter";
@@ -44,7 +44,7 @@ export default function HeaderParent() {
               />
               {cart.length > 0 && <RedCounter count={cart.length} />}
             </TouchableOpacity>
-            <Notification />
+            {/* <Notification /> */}
           </>
         ) : (
           <TouchableOpacity className="p-2 rounded-lg bg-accent items-center justify-center mx-2 relative !text-body">
