@@ -6,7 +6,9 @@ buildscript {
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = findProperty('android.kotlinVersion') ?: '2.0.21'
+        
+        // ✅ Downgraded Kotlin to match Compose Compiler compatibility
+        kotlinVersion = findProperty('android.kotlinVersion') ?: '1.9.24'
 
         ndkVersion = "27.1.12297006"
     }
@@ -15,9 +17,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath('com.android.tools.build:gradle')
-        classpath('com.facebook.react:react-native-gradle-plugin')
-        classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+        classpath('com.android.tools.build:gradle:8.0.2')  // ✅ Use compatible Gradle version
+        classpath('com.facebook.react:react-native-gradle-plugin:0.72.4') // React Native Gradle plugin
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")  // ✅ Use matching Kotlin version
     }
 }
 
@@ -37,5 +39,6 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 }
