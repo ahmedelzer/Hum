@@ -7,16 +7,18 @@ import {
 } from "../../../request";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 
-const UseFetchWithoutBaseUrl = (realurl) => {
+const UseFetchWithoutBaseUrl = async (realurl) => {
   // console.log(base_URL, GetProjectUrl());
   // const navigate = useNavigate();
   const { language: Lan } = useContext(LocalizationContext);
   //base_URL = "";
-
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const headers = await SetHeaders();
+  console.log("====================================");
+  console.log(realurl, headers);
+  console.log("====================================");
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -24,7 +26,7 @@ const UseFetchWithoutBaseUrl = (realurl) => {
         (config) => {
           config.headers = {
             ...config.headers,
-            ...SetHeaders(), // Update headers before sending the request
+            ...headers(), // Update headers before sending the request
           };
           return config;
         },
@@ -35,6 +37,9 @@ const UseFetchWithoutBaseUrl = (realurl) => {
 
       try {
         const res = await request.get(realurl);
+        console.log("====================================");
+        console.log(realurl, res);
+        console.log("====================================");
         setData(res.data);
       } catch (error) {
         setError(error);

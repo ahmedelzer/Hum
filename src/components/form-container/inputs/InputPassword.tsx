@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
-import { View, TextInput, TouchableOpacity, Text } from "react-native";
-import { Eye, EyeOff } from "lucide-react-native";
+import Entypo from "@expo/vector-icons/Entypo";
+import React, { useState } from "react";
 import { Controller } from "react-hook-form";
 import {
   Input,
@@ -8,7 +7,6 @@ import {
   InputIcon,
   InputSlot,
 } from "../../../../components/ui";
-
 function InputPassword({ ...props }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
@@ -22,49 +20,12 @@ function InputPassword({ ...props }) {
         required: true,
       }}
       render={({ field: { onChange, onBlur, value } }) => (
-        // <View
-        // // style={{
-        // //   flexDirection: "row",
-        // //   alignItems: "center",
-        // // }}
-        // >
-        //   <TextInput
-        //     style={{
-        //       flex: 1,
-        //       borderColor: "gray",
-        //       borderWidth: 1,
-        //       padding: 10,
-        //     }}
-        // {...props}
-        // onChangeText={onChange}
-        // onBlur={onBlur}
-        // secureTextEntry={!passwordVisible}
-        // value={value}
-        // editable={enable}
-        // placeholder={title}
-        // id={fieldName}
-        //   />
-        //   <TouchableOpacity
-        //     onPress={togglePasswordVisibility}
-        //     style={{ padding: 10 }}
-        //   >
-        //     {passwordVisible ? <EyeOff /> : <Eye />}
-        //   </TouchableOpacity>
-        // </View>
-        <Input className="text-center" isInvalid={props.invalidInput}>
-          <InputSlot
-            className="pr-3 text-black"
-            onPress={togglePasswordVisibility}
-          >
-            {/* EyeIcon, EyeOffIcon are both imported from 'lucide-react-native' */}
-            <InputIcon
-              as={passwordVisible ? Eye : EyeOff}
-              className="!text-black"
-            />
-          </InputSlot>
+        <Input isInvalid={props.invalidInput}>
           <InputField
             type={passwordVisible ? "text" : "password"}
             // {...props}
+            className="!h-12"
+            size="md"
             onChangeText={onChange}
             onBlur={onBlur}
             secureTextEntry={!passwordVisible}
@@ -74,6 +35,16 @@ function InputPassword({ ...props }) {
             placeholder={title}
             id={fieldName}
           />
+          <InputSlot
+            onPress={togglePasswordVisibility}
+            className="w-8 items-center"
+          >
+            {passwordVisible ? (
+              <Entypo name="eye" size={24} color="black" />
+            ) : (
+              <Entypo name="eye-with-line" size={24} color="black" />
+            )}
+          </InputSlot>
         </Input>
       )}
       name={fieldName}

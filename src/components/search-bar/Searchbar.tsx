@@ -4,58 +4,33 @@ import { useDispatch, useSelector } from "react-redux";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import { getAllMenuItems } from "../../reducers/MenuItemReducer";
 import { tabsData } from "../menu-components/tabsData";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import searchBarSchema from "../../Schemas/MenuSchema/searchBarSchema.json";
+import { Icon, InputIcon, SearchIcon } from "../../../components/ui";
 //!localization
 const Searchbar = ({ schema, row, setRow }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const activeTab = useSelector((state) => state.menuItem.currentCategory);
   const { localization } = useContext(LocalizationContext);
-
-  const dispatch = useDispatch();
-
-  const filterItems = (tabsData, searchTerm) => {
-    const lowercasedSearchTerm = searchTerm.toLowerCase();
-
-    return tabsData.filter((item) => {
-      const keywords = item.keywords?.join(" ") || "";
-      const name = item.name || "";
-      const description = item.description || "";
-
-      const searchString = `${keywords} ${name} ${description}`.toLowerCase();
-
-      return searchString.includes(lowercasedSearchTerm);
-    });
-  };
-
+  const firstPram = searchBarSchema.dashboardFormSchemaParameters[0];
   const handleSearch = (value) => {
-    setSearchTerm(value);
-    const productsByActiveTab = tabsData.filter(
-      (data) => data.categoryId === activeTab.id
-    );
-    const filteredResults = filterItems(productsByActiveTab, value);
-
-    console.log("Filtered Results:", filteredResults);
-
-    // Dispatch the filtered results
-    dispatch(getAllMenuItems(filteredResults));
-
-    // Optionally update row state
-    if (setRow) {
-      setRow(filteredResults);
-    }
+    setRow({ ...row, [firstPram.parameterField]: value });
   };
 
   return (
     <Box className="w-full">
-      <Input variant="rounded" size="sm" className="w-full h-10">
-        <InputField
-          value={searchTerm}
-          onChangeText={handleSearch}
-          placeholder={localization.Hum_screens.menu.search.placeholder}
-        />
-        <InputSlot className="rounded-full h-6 w-6 m-1.5 bg">
-          {/* <Icon as={SearchCodeIcon} size="lg" color="#111" /> */}
-        </InputSlot>
-      </Input>
+      {searchBarSchema && (
+        <Input variant="rounded" size="sm" className="w-full h-10">
+          <InputField
+            value={row[firstPram.parameterField]}
+            onChangeText={handleSearch}
+            placeholder={localization.Hum_screens.menu.search.placeholder}
+          />
+          <InputSlot className="rounded-full h-6 w-6 m-1.5 bg">
+            {/* <InputIcon> */}
+            <FontAwesome name="search" size={24} color="black" />
+            {/* </InputIcon> */}
+          </InputSlot>
+        </Input>
+      )}
     </Box>
   );
 };

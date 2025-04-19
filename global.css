@@ -53,3 +53,7 @@ body {
 ::-webkit-scrollbar-thumb {
   @apply bg-secondary-200 rounded-[20px] border-[3px] border-solid border-transparent;
 }
+html,
+body {
+  overflow-y: auto !important;
+}

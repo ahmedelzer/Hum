@@ -1,34 +1,25 @@
-import React, { useContext, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import React, { useContext } from "react";
 import {
-  View,
-  Text,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
-  I18nManager,
+  View,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addToCart,
-  decrementQty,
-  incrementQty,
-} from "../../reducers/CartReducer";
-import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import { LocalizationContext } from "../../../context/LocalizationContext";
-import { moderateScale, scale } from "react-native-size-matters";
 import SuggestCard from "../../components/cards/SuggestCard";
-import { AddToCartSecondaryButton } from "./AddToCartButton";
 import GoBackHeader from "../../components/header/GoBackHeader";
-import { Image } from "../../../components/ui";
+import CardCartItem from "./CardCartItem";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart.cart);
+  const fieldsType = useSelector((state) => state.menuItem.fieldsType);
   const total = useSelector((state) => state.cart.totalAmount);
   const cartLength = cart.length;
   const navigation = useNavigation();
   const { isRTL, localization } = useContext(LocalizationContext);
-  const dispatch = useDispatch();
   const suggestions = [
     {
       id: 1,
@@ -56,10 +47,7 @@ const CartPage = () => {
     },
   ];
   const pressHandler = () => {
-    navigation.navigate("HomeScreen");
-  };
-  const addItemToCart = (item) => {
-    dispatch(addToCart(item)); // cart array being used
+    navigation.navigate("Home");
   };
   return (
     <View className="flex-1 bg-body">
@@ -72,36 +60,12 @@ const CartPage = () => {
       {/* Scrollable Content */}
       <ScrollView className="flex-1  py-2">
         {cart.map((item) => (
-          <View key={item.id} className="mb-5 flex-row items-start">
-            <View
-              style={{
-                width: scale(80),
-                height: scale(80),
-                borderRadius: moderateScale(10),
-              }}
-            >
-              <Image
-                source={item.image}
-                className="w-full h-full rounded-md"
-                alt=""
-              />
-            </View>
-
-            <View className="ml-4 flex-1 items-start">
-              <Text className="font-semibold text-lg text-primary-custom">
-                {item.name}
-              </Text>
-              <Text className="text-sm">{item.description}</Text>
-              <AddToCartSecondaryButton item={item} />
-            </View>
-            <Text className="text-lg font-semibold">
-              {localization.menu.currency} {item.price}
-            </Text>
-          </View>
+          <CardCartItem item={item} key={item[fieldsType.idField]} />
         ))}
+
         {cartLength < 1 && (
           <View className="flex-1 bg-body justify-center items-center">
-            <Text className="font-semibold text-lg text-primary-custom">
+            <Text className="font-semibold text-lg text-accent">
               {localization.Hum_screens.cart.emptyCart}
             </Text>
           </View>

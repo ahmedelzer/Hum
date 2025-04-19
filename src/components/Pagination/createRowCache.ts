@@ -1,14 +1,21 @@
-export const createRowCache = (size) => {
-  const cache = new Map();
+export function createRowCache(pageSize) {
+  const storage = {};
+
   return {
-    get: (key) => cache.get(key),
-    set: (key, value) => {
-      if (cache.size >= size) {
-        const firstKey = cache.keys().next().value;
-        cache.delete(firstKey);
+    setRows(skip, rows) {
+      for (let i = 0; i < rows.length; i++) {
+        storage[skip + i] = rows[i];
       }
-      cache.set(key, value);
     },
-    clear: () => cache.clear(),
+    getRows(skip, take) {
+      const result = [];
+      for (let i = 0; i < take; i++) {
+        const item = storage[skip + i];
+        if (item !== undefined) {
+          result.push(item);
+        }
+      }
+      return result;
+    },
   };
-};
+}

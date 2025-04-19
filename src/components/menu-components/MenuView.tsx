@@ -1,18 +1,30 @@
-import { useFetchSchemaActions } from "@/src/services/react-query-hooks/FetchSchemaActions";
-import React, { useState } from "react";
-import { View } from "react-native";
-import { HStack } from "../../../components/ui";
+import React, { useState, useCallback } from "react";
+import { View, ScrollView, RefreshControl } from "react-native";
+import { Box, HStack } from "../../../components/ui";
 import SearchBarFilter from "../filters/SearchBarFilter";
 import Searchbar from "../search-bar/Searchbar";
 import AddLocation from "./AddLocation";
 import MenuCardsView from "./MenuCardsView";
+import { useDeviceInfo } from "../../utils/useDeviceInfo";
+import { HomestayInfoTabs } from "./HomestayInfoTabs";
 
 const MenuView = ({ schemas }: any) => {
-  const { data, isLoading, isSuccess } = useFetchSchemaActions({
-    dashboardSchemaId: "8D8F94A8-78A1-409F-B7CC-AE0E4F277D66",
-  });
-
   const [row, setRow] = useState({});
+  const { width, height, os, modelName } = useDeviceInfo();
+
+  const [refreshing, setRefreshing] = useState(false);
+  const [key, setKey] = useState(0);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setKey((r) => r + 1);
+    // Do your refresh logic here, e.g., reset row or re-fetch data
+    setRow({}); // Optional: reset filters
+    // Simulate API delay
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  }, []);
 
   const searchBarSchema = schemas?.find(
     (schema: any) => schema.schemaType === "searchBar"
@@ -20,91 +32,37 @@ const MenuView = ({ schemas }: any) => {
   const searchBarFilter = schemas?.find(
     (schema: any) => schema.schemaType === "filters"
   );
-
   const menuCardItem = schemas?.find(
     (schema: any) => schema.schemaType === "menuItemCards"
   );
   return (
-    <View className="flex-1 gap-y-4 mx-4">
-      <View className="flex-row">
-        <AddLocation />
-      </View>
-      <HStack space="2xl" className="items-center">
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <HStack space="2xl" className="items-center md:my-2">
         <View style={{ flex: 1 }}>
-          {/* {searchBarSchema && ( */}
           <Searchbar schema={searchBarSchema} setRow={setRow} row={row} />
-          {/* )} */}
         </View>
-        <View style={{ flex: 0 }}>
-          {/* {searchBarFilter && ( */}
+        {/* Optional filters */}
+        {/* <View style={{ flex: 0 }}>
           <SearchBarFilter schema={searchBarFilter} setRow={setRow} row={row} />
-          {/* )} */}
-        </View>
+        </View> */}
       </HStack>
-      {/* <HomeCarousel menuCardItem={menuCardItem} row={row} setRow={setRow} /> */}
-      {/* {menuCardItem && ( */}
-      <MenuCardsView menuCardItem={menuCardItem} row={row} setRow={setRow} />
-      {/* )} */}
-    </View>
+
+      <Box
+        className="md:px-0 -mt-4"
+        style={{ paddingBottom: os === "web" ? 0 : 180 }}
+        key={key}
+      >
+        <View className="my-5">
+          <HomestayInfoTabs setRow={setRow} row={row} />
+        </View>
+        <MenuCardsView menuCardItem={menuCardItem} row={row} setRow={setRow} />
+      </Box>
+    </ScrollView>
   );
 };
 
 export default MenuView;
-
-/* <FlatList
-        style={{
-          height: "50%",
-        }}
-        data={pData ? pData.pages.flatMap((page: any) => page) : []}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <HStack space="4xl">
-            <Text className="p-16 ">{item.title}</Text>
-          </HStack>
-        )}
-        onEndReached={loadMoreData}
-        onEndReachedThreshold={1}
-        // ListFooterComponent={
-        //   isFetching ? <ActivityIndicator size="small" color="#0000ff" /> : null
-        // }
-      /> */
-// const loadMoreData = () => {
-//   if (hasNextPage && !pLoading) {
-//     fetchNextPage();
-//   }
-// };
-// const schemaActionsParams: any = [];
-// useEffect(() => {
-//   if (data) {
-//     const schemaParams = data?.flatMap((item: any) =>
-//       item?.dashboardFormSchemaActionQueryParams.map(
-//         (param: any) => param.dashboardFormParameterField
-//       )
-//     );
-//     console.log(schemaParams, "schemaParams");
-//     const mergedParams = [...schemaParams, row];
-//     schemaActionsParams.push(mergedParams);
-//     console.log(mergedParams, "mergedParams");
-//   }
-// }, [data, row]);
-// console.log(schemaActionsParams, "schemaActionsParams");
-// if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />;
-// if (error) return <Text>Error: {error.message}</Text>;
-// const value = "searchValue"; // Replace with your search value
-// const debouncedSearchResults = "debouncedValue"; // Replace with your debounced search value
-// const pageSize = 1; // Adjust the page size as needed
-// console.log(schemas, " schemas from menu view");
-// const {
-//   data: pData,
-//   error,
-//   isLoading: pLoading,
-//   isFetching,
-//   fetchNextPage,
-//   hasNextPage,
-// } = usePagination({
-//   value,
-//   debouncedSearchResults,
-//   pageSize,
-// });
-// console.log(pData, "pData");
-// const { data: agendaData } = useJson();

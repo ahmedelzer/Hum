@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Text,
   Heading,
@@ -16,11 +16,14 @@ import {
 } from "../../components/ui";
 import { deleteKey } from "../store/zustandStore";
 import { DevSettings } from "react-native";
+import { LocalizationContext } from "../../context/LocalizationContext";
 
 const LogoutAlertDialog = ({
   openLogoutAlertDialog,
   setOpenLogoutAlertDialog,
 }: any) => {
+  const { localization } = useContext(LocalizationContext);
+
   const handleClose = () => {
     setOpenLogoutAlertDialog(false);
   };
@@ -34,20 +37,26 @@ const LogoutAlertDialog = ({
       <AlertDialogBackdrop />
       <AlertDialogContent className="p-4">
         <AlertDialogHeader>
-          <Heading>Logout</Heading>
+          <Heading>{localization.Hum_screens.profile.logOut.logOut}</Heading>
           <AlertDialogCloseButton>
             <Icon as={CloseIcon} />
           </AlertDialogCloseButton>
         </AlertDialogHeader>
         <AlertDialogBody className="" contentContainerClassName="">
-          <Text className="mb-6">Are you sure, you want to logout?</Text>
+          <Text className="mb-6">
+            {localization.Hum_screens.profile.logOut.logOutMess}
+          </Text>
         </AlertDialogBody>
         <AlertDialogFooter>
           <Button variant="outline" action="secondary" onPress={handleClose}>
-            <ButtonText>Cancel</ButtonText>
+            <ButtonText>
+              {localization.Hum_screens.profile.logOut.cancel}
+            </ButtonText>
           </Button>
           <Button action="negative" onPress={handleLogout}>
-            <ButtonText className="text-white">Logout</ButtonText>
+            <ButtonText className="text-body">
+              {localization.Hum_screens.profile.logOut.logOut}
+            </ButtonText>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

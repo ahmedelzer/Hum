@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 //@ts-ignore
 import { Column, Grid, Row } from "react-native-responsive-grid";
-import { Sm } from "./Sm";
+import { SmMobile, SmWeb } from "./Sm";
 
 import DataCellRender from "./DataCellRender";
 import {
@@ -18,9 +18,13 @@ import {
   useToast,
   VStack,
 } from "../../../components/ui";
+import { useDeviceInfo } from "../../utils/useDeviceInfo";
+import SetComponentsPlatforms from "../../utils/SetComponentsPlatforms";
+import { WebContainer } from "./WebContainer";
+import { MobileContainer } from "./MobileContainer";
 function FormContainer({ tableSchema, row, errorResult, control }: any) {
   const toast = useToast();
-
+  const { os } = useDeviceInfo();
   const actionField = tableSchema?.dashboardFormSchemaParameters?.find(
     (e: any) => e.isEnable
   ).parameterField;
@@ -36,37 +40,50 @@ function FormContainer({ tableSchema, row, errorResult, control }: any) {
   if (!toast.isActive("1")) {
     // showNewToast();
   }
-  // showNewToast();
+  // showNewToast()
   return (
-    <View style={styles.row}>
-      <Grid>
-        {({ state, setState }: any) => (
-          <Row>
-            {tableSchema?.dashboardFormSchemaParameters
-              ?.filter((column: any) => !column.isIDField)
-              .map((param: any) => (
-                <Column
-                  size={Sm(param)}
-                  className="px-2"
-                  key={param.parameterField}
-                >
-                  <DataCellRender
-                    //@ts-ignore
-                    isActionField={
-                      actionField === param.parameterField ? true : false
-                    }
-                    control={control}
-                    data={param}
-                    value={SetValue(param)}
-                    onChange={() => {}}
-                    errorResult={errorResult}
-                  />
-                </Column>
-              ))}
-          </Row>
-        )}
-      </Grid>
-    </View>
+    // <View style={styles.row}>
+    <SetComponentsPlatforms
+      components={[
+        {
+          platform: "android",
+          component: (
+            <MobileContainer
+              SetValue={SetValue}
+              actionField={actionField}
+              control={control}
+              errorResult={errorResult}
+              tableSchema={tableSchema}
+            />
+          ),
+        },
+        {
+          platform: "ios",
+          component: (
+            <MobileContainer
+              SetValue={SetValue}
+              actionField={actionField}
+              control={control}
+              errorResult={errorResult}
+              tableSchema={tableSchema}
+            />
+          ),
+        },
+        {
+          platform: "web",
+          component: (
+            <WebContainer
+              SetValue={SetValue}
+              actionField={actionField}
+              control={control}
+              errorResult={errorResult}
+              tableSchema={tableSchema}
+            />
+          ),
+        },
+      ]}
+    />
+    // </View>
   );
 }
 const showNewToast = () => {

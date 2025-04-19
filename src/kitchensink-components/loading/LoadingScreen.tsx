@@ -1,16 +1,20 @@
-import React, { FC } from "react";
-import { View, Text, Image } from "react-native";
+import React, { FC, ReactNode } from "react";
+import { View, Image } from "react-native";
 
-const LoadingScreen: FC = () => {
+type LoadingScreenProps = {
+  LoadingComponent?: ReactNode; // Accepts a JSX element
+};
+
+const LoadingScreen: FC<LoadingScreenProps> = ({ LoadingComponent }) => {
   return (
     <View className="flex-1 bg-body justify-center items-center">
-      <Image
-        source={require("../../../assets/display/logo.jpeg")} // Replace with your logo path
-        className="w-32 h-32"
-      />
-      {/* <Text className="text-lg font-semibold mt-4 text-gray-800">
-        Loading...
-      </Text> */}
+      {!LoadingComponent && (
+        <Image
+          source={require("../../../assets/display/logo.jpeg")}
+          className="w-32 h-32"
+        />
+      )}
+      {LoadingComponent}
     </View>
   );
 };

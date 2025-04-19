@@ -7,6 +7,10 @@ export function buildApiUrl(apiRequest, constants) {
   }
 
   const queryParam = apiRequest.dashboardFormSchemaActionQueryParams
+    .filter(
+      (param) =>
+        param.IsRequired || constants[param.dashboardFormParameterField]
+    )
     .map(
       (param) =>
         `${param.parameterName}=${constants[param.dashboardFormParameterField]}`

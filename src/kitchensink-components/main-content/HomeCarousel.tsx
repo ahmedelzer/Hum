@@ -23,7 +23,7 @@ const data = [
   { src: require("../../../assets/display/food.jpg") },
 ];
 
-const MyCarousel = () => {
+const HomeCarousel = () => {
   const [index, setIndex] = useState(0);
   const scrollViewRef = useRef(null);
 
@@ -39,41 +39,17 @@ const MyCarousel = () => {
 
   return (
     <View style={styles.container}>
-      {Platform.OS === "web" ? (
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={(event) => {
-            const newIndex = Math.round(
-              event.nativeEvent.contentOffset.x / width
-            );
-            setIndex(newIndex);
-          }}
-          style={styles.webCarousel}
-          // className="!mb-20"
-        >
-          {data.map((item, i) => (
-            <View key={i} style={{ width: width, height: 400 }}>
-              <AddCard source={item.src} />
-            </View>
-          ))}
-        </ScrollView>
-      ) : (
-        <Carousel
-          width={width}
-          height={200}
-          data={data}
-          scrollAnimationDuration={500}
-          defaultIndex={index}
-          autoPlay={false}
-          onSnapToItem={(newIndex) => setIndex(newIndex)}
-          renderItem={({ item }) => <AddCard source={item.src} />}
-        />
-      )}
+      <Carousel
+        width={width}
+        height={200}
+        data={data}
+        scrollAnimationDuration={500}
+        defaultIndex={index}
+        autoPlay={false}
+        onSnapToItem={(newIndex) => setIndex(newIndex)}
+        renderItem={({ item }) => <AddCard source={item.src} />}
+      />
 
-      {/* Dots Indicator */}
       {/* Dots Indicator */}
       <View style={{ marginTop: 20 }}>
         <AnimatedDotsCarousel
@@ -134,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyCarousel;
+export default HomeCarousel;

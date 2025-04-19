@@ -1,4 +1,5 @@
 {
   "java.configuration.updateBuildConfiguration": "interactive",
-  "cSpell.words": ["faovert"]
+  "cSpell.words": ["Explorepage", "faovert"],
+  "java.compile.nullAnalysis.mode": "automatic"
 }

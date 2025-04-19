@@ -9,10 +9,9 @@ import {
   VStack,
   Input,
   InputField,
+  CheckIcon,
 } from "../../../../components/ui";
-import { CheckIcon } from "lucide-react-native";
 import { Controller } from "react-hook-form";
-
 export default function CheckBoxParameter({
   values = [], // Values to display as checkboxes
   value = [], // Current selected values

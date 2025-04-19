@@ -47,12 +47,12 @@ const HomeContent = () => {
             style={{
               borderRadius: 12,
             }}
-            className="relative w-1/3 aspect-square shrink border-[4px] border-card"
+            className="relative w-1/3 md:w-1/4 aspect-square shrink border-[4px] border-card"
           >
             <VStack className="items-center">
               <Image
                 source={require("../../../assets/display/image11.png")}
-                className="!h-12 !w-12 aspect-square rounded-full"
+                className="!size-12 md:!size-28 aspect-square rounded-full"
                 resizeMode="cover"
               />
               <Text className="mt-2 text-sm font-bold">{shortcut.name}</Text>

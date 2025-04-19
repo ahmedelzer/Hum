@@ -21,9 +21,6 @@ export const saveSecureValue = async (key: any, value: any) => {
 
 export const retrieveSecureValue = async (key: any) => {
   let result = await SecureStore.getItemAsync(key);
-  console.log("====================================");
-  console.log(result);
-  console.log("====================================");
   return result;
 };
 

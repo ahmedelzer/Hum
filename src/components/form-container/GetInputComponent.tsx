@@ -1,6 +1,7 @@
 import {
   BooleanParameter,
   CheckBoxParameter,
+  DateParameter,
   // BooleanParameter,
   // DateParameter,
   // PhoneNumberParameter,
@@ -10,6 +11,7 @@ import {
   // LookupInput,
   InputPassword,
   MeddleRangeParameter,
+  RadioParameter,
   SelectParameter,
   TextParameter,
 } from "./index";
@@ -23,19 +25,15 @@ export function GetInputComponent(type) {
       return SelectParameter;
     case "checkbox":
       return CheckBoxParameter;
-    // case "datetime":
-    //   return DateParameter;
-    // case "date":
-    //   return DateParameter;
+    case "datetime":
+    case "date":
+      return DateParameter;
     case "boolean":
       return BooleanParameter;
-    // case "phoneNumber":
-    //   return PhoneNumberParameter;
+    case "radio":
+      return RadioParameter;
     case "minMax":
       return MeddleRangeParameter;
-    // case "lookup":
-    //   return LookupInput;
-
     case "password":
       return InputPassword;
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ScrollView } from "react-native";
 import {
   Feather,
@@ -27,11 +27,12 @@ import {
 } from "../utils/Collapsible";
 import LogoutAlertDialog from "./LogoutAlertDialog";
 import { useAuth } from "../../context/auth";
+import { LocalizationContext } from "../../context/LocalizationContext";
 
 const MobileProfilePage = () => {
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] = useState(false);
   const [expandedSection, setExpandedSection] = useState(null);
-  const { userGust } = useAuth();
+  const { userGust, user } = useAuth();
 
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
@@ -142,19 +143,21 @@ const MobileProfilePage = () => {
 };
 
 const ProfileCard = () => {
+  const { userGust, user } = useAuth();
+
   return (
     <HStack className="justify-between items-center">
       <HStack space="md">
         <Avatar className="bg-body">
-          <AvatarFallbackText>Henry Stan</AvatarFallbackText>
+          <AvatarFallbackText>{user.Username}</AvatarFallbackText>
           <AvatarImage
             source={{
-              uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+              uri: "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
             }}
           />
         </Avatar>
         <VStack>
-          <Text className="text-text">Henry Stan</Text>
+          <Text className="text-text">{user.Username}</Text>
           <Link>
             <LinkText className="text-primary-custom no-underline">
               Show Profile
@@ -167,13 +170,15 @@ const ProfileCard = () => {
 };
 
 const LogoutButton = ({ setOpenLogoutAlertDialog }) => {
+  const { localization } = useContext(LocalizationContext);
+
   return (
     <Button
       action="secondary"
       variant="outline"
       onPress={() => setOpenLogoutAlertDialog(true)}
     >
-      <ButtonText>Logout</ButtonText>
+      <ButtonText>{localization.Hum_screens.profile.logOut.logOut}</ButtonText>
     </Button>
   );
 };

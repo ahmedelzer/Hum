@@ -17,7 +17,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import NotificationScreen from "../components/notification/NotificationScreen";
 import { theme } from "../Theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { SignIn } from "../kitchensink-components/auth/signin";
+import { SignUp } from "../kitchensink-components/auth/signup";
+import { ForgotPassword } from "../kitchensink-components/auth/forgot-password";
+import Fontisto from "@expo/vector-icons/Fontisto";
 const Stack =
   Platform.OS === "web" ? createStackNavigator() : createNativeStackNavigator();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -41,7 +44,7 @@ const BottomBarTabs: FC = () => {
     {
       dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
       dashboardMenuItemName: "MenuItem1",
-      routePath: "test", // Using the test route for nested navigators
+      routePath: "marketPlace", // Using the test route for nested navigators
       projectProxyRoute: "HumMenu",
     },
 
@@ -76,6 +79,9 @@ const BottomBarTabs: FC = () => {
   );
   const menuIcon = ({ color }: { focused: boolean; color: string }) => (
     <MaterialCommunityIcons name="menu" size={24} color={color} />
+  );
+  const marketPlaceIcon = ({ color }: { focused: boolean; color: string }) => (
+    <Fontisto name="shopping-store" size={24} color={color} />
   );
 
   const MargeStackWithTabs = (item) => {
@@ -112,6 +118,9 @@ const BottomBarTabs: FC = () => {
           name="Cart"
           component={() => SetResponsiveContainer(<CartPage />, true)}
         />
+        <Stack.Screen name="SignIn" component={SignIn} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="ForgetPassword" component={ForgotPassword} />
         <Stack.Screen
           name="MenuFilter"
           component={() => SetResponsiveContainer(<MenuFilter />, true)}
@@ -142,6 +151,11 @@ const BottomBarTabs: FC = () => {
         return {
           headerShown: false,
           tabBarIcon: accountIcon,
+        };
+      case "marketPlace":
+        return {
+          headerShown: false,
+          tabBarIcon: marketPlaceIcon,
         };
       default:
         return {

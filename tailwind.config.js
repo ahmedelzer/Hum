@@ -183,7 +183,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        primary: '"sans-serif"',
+        primary: "sans-serif",
       },
       container: {
         padding: {
@@ -196,6 +196,7 @@ module.exports = {
         md: "768px",
         lg: "960px",
         xl: "1440px",
+        "max-300": { max: "300px" },
       },
       fontWeight: {
         extrablack: "950",

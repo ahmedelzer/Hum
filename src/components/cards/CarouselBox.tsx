@@ -15,61 +15,67 @@ import {
   VStack,
 } from "../../../components/ui";
 //!locaization
-export const CarouselBox = ({ image, title, description, actions }) => {
-  const { likes, setLikes } = actions;
-
+export const CarouselBox = ({ item, fieldsType }) => {
   return (
     <Box className="justify-center items-center">
-      <View>
-        <Image
-          source={image}
-          alt={title}
-          className="w-auto h-[70%] rounded-xl"
-          style={{
-            resizeMode: "cover",
-            aspectRatio: 1,
-            borderRadius: moderateScale(10),
-          }}
-        />
-      </View>
+      {item[fieldsType.imageView] && (
+        <View>
+          <Image
+            source={item[fieldsType.imageView]}
+            alt={item[fieldsType.text]}
+            className="w-auto h-[70%] rounded-xl"
+            style={{
+              resizeMode: "cover",
+              aspectRatio: 1,
+              borderRadius: moderateScale(10),
+            }}
+          />
+        </View>
+      )}
 
       <Card
         variant="elevated"
         className="absolute bottom-6 w-[90%] md:w-[80%] lg:w-[70%] p-4 rounded-3xl shadow-xl"
       >
-        <Pressable
-          onPress={() => setLikes(!likes)}
-          className="absolute top-3 right-4 h-6 w-6 justify-center items-center"
-        >
-          <AnimatePresence>
-            <Motion.View
-              key={likes ? "like" : "dislike"}
-              initial={{ scale: 1.3 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              transition={{
-                type: "spring",
-                mass: 0.9,
-                damping: 9,
-                stiffness: 300,
-              }}
-            >
-              <MaterialCommunityIcons
-                name="heart"
-                size={24}
-                color={likes ? "red" : "gray"}
-              />
-            </Motion.View>
-          </AnimatePresence>
-        </Pressable>
-
+        {item[fieldsType.likes] && (
+          <Pressable
+            // onPress={() => setLikes(!likes)}
+            className="absolute top-3 right-4 h-6 w-6 justify-center items-center"
+          >
+            <AnimatePresence>
+              <Motion.View
+                // key={likes ? "like" : "dislike"}
+                initial={{ scale: 1.3 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.9 }}
+                transition={{
+                  type: "spring",
+                  mass: 0.9,
+                  damping: 9,
+                  stiffness: 300,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="heart"
+                  size={24}
+                  // color={likes ? "red" : "gray"}
+                />
+              </Motion.View>
+            </AnimatePresence>
+          </Pressable>
+        )}
         <VStack space="sm">
-          <Text bold size="sm" className="text-primary">
-            {title}
-          </Text>
-          <Text size="sm" className="text-primary-custom">
-            {description}
-          </Text>
+          {item[fieldsType.text] && (
+            <Text bold size="sm" className="text-primary">
+              {item[fieldsType.text]}
+            </Text>
+          )}
+          {item[fieldsType.description] && (
+            <Text size="sm" className="text-primary-custom">
+              {item[fieldsType.description]}
+            </Text>
+          )}
+
           <HStack space="sm" className="items-center">
             <HStack space="xs" className="items-center">
               {[...Array(4)].map((_, i) => (

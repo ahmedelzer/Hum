@@ -1,87 +1,124 @@
-import React from "react";
+import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import React, { useContext } from "react";
+import { I18nManager, View } from "react-native";
+import { moderateScale, scale } from "react-native-size-matters";
 import {
-  Dimensions,
+  Box,
+  Button,
+  ButtonText,
+  HStack,
   Image,
-  SafeAreaView,
-  StyleSheet,
   Text,
-  View,
-} from "react-native";
-import {
-  FlatList,
-  ScrollView,
-  TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
-import { Icon } from "../../../components/ui";
-import { Plus } from "lucide-react-native";
-const COLORS = {
-  white: "#FFF",
-  dark: "#000",
-  primary: "#F9813A",
-  secondary: "#fedac5",
-  light: "#E5E5E5",
-  grey: "#908e8c",
-};
-const { width } = Dimensions.get("screen");
-const cardWidth = width / 2 - 20;
-export const MenuCard = ({ food }) => {
+  VStack,
+} from "../../../components/ui";
+import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
+import { LocalizationContext } from "../../../context/LocalizationContext";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import GetIconMenuItem from "../../utils/GetIconMenuItem";
+import { theme } from "../../Theme";
+import { GetMediaUrl } from "../../utils/GetMediaUrl";
+export const MenuCard = ({
+  item,
+  discountedPrice,
+  fieldsType,
+  schemaActions,
+}) => {
+  const { localization } = useContext(LocalizationContext);
   return (
-    <TouchableHighlight
-      //   underlayColor={COLORS.white}
-      activeOpacity={0.9}
-      //   onPress={() => navigation.navigate('DetailsScreen', food)}
-    >
-      <View style={style.card} className="bg-card">
-        <View style={{ alignItems: "center", top: -40 }}>
-          <Image
-            source={food.image}
-            style={{ height: 130, width: 180, borderRadius: 20 }}
+    <View className={`relative flex flex-row `}>
+      {item.discount && (
+        <View className="absolute top-0 left-0 bg-red-500 px-2 py-1 rounded-tr-lg rounded-bl-lg">
+          <Text className="text-body font-bold text-sm">
+            {item.discount} OFF
+          </Text>
+        </View>
+      )}
+
+      <View className="w-1/2 flex justify-center items-center">
+        {item[fieldsType.imageView] && (
+          <Box
+            className="rounded-2xl overflow-hidden"
+            style={{ width: scale(128), height: scale(128) }}
+          >
+            <Image
+              resizeMode="cover"
+              className="w-full h-full"
+              source={GetMediaUrl(item[fieldsType.imageView], "publicImage")}
+              alt="food"
+            />
+          </Box>
+        )}
+        <HStack space="lg" className="items-center mt-2 flex-wrap">
+          <GetIconMenuItem
+            count={item[fieldsType.orders]}
+            iconName={"orders"}
+            size={18}
+            style={{ marginHorizontal: scale(1), color: theme.accent }}
           />
-        </View>
-        <View style={{ marginHorizontal: 20 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{food.name}</Text>
-          <Text style={{ fontSize: 14, marginTop: 2 }} className="text-body">
-            {food.ingredients}
-          </Text>
-        </View>
-        <View
-          style={{
-            marginTop: 10,
-            marginHorizontal: 20,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-            ${food.price}
-          </Text>
-          <View style={style.addToCartBtn} className="bg-accent">
-            <Icon as={Plus} size={"md"} className="text-body" />
-          </View>
-        </View>
+          <GetIconMenuItem
+            count={item[fieldsType.rate]}
+            iconName={"rate"}
+            size={18}
+            style={{ marginHorizontal: scale(1), color: theme.accent }}
+          />
+
+          <GetIconMenuItem
+            count={item[fieldsType.likes]}
+            iconName={"likes"}
+            size={18}
+            style={{ marginHorizontal: scale(1), color: theme.accent }}
+          />
+          <GetIconMenuItem
+            count={item[fieldsType.dislikes]}
+            iconName={"dislikes"}
+            size={18}
+            style={{ marginHorizontal: scale(1), color: theme.accent }}
+          />
+        </HStack>
       </View>
-    </TouchableHighlight>
+
+      <View className="w-1/2 px-1">
+        <VStack>
+          <View
+            className={
+              I18nManager.isRTL ? "items-start" : "items-start" + " min-h-28"
+            }
+          >
+            {item[fieldsType.text] && (
+              <Text bold size="lg" className="!text-accent font-bold text-xl">
+                {item[fieldsType.text]}
+              </Text>
+            )}
+            {item[fieldsType.description] && (
+              <Text className="text-primary-custom text-lg" numberOfLines={6}>
+                {item[fieldsType.description]}
+              </Text>
+            )}
+          </View>
+
+          <View className="flex flex-col justify-end items-end mt-2 space-x-2">
+            {item.discount && (
+              <Text className="text-lg font-bold text-red-500 line-through">
+                {localization.menu.currency} {item.price.toFixed(2)}
+              </Text>
+            )}
+            {item[fieldsType.price] && (
+              <Text className="text-xl font-bold">
+                {localization.menu.currency} {discountedPrice.toFixed(2)}
+              </Text>
+            )}
+          </View>
+          {fieldsType.cardAction && (
+            <AddToCartPrimaryButton
+              item={item}
+              // idField={fieldsType.idField}
+              // field={fieldsType.cardAction}
+              fieldsType={fieldsType}
+              schemaActions={schemaActions}
+            />
+          )}
+        </VStack>
+      </View>
+    </View>
   );
 };
-
-const style = StyleSheet.create({
-  card: {
-    height: 220,
-    width: cardWidth,
-    // marginHorizontal: 10,
-    marginBottom: 20,
-    marginTop: 50,
-    borderRadius: 15,
-    elevation: 13,
-    // backgroundColor: COLORS.white,
-  },
-  addToCartBtn: {
-    height: 30,
-    width: 30,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

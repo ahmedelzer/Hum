@@ -1,17 +1,15 @@
-// import APIHandling from "../../hooks/APIsFunctions/APIHandling";
 import APIHandling from "../../../components/hooks/APIsFunctions/APIHandling";
 import { SetReoute } from "../../../request";
 import { SharedLists } from "./SharedLists";
-// import APIHandling from "../../hooks/APIsFunctions/APIHandling";
 
 export const onApply = async (
-  editedRow,
-  iDField,
-  isNew,
-  action,
-  proxyRoute,
+  editedRow: { [x: string]: any },
+  iDField: string | number,
+  isNew: boolean,
+  action: {},
+  proxyRoute = "",
   schemaParameters = false,
-  query
+  query = ""
 ) => {
   let row = schemaParameters
     ? SharedLists(editedRow, schemaParameters, "parameterField")

@@ -276,6 +276,7 @@
     "loginButton": "Login",
     "loginGustButton": "Login as gust",
     "signUp": "Sign up",
+    "rememberme": "Remember me",
     "doNotHaveAccount": "Don't have an account?"
   },
   "sighUp": {
@@ -300,6 +301,7 @@
     },
     "menu": {
       "search": { "placeholder": "Search by keywords, name, or description" },
+      "noItems": "No items available.",
       "filter": {
         "header": {
           "title": "Filters",
@@ -332,6 +334,13 @@
       "submitButton": "Submit",
       "addItemsButton": "Add items",
       "checkoutButton": "Checkout"
+    },
+    "profile": {
+      "logOut": {
+        "logOut": "Logout",
+        "logOutMess": "Are you sure, you want to logout?",
+        "cancel": "Cancel"
+      }
     }
   },
   "checkout": {

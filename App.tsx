@@ -1,5 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Button, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { GluestackUIProvider } from "./components/ui";
 import "./global.css";
 // import AppNavigation from "./navigation/AppNavigation";
@@ -51,13 +58,7 @@ export default function App() {
                     }}
                     // className="bg-body"
                   >
-                    {/* <Notification /> */}
-                    {/* <TestWithStaticServer /> */}
-                    {/* <RootStack /> */}
                     <RootStack />
-                    {/* <View>
-                      <HeaderParent />
-                    </View> */}
                   </SafeAreaView>
                 </AuthProvider>
               </WS_Provider>

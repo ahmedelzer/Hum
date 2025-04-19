@@ -24,19 +24,27 @@ function DisplayError({ dataError, parameterField, setTitle }) {
     const errorMessages = lowercaseError[fieldLowercase];
     if (errorMessages?.length > 0) {
       setTitle(`${errorMessages}`);
-
-      toast.show({
-        placement: "bottom",
-        render: ({ id }) => (
-          <Toast nativeID={id} variant="solid" action="error">
-            <ToastTitle>{errorMessages}</ToastTitle>
-          </Toast>
-        ),
-      });
+      // toast.show({
+      //   placement: "bottom",
+      //   render: ({ id }) => (
+      //     <Toast nativeID={id} variant="solid" action="error">
+      //       <ToastTitle>{errorMessages}</ToastTitle>
+      //     </Toast>
+      //   ),
+      // });
+      return (
+        <View>
+          <Text className="!text-red-500 mt-1 text-sm">{errorMessages}</Text>
+        </View>
+      );
     }
   } else if (dataError[parameterField]) {
+    //!must get a solution of ui validation errors by all lang
     // Handle UI validation errors
-    const errorMessage = `${parameterField} is ${dataError[parameterField]?.type}`;
+    const errorMessage =
+      dataError[parameterField].message === ""
+        ? `${parameterField} is ${dataError[parameterField]?.type}`
+        : dataError[parameterField].message;
     return (
       <View>
         <Text className="!text-red-500 mt-1 text-sm">{errorMessage}</Text>

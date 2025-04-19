@@ -1,7 +1,7 @@
 export var theme = {
   body: "#ffffff",
   text: "#111111",
-  primary: "#ff8c42",
+  primary: "rgb(148 163 184 )",
   card: "#e5e7eb",
   accent: "#ff6700",
   accentHover: "#ff4500",

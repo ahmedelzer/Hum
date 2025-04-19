@@ -1,41 +1,53 @@
+import { useAuth } from "../../../context/auth";
 import { SetHeaders } from "../../../request";
 
-export default function LoadData(
+export default async function LoadData(
   state,
   dataSourceAPI,
   getAction,
   cache,
   updateRows,
-  dispatch
+  dispatch,
+  abortController = false,
+  reRequest = false
 ) {
   const { requestedSkip, take, lastQuery, loading } = state;
+  // const { signOut } = useAuth();
   // const navigate = useNavigate(); seen error dom hooks
   const query = dataSourceAPI(getAction, requestedSkip, take);
   if (!getAction) return;
-  if (query !== lastQuery && !loading) {
+  if ((query !== lastQuery || reRequest) && (!loading || abortController)) {
     const cached = cache.getRows(requestedSkip, take);
+
     if (cached.length === take) {
       updateRows(requestedSkip, take);
     } else {
       dispatch({ type: "FETCH_INIT" });
+      const headers = await SetHeaders();
       fetch(query, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          ...SetHeaders(),
+          ...headers,
         },
+        // ...(abortController && { signal: abortController.current.signal }),
+        signal: abortController?.current?.signal,
       })
         .then((response) => response.json())
-        .then(({ dataSource, count }) => {
-          if (dataSource.code === 401) {
-            //todo handle error message
-            // RedirectToLogin(navigate, dataSource);
-            return;
-          }
+        .then(({ count, dataSource }) => {
+          // if (dataSource.code === 401) {
+          //   signOut();
+          //   //todo handle error message
+          //   // RedirectToLogin(navigate, dataSource);
+          //   // return;
+          // }
           cache.setRows(requestedSkip, dataSource);
           updateRows(requestedSkip, take, count);
         })
-        .catch(() => dispatch({ type: "REQUEST_ERROR" }));
+        .catch((error) => {
+          console.log("error", error);
+          dispatch({ type: "REQUEST_ERROR" });
+        });
     }
     dispatch({ type: "UPDATE_QUERY", payload: query });
   }

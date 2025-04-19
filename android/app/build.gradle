@@ -89,6 +89,7 @@ android {
     namespace 'com.HumApp'
     defaultConfig {
         applicationId 'com.HumApp'
+        manifestPlaceholders = [ MAPS_API_KEY: project.hasProperty('MAPS_API_KEY') ? MAPS_API_KEY : "" ]
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

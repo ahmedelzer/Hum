@@ -8,8 +8,8 @@ import ResponsiveContainer from "../../kitchensink-components/auth/layout/Respon
 import { LocalizationContext } from "../../../context/LocalizationContext";
 const DetailsScreen = ({ route }) => {
   const { localization } = useContext(LocalizationContext);
-  const item = route.params;
-  const [likes, setLikes] = useState(4);
+  const item = route.params.item;
+  const fieldsType = route.params.fieldsType;
   return (
     <ResponsiveContainer setMargin={true} style={""}>
       <SafeAreaView className="bg-body">
@@ -17,7 +17,7 @@ const DetailsScreen = ({ route }) => {
           subTitle={localization.Hum_screens.menu.details.header.subTitle}
           title={localization.Hum_screens.menu.details.header.title}
         />
-        <CarouselBox actions={{ likes, setLikes }} {...item} />
+        <CarouselBox item={item} fieldsType={fieldsType} />
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* <View className="justify-center items-center h-[250px]">
           <Image source={item.image} style={{ height: 220, width: 220 }} />

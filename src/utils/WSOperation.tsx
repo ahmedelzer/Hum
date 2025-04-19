@@ -1,10 +1,23 @@
-export function WSOperation(message, prvMessages, callback, idField?: any) {
+export function WSOperation(
+  messageString,
+  setReRequest,
+  reducerDispatch,
+  prvMessages,
+  callback,
+  idField?: any,
+  dataSourceName,
+  rows
+) {
+  // const message = messageString;
+  const message = JSON.parse(messageString);
+  // console.log(message, message.ope, message.notifications);
+
   switch (message.ope) {
     case "Insert": {
       callback([...prvMessages, message]);
       break;
     }
-    case "context": {
+    case "Context": {
       callback();
       break;
     }
@@ -15,11 +28,22 @@ export function WSOperation(message, prvMessages, callback, idField?: any) {
 
       break;
     }
+    case "ReUpdate": {
+      setReRequest(true);
+
+      break;
+    }
     case "Delete": {
-      //   let Delete = state.rows.find(
-      //     (row) => row[schema.idField] === data[getAction.returnPropertyName]
-      //   );
-      //   Delete = null;
+      console.log("enter delete");
+      const newRows = rows.filter((removeItem) => {
+        return removeItem[idField] !== message[dataSourceName];
+      });
+      reducerDispatch({
+        type: "WS_DELETE_ROW",
+        payload: {
+          rows: newRows,
+        },
+      });
       break;
     }
     case "Fill": {

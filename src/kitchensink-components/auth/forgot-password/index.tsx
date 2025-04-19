@@ -58,7 +58,7 @@ const ForgotPasswordScreen = () => {
           />
         </Pressable>
         <VStack>
-          <Heading className="md:text-center text-primary-custom" size="3xl">
+          <Heading className="md:text-center text-accent" size="3xl">
             {localization.forgotPassword.headTitle}
           </Heading>
           <Text className="text-sm">

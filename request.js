@@ -1,16 +1,20 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { retrieveSecureValue } from "./src/store/zustandStore";
 
-export const baseURL = "http://maingatewayapi.ihs-solutions.com:8001";
+export const baseURL = "https://maingatewayapi.ihs-solutions.com:8000";
 export const defaultProjectProxyRoute =
-  "http://maingatewayapi.ihs-solutions.com:8001/BrandingMart/api/";
+  "http://maingatewayapi.ihs-solutions.com:8000/BrandingMart/api/";
 export const defaultProjectProxyRouteWithoutAPI =
-  "http://maingatewayapi.ihs-solutions.com:8001/BrandingMart/";
+  "http://maingatewayapi.ihs-solutions.com:8000/BrandingMart/";
+export const publicImageURL = "http://41.196.0.25:5004/";
+export const websocketBaseURI =
+  "wss://maingatewayapi.ihs-solutions.com:8000/Chanels";
 // export const languageName = window.localStorage.getItem("language");
 // export const languageID = window.localStorage.getItem("languageID");
 // export const projectProxyRoute =
 //   window.sessionStorage.getItem("projectProxyRoute");//!make it by storge
-let projectProxyRoute = "BrandingMart";
+export let projectProxyRoute = "BrandingMart";
 // Set projectProxyRoute
 export function SetReoute(Route) {
   projectProxyRoute = Route;
@@ -24,17 +28,18 @@ export const baseURLWithoutApi = `${baseURL}/${projectProxyRoute}`;
 export function GetProjectUrl() {
   return `${baseURL}/${projectProxyRoute}/api`;
 }
-export function SetHeaders() {
-  console.log("====================================");
-  console.log(
-    AsyncStorage.getItem("language"),
-    AsyncStorage.getItem("languageID")
-  );
-  console.log("====================================");
+export async function GetToken() {
+  return await retrieveSecureValue("token");
+}
+export async function SetHeaders() {
+  // console.log("====================================");
+  // console.log(await GetToken(), "req");
+  // console.log("====================================");
   const headers = {
     languageName: "",
     // languageName: encodeURIComponent(AsyncStorage.getItem("language")) || "",
     "Content-Type": "application/json",
+    token: await GetToken(),
     // "Access-Control-Allow-Credentials": "true",
     // "Access-Control-Allow-Origin": "*",
     languageID: "",

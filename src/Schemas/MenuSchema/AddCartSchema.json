@@ -1,0 +1,81 @@
+{
+  "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f888",
+  "schemaType": "customerCard",
+  "idField": "cartItemID",
+  "dashboardFormSchemaParameters": [
+    {
+      "dashboardFormSchemaParameterID": "bbc47b3c-baba-4c80-8a8e-50d9875a15d6",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "text",
+      "parameterField": "cartItemID",
+      "parameterTitel": "menuCategoryID",
+      "isIDField": true,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 0
+    },
+    {
+      "dashboardFormSchemaParameterID": "b7100c23-a107-4898-afb3-0a4994aa3bd0",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": true,
+      "parameterType": "menuItemName",
+      "parameterField": "menuItemName",
+      "parameterTitel": "Menu Item Name",
+      "parameterLookupTitel": "Menu Item Name",
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 1
+    },
+    {
+      "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": false,
+      "parameterType": "menuItemImage",
+      "parameterField": "itemImage",
+      "parameterTitel": "Item Image",
+      "parameterLookupTitel": "Item Image",
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 9
+    },
+    {
+      "dashboardFormSchemaParameterID": "bbc47b3c-baba-4c80-8a8e-50d9875a15d6",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "cardAction",
+      "parameterField": "quantity",
+      "parameterTitel": "quantity",
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 0
+    },
+    {
+      "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": false,
+      "parameterType": "price",
+      "parameterField": "price",
+      "parameterTitel": "price",
+      "parameterLookupTitel": "price",
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 9
+    }
+  ],
+
+  "isMainSchema": true,
+  "dataSourceName": null,
+  "projectProxyRoute": "BrandingMartPOS",
+  "propertyName": null,
+  "indexNumber": 0
+}

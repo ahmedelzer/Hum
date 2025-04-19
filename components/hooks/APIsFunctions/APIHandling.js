@@ -5,7 +5,7 @@ export default async function APIHandling(url, methodType, sendBody, query) {
   if (methodType == "Get") {
     urlRoute = query;
   }
-  for (const [key, value] of Object.entries(SetHeaders())) {
+  for (const [key, value] of Object.entries(await SetHeaders())) {
     myHeaders.append(key, value);
   }
 
@@ -19,11 +19,11 @@ export default async function APIHandling(url, methodType, sendBody, query) {
     redirect: "follow",
   };
   if (methodType !== "Get") requestOptions = { ...requestOptions, body: raw };
-  console.log(requestOptions);
+  console.log("====================================");
+  console.log(requestOptions, urlRoute);
+  console.log("====================================");
   try {
     const response = await fetch(urlRoute, requestOptions);
-    console.log("here");
-
     // Handle 204 No Content
     if (response.status === 204) {
       return {

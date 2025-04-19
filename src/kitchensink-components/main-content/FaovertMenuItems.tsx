@@ -13,13 +13,13 @@ import { LocalizationContext } from "../../../context/LocalizationContext";
 import { useSelector } from "react-redux";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { GetMediaUrl } from "../../utils/GetMediaUrl";
 
 const FaovertMenuItems = () => {
   const favoriteItems = useSelector((state) => state.menuItem.favoriteItems);
+  const fieldsType = useSelector((state) => state.menuItem.fieldsType);
+
   const navigation = useNavigation();
-  console.log("====================================");
-  console.log(favoriteItems, "favorite");
-  console.log("====================================");
   const { localization } = useContext(LocalizationContext);
   return (
     favoriteItems.length > 0 && (
@@ -34,8 +34,8 @@ const FaovertMenuItems = () => {
               onPress={() =>
                 navigation.navigate("DetailsProductScreen", favoriteItem)
               }
-              key={favoriteItem.id}
-              className="relative w-1/3 aspect-square shrink border-[4px] border-card rounded-lg"
+              key={favoriteItem[fieldsType.idField]}
+              className="relative w-1/3 md:w-1/4 aspect-square shrink border-[4px] border-card rounded-lg"
             >
               <Card
                 style={{
@@ -44,13 +44,16 @@ const FaovertMenuItems = () => {
               >
                 <VStack className="items-center">
                   <Image
-                    source={favoriteItem.image}
-                    className="!h-12 !w-12 aspect-square rounded-full"
+                    source={GetMediaUrl(
+                      favoriteItem[fieldsType.imageView],
+                      "publicImage"
+                    )}
+                    className="!size-12 md:!size-28 aspect-square rounded-full"
                     resizeMode="cover"
                     alt=""
                   />
                   <Text className="mt-2 text-sm font-bold">
-                    {favoriteItem.name}
+                    {favoriteItem[fieldsType.text]}
                   </Text>
                 </VStack>
                 <Icon

@@ -57,7 +57,13 @@
 // }
 import React, { useEffect, useRef, useState } from "react";
 
-import MapView, { Callout, Marker, Region, UrlTile } from "react-native-maps";
+import MapView, {
+  Callout,
+  Marker,
+  PROVIDER_GOOGLE,
+  Region,
+  UrlTile,
+} from "react-native-maps";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -122,6 +128,7 @@ export default function BranchesByLocationMap() {
       <MapView
         style={StyleSheet.absoluteFillObject}
         region={region}
+        provider={PROVIDER_GOOGLE}
         ref={mapRef}
         onRegionChangeComplete={onRegionChange}
         initialRegion={INITIAL_REGION} // Ensure this is set

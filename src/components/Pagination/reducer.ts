@@ -14,6 +14,13 @@ function reducer(state, { type, payload }) {
         totalCount: payload.totalCount,
         loading: false,
       };
+    case "WS_DELETE_ROW":
+      return {
+        ...state,
+        rows: payload.rows, // Append new rows to the existing rows
+        totalCount: state.totalCount - 1,
+        loading: false,
+      };
     case "START_LOADING":
       return {
         ...state,

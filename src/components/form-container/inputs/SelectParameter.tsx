@@ -3,36 +3,46 @@ import React, { useState } from "react";
 import { Controller } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import {
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectIcon,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicator,
+  SelectDragIndicatorWrapper,
+  SelectItem,
+} from "../../../../components/ui";
 //!localization
 function SelectParameter({
   values = [], // Array of objects with { label, value }
-  value = null, // Current selected value
+  value: defaultValue,
   fieldName,
   enable = true,
   control,
   ...props
 }) {
-  const [selectedValue, setSelectedValue] = useState(value); // Selected value
-  const [isFocus, setIsFocus] = useState(false);
-  // Prepare dropdown options
-  const dropdownData = values.map((val) => ({
-    label: val, // Display value
-    value: val, // Actual value
-  }));
-  const renderLabel = () => {
-    if (selectedValue || isFocus) {
-      return (
-        <Text style={[styles.label, isFocus && { color: "blue" }]}>
-          {fieldName || "Select an option"}
-        </Text>
-      );
-    }
-    return null;
-  };
-  console.log(value);
+  // const [selectedValue, setSelectedValue] = useState(value); // Selected value
+  // const [isFocus, setIsFocus] = useState(false);
+  // // Prepare dropdown options
+  // const dropdownData = values.map((val) => ({
+  //   label: val, // Display value
+  //   value: val, // Actual value
+  // }));
+  // const renderLabel = () => {
+  //   if (selectedValue || isFocus) {
+  //     return (
+  //       <Text style={[styles.label, isFocus && { color: "blue" }]}>
+  //         {fieldName || "Select an option"}
+  //       </Text>
+  //     );
+  //   }
+  //   return null;
+  // };
   return (
     <View>
-      {/* {renderLabel()} */}
       <Controller
         control={control}
         rules={{
@@ -40,37 +50,64 @@ function SelectParameter({
         }}
         name={fieldName}
         render={({ field: { onChange, onBlur, value } }) => (
-          <Dropdown
-            style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={dropdownData} // Map values dynamically
-            search
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder={!isFocus ? "Select an item" : "..."}
-            searchPlaceholder="Search..."
-            value={selectedValue}
-            disabled={!enable} // Disable dropdown if not enabled
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
-            onChange={(item) => {
-              setSelectedValue(item.value);
-              onChange(item.value); // Call onChange handler
-              setIsFocus(false);
+          // <Dropdown
+          //   style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+          //   placeholderStyle={styles.placeholderStyle}
+          //   selectedTextStyle={styles.selectedTextStyle}
+          //   inputSearchStyle={styles.inputSearchStyle}
+          //   iconStyle={styles.iconStyle}
+          //   data={dropdownData} // Map values dynamically
+          //   search
+          //   maxHeight={300}
+          //   labelField="label"
+          //   valueField="value"
+          //   placeholder={!isFocus ? "Select an item" : "..."}
+          //   searchPlaceholder="Search..."
+          //   value={selectedValue}
+          //   disabled={!enable} // Disable dropdown if not enabled
+          //   onFocus={() => setIsFocus(true)}
+          //   onBlur={() => setIsFocus(false)}
+          //   onChange={(item) => {
+          //     setSelectedValue(item.value);
+          //     onChange(item.value); // Call onChange handler
+          //     setIsFocus(false);
+          //   }}
+          // />
+          <Select
+            value={value || defaultValue}
+            onValueChange={(newValue) => {
+              onChange(newValue);
             }}
-            // renderLeftIcon={() => (
-            //   <AntDesign
-            //     style={styles.icon}
-            //     color="black"
-            //     name="Safety"
-            //     size={20}
-            //   />
-            // )}
-          />
+            className="mx-2"
+          >
+            <SelectTrigger
+              variant="outline"
+              size="sm"
+              className="w-full h-11 flex flex-row justify-between"
+            >
+              <SelectInput
+                placeholder="Select option"
+                value={value || defaultValue}
+                className="text-base text-text"
+              />
+              <SelectIcon
+                as={AntDesign}
+                name="down"
+                className="mr-3 text-text"
+              />
+            </SelectTrigger>
+            <SelectPortal>
+              <SelectBackdrop />
+              <SelectContent>
+                <SelectDragIndicatorWrapper>
+                  <SelectDragIndicator />
+                </SelectDragIndicatorWrapper>
+                {values.map((value) => (
+                  <SelectItem key={value} label={value} value={value} />
+                ))}
+              </SelectContent>
+            </SelectPortal>
+          </Select>
         )}
       />
     </View>

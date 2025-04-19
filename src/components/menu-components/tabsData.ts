@@ -14,6 +14,8 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+    discount: "10%",
+    type: "menuItem",
   },
   {
     id: 2,
@@ -31,6 +33,7 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+    type: "menuItem",
   },
   {
     id: 3,
@@ -48,6 +51,7 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+    type: "menuItem",
   },
   {
     id: 4,
@@ -65,6 +69,7 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+    type: "menuItem",
   },
   {
     id: 5,
@@ -80,6 +85,7 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+    type: "menuItem",
   },
 
   {
@@ -97,6 +103,7 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+    type: "menuItem",
   },
 
   {
@@ -115,6 +122,7 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+    type: "menuItem",
   },
 
   {
@@ -124,7 +132,7 @@ export const tabsData = [
       "Explore nature at its best with a stay amidst the lush greenery of national parks.",
     price: 5800.0,
     categoryId: "4",
-
+    type: "menuItem",
     rating: 4.6,
     location: "Wadi El Gemal National Park, Egypt",
     image: require("../../../assets/display/image16.png"),
@@ -133,6 +141,148 @@ export const tabsData = [
     available: true,
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
+  },
+  {
+    attributes: {
+      dashboardFormSchemaID: "ad9fbe73-1ef5-45fb-afec-901276f740e2",
+      schemaType: "attributes",
+      idField: "",
+      dashboardFormSchemaInfoDTOView: {
+        dashboardFormSchemaID: "ad9fbe73-1ef5-45fb-afec-901276f740e1",
+        schemaHeader: "Groups",
+        addingHeader: "Add Group",
+        editingHeader: "Edit Group",
+      },
+      dashboardFormSchemaParameters: [
+        {
+          dashboardFormSchemaParameterID:
+            "568b28c8-a5d4-43a2-a303-da319b91276b",
+          dashboardFormSchemaID: "ad9fbe73-1ef5-45fb-afec-901276f740e1",
+          isEnable: false,
+          parameterType: "select",
+          parameterField: "type",
+          parameterTitel: "Type Name",
+          isIDField: false,
+          values: ["margherita", "calories"],
+          lookupID: null,
+          lookupReturnField: null,
+          lookupDisplayField: null,
+          indexNumber: 0,
+        },
+        {
+          dashboardFormSchemaParameterID:
+            "b7aad2c8-c766-4dc0-8bbd-eec1e13e6a24",
+          dashboardFormSchemaID: "ad9fbe73-1ef5-45fb-afec-901276f740e1",
+          isEnable: true,
+          parameterType: "select",
+          parameterField: "size",
+          parameterTitel: "Size",
+          isIDField: false,
+          values: ["small", "medium", "large"],
+          lookupID: null,
+          lookupReturnField: null,
+          lookupDisplayField: null,
+          indexNumber: 1,
+        },
+      ],
+      isMainSchema: true,
+      dataSourceName: "",
+      projectProxyRoute: "BrandingMart",
+      propertyName: null,
+      indexNumber: 0,
+    },
+    id: 10,
+    name: "pizza margherita small",
+    type: "menuItemsGroup",
+    description:
+      "Explore nature at its best with a stay amidst the lush greenery of national parks.",
+    price: 5800.0,
+    categoryId: "1",
+    rating: 4.6,
+    location: "Wadi El Gemal National Park, Egypt",
+    image: require("../../../assets/display/image16.png"),
+    quantity: 0,
+    keywords: ["nature", "park", "retreat", "vacation"],
+    attribute: { size: "small", type: "margherita" },
+
+    available: true,
+    createdAt: "2025-01-25T10:00:00Z",
+    updatedAt: "2025-01-25T10:00:00Z",
+    items: [
+      {
+        id: 10,
+        name: "pizza margherita small",
+        type: "menuItemsGroup",
+        description:
+          "Explore nature at its best with a stay amidst the lush greenery of national parks.",
+        price: 5800.0,
+        categoryId: "1",
+        rating: 4.6,
+        location: "Wadi El Gemal National Park, Egypt",
+        image: require("../../../assets/display/image16.png"),
+        quantity: 0,
+        keywords: ["nature", "park", "retreat", "vacation"],
+        attribute: { size: "small", type: "margherita" },
+
+        available: true,
+        createdAt: "2025-01-25T10:00:00Z",
+        updatedAt: "2025-01-25T10:00:00Z",
+      },
+      {
+        id: 10,
+        name: "pizza margherita large",
+        type: "menuItemsGroup",
+        description:
+          "Explore nature at its best with a stay amidst the lush greenery of national parks.",
+        price: 500.0,
+        categoryId: "4",
+        rating: 4.6,
+        location: "Wadi El Gemal National Park, Egypt",
+        image: require("../../../assets/display/image22.png"),
+        quantity: 0,
+        keywords: ["nature", "park", "retreat", "vacation"],
+        available: true,
+        attribute: { size: "large", type: "margherita" },
+        createdAt: "2025-01-25T10:00:00Z",
+        updatedAt: "2025-01-25T10:00:00Z",
+      },
+      {
+        id: 10,
+        name: "pizza margherita medium",
+        type: "menuItemsGroup",
+        description:
+          "Explore nature at its best with a stay amidst the lush greenery of national parks.",
+        price: 5900.0,
+        categoryId: "4",
+        rating: 4.6,
+        location: "Wadi El Gemal National Park, Egypt",
+        image: require("../../../assets/display/image19.png"),
+        quantity: 0,
+        keywords: ["nature", "park", "retreat", "vacation"],
+        available: true,
+        createdAt: "2025-01-25T10:00:00Z",
+        updatedAt: "2025-01-25T10:00:00Z",
+        attribute: { size: "medium", type: "margherita" },
+      },
+      {
+        id: 10,
+        name: "pizza calories small",
+        type: "menuItemsGroup",
+        description:
+          "Explore nature at its best with a stay amidst the lush greenery of national parks.",
+        price: 5100.0,
+        categoryId: "4",
+        rating: 4.6,
+        location: "Wadi El Gemal National Park, Egypt",
+        image: require("../../../assets/display/image17.png"),
+        quantity: 0,
+        keywords: ["nature", "park", "retreat", "vacation"],
+        available: true,
+        createdAt: "2025-01-25T10:00:00Z",
+        updatedAt: "2025-01-25T10:00:00Z",
+        attribute: { size: "small", type: "calories" },
+      },
+    ],
   },
 ];
 export const tabs = [
@@ -167,5 +317,15 @@ export const tabs = [
     createdAt: "2025-01-25T10:00:00Z",
     updatedAt: "2025-01-25T10:00:00Z",
     title: "National Parks",
+  },
+];
+export const menuItemType = [
+  {
+    id: "0",
+    name: "menuItem",
+  },
+  {
+    id: "1",
+    name: "menuItemsGroup",
   },
 ];

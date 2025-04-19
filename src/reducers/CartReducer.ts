@@ -23,23 +23,26 @@ export const cartSlice = createSlice({
   },
   reducers: {
     addToCart: (state, action) => {
+      const item = action.payload.item;
+      const fieldsType = action.payload.fieldsType;
+      const idField = fieldsType.idField;
       const itemPresent = state.cart.find(
-        (item) => item.id === action.payload.id
+        (cartItem) => cartItem[idField] === item[idField]
       );
       if (itemPresent) {
-        if (action.payload.addQuantity < 0 && itemPresent.quantity === 1) {
+        if (item.addQuantity < 0 && itemPresent.quantity === 1) {
           const removeFromCart = state.cart.filter(
-            (item) => item.id !== action.payload.id
+            (removeItem) => removeItem[idField] !== item[idField]
           );
           state.cart = removeFromCart;
         } else {
-          itemPresent.quantity += +action.payload.addQuantity;
+          itemPresent.quantity += +item.addQuantity;
         }
       } else {
-        state.cart.push({ ...action.payload, quantity: 1 });
+        state.cart.push({ ...item, quantity: 1 });
       }
       // Recalculate totalAmount
-      state.totalAmount += action.payload.price * action.payload.addQuantity;
+      state.totalAmount += item[fieldsType.price] * action.payload.addQuantity;
       // Save to secure storage
       saveCartToStorage(state.cart, state.totalAmount);
     },
@@ -105,12 +108,6 @@ export const loadCartFromStorage = () => async (dispatch) => {
   dispatch(setCartFromStorage({ cart, totalAmount }));
 };
 
-export const {
-  addToCart,
-  removeFromCart,
-  incrementQty,
-  decrementQty,
-  setCartFromStorage,
-} = cartSlice.actions;
+export const { addToCart, setCartFromStorage } = cartSlice.actions;
 
 export default cartSlice.reducer;

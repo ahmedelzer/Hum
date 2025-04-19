@@ -14,6 +14,9 @@ import RenderItemsView from "../utils/renderItemsView";
 import { FontAwesome } from "@expo/vector-icons";
 import { SquareArrowUpRight } from "lucide-react-native";
 import HomestayPage from "../kitchensink-components/HomestayPage";
+import { useDeviceInfo } from "../utils/useDeviceInfo";
+import DrawerNavigator from "./DrawerNavigator";
+import WebNavigation from "./WebNavigation";
 
 // types
 export type RootStackParamList = {
@@ -45,9 +48,10 @@ const linking = {
 const Stack = createStackNavigator<RootStackParamList>();
 const RootStack: FC = (props: any) => {
   const { user, loading } = useAuth();
+  const { os } = useDeviceInfo();
   return (
     <NavigationContainer linking={linking}>
-      {/* {!loading ? (
+      {!loading ? (
         user ? (
           <BottomBarTabs />
         ) : (
@@ -55,9 +59,12 @@ const RootStack: FC = (props: any) => {
         )
       ) : (
         <LoadingScreen />
-      )} */}
+      )}
       {/* <OutsideStack /> */}
-      <BottomBarTabs />
+      {/* <OutsideStack /> */}
+      {/* todo make here anther component for web  */}
+      {/* {os === "web" ? <WebNavigation /> : <BottomBarTabs />} */}
+      {/* <BottomBarTabs /> */}
       {/* <HomestayPage /> */}
     </NavigationContainer>
   );

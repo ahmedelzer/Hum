@@ -37,7 +37,7 @@ export default function CheckoutScreen() {
       <GoBackHeader subTitle={"McDonald's"} title={"Checkout"} />
       <ScrollView>
         <View className="my-2 w-full h-[500]">
-          <BranchesByLocationMap branches={branches} />
+          {/* <BranchesByLocationMap branches={branches} /> */}
         </View>
         {/* Delivery Address */}
         <View className="mt-4 bg-body p-4 border border-card rounded-xl">

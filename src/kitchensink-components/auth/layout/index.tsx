@@ -13,11 +13,13 @@ export const AuthLayout = (props: AuthLayoutProps) => {
     <SafeAreaView className="w-full h-full">
       <ScrollView
         className="w-full h-full"
-        contentContainerStyle={{ flexGrow: 1 }}>
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <HStack className="w-full h-full flex-grow justify-center">
           <VStack
             className="relative hidden md:flex h-full w-full flex-1  items-center  justify-center"
-            space="md">
+            space="md"
+          >
             <Image
               height="100%"
               width="100%"
