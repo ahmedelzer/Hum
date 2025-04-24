@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React, { useContext, useLayoutEffect } from "react";
 import {
   ScrollView,
   Text,
@@ -12,6 +12,9 @@ import { LocalizationContext } from "../../../context/LocalizationContext";
 import SuggestCard from "../../components/cards/SuggestCard";
 import GoBackHeader from "../../components/header/GoBackHeader";
 import CardCartItem from "./CardCartItem";
+import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
+import { GetProjectUrl } from "../../../request";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart.cart);
@@ -20,6 +23,12 @@ const CartPage = () => {
   const cartLength = cart.length;
   const navigation = useNavigation();
   const { isRTL, localization } = useContext(LocalizationContext);
+  // SetReoute(NodeMenuItemsSchema.projectProxyRoute);
+  const {
+    data: GetOldCustomerCart,
+    error,
+    isLoading,
+  } = useFetch("/ShopNode/GetOldCustomerCart", GetProjectUrl());
   const suggestions = [
     {
       id: 1,
@@ -49,12 +58,41 @@ const CartPage = () => {
   const pressHandler = () => {
     navigation.navigate("Home");
   };
+  const oldCartCount = GetOldCustomerCart?.count ?? 0;
+
+  const oldCartButton = (
+    <TouchableOpacity
+      // onPress={() => navigation.navigate("OldCustomerCartScreen")}
+      className="p-1"
+    >
+      <View className="relative">
+        <MaterialCommunityIcons
+          name="clipboard-clock-outline"
+          size={28}
+          color="black"
+        />
+        {oldCartCount > 0 && (
+          <View
+            className={
+              "absolute -top-1 -right-1 bg-red-500 rounded-full h-4 w-4 items-center justify-center " +
+              `${isRTL ? "-left-1" : "-right-1"}`
+            }
+          >
+            <Text className="text-white text-[10px] font-bold">
+              {oldCartCount}
+            </Text>
+          </View>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
   return (
     <View className="flex-1 bg-body">
       {/* Header */}
       <GoBackHeader
         subTitle={localization.Hum_screens.cart.header.subTitle}
         title={localization.Hum_screens.cart.header.title}
+        rightComponent={oldCartButton}
       />
 
       {/* Scrollable Content */}

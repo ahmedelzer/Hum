@@ -18,7 +18,6 @@ export default async function LoadData(
   if (!getAction) return;
   if ((query !== lastQuery || reRequest) && (!loading || abortController)) {
     const cached = cache.getRows(requestedSkip, take);
-
     if (cached.length === take) {
       updateRows(requestedSkip, take);
     } else {

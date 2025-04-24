@@ -39,6 +39,52 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({
     useState<typeof staticLocalization>(staticLocalization);
   const [languageID, setLanguageID] = useState<string>("");
 
+  // useEffect(() => {
+  //   const initializeLocalization = async () => {
+  //     const savedDirection = await AsyncStorage.getItem("isRTL");
+  //     const savedLanguage = await AsyncStorage.getItem("language");
+  //     const savedLocalization = await AsyncStorage.getItem("localization");
+  //     const savedLanguageID = await AsyncStorage.getItem("languageID");
+  //     console.log(savedDirection, savedLanguage, "savedLanguage");
+  //     console.log(savedDirection, "sss");
+  //     if (savedDirection !== null) {
+  //       const direction = savedDirection === "true";
+  //       setIsRTL(direction);
+  //       if (I18nManager.isRTL !== direction) {
+  //         console.log(
+  //           I18nManager.isRTL,
+  //           direction,
+  //           "I18nManager.isRTL from cond"
+  //         );
+  //         I18nManager.allowRTL(direction);
+  //         I18nManager.forceRTL(direction);
+  //         // RNRestart.Restart(); // ⬅️ this is required to apply the change
+  //         // return;
+  //       }
+  //     } else {
+  //       I18nManager.forceRTL(false); //!delete that
+  //       console.log(I18nManager.isRTL, "I18nManager.isRTL");
+  //       setIsRTL(false);
+  //     }
+  //     if (savedLanguage) {
+  //       setLanguage(savedLanguage);
+  //     }
+
+  //     if (savedLocalization) {
+  //       setLocalization(
+  //         typeof savedLocalization === "string"
+  //           ? JSON.parse(savedLocalization)
+  //           : savedLocalization
+  //       );
+  //     }
+
+  //     if (savedLanguageID) {
+  //       setLanguageID(savedLanguageID);
+  //     }
+  //   };
+
+  //   initializeLocalization();
+  // }, []);
   useEffect(() => {
     const initializeLocalization = async () => {
       const savedDirection = await AsyncStorage.getItem("isRTL");
@@ -46,16 +92,28 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({
       const savedLocalization = await AsyncStorage.getItem("localization");
       const savedLanguageID = await AsyncStorage.getItem("languageID");
 
-      console.log(savedDirection, "sss");
+      let directionToSet = false; // Default to LTR (English)
+
       if (savedDirection !== null) {
-        const direction = savedDirection === "true";
-        setIsRTL(direction);
-        if (I18nManager.isRTL !== direction) {
-          I18nManager.forceRTL(direction);
-        }
+        directionToSet = savedDirection === "true";
+      } else {
+        // If first time, save default (LTR)
+        await AsyncStorage.setItem("isRTL", "false");
       }
-      I18nManager.forceRTL(false); //!delete that
-      setIsRTL(false);
+
+      console.log("I18nManager.isRTL:", I18nManager.isRTL);
+      console.log("directionToSet:", directionToSet);
+
+      if (I18nManager.isRTL !== directionToSet) {
+        console.log("Direction mismatch. Changing direction and restarting.");
+        I18nManager.forceRTL(directionToSet);
+        setTimeout(() => RNRestart.Restart(), 100); // small delay to avoid immediate loop
+        return; // prevent setting state after restart request
+      }
+
+      // Set states (only if no restart is needed)
+      setIsRTL(directionToSet);
+
       if (savedLanguage) {
         setLanguage(savedLanguage);
       }

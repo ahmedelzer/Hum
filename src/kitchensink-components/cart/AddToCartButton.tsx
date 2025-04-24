@@ -9,7 +9,10 @@ const AddToCartSecondaryButton = ({ item, fieldsType, schemaActions }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
-
+  const cart = useSelector((state) => state.cart.cart);
+  const haveOnCart = cart.find((value) => {
+    return value[fieldsType.idField] === item[fieldsType.idField];
+  });
   return (
     <View className="flex-row items-center mt-2">
       <TouchableOpacity
@@ -21,7 +24,8 @@ const AddToCartSecondaryButton = ({ item, fieldsType, schemaActions }) => {
             setLoading,
             dispatch,
             fieldsType,
-            schemaActions
+            schemaActions,
+            haveOnCart[fieldsType.cardAction] + 1 || 1
           );
         }}
         className="px-3 py-1 bg-card rounded-full"
@@ -32,11 +36,12 @@ const AddToCartSecondaryButton = ({ item, fieldsType, schemaActions }) => {
       <TouchableOpacity
         onPress={() => {
           AddItemToCart(
-            { ...item, addQuantity: -1 },
+            { ...item, addQuantity: 1 },
             setLoading,
             dispatch,
             fieldsType,
-            schemaActions
+            schemaActions,
+            haveOnCart[fieldsType.cardAction] - 1 || 1
           );
         }}
         className={
@@ -61,7 +66,6 @@ const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
   const haveOnCart = cart.find((value) => {
     return value[fieldsType.idField] === item[fieldsType.idField];
   });
-
   return (
     <View>
       {haveOnCart ? (
@@ -73,7 +77,8 @@ const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
                 setLoading,
                 dispatch,
                 fieldsType,
-                schemaActions
+                schemaActions,
+                haveOnCart[fieldsType.cardAction] + 1 || 1
               ); // cart
               // dispatch(incrementQuantity(item)); //product
             }}
@@ -99,7 +104,7 @@ const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
               }}
             >
               {/* {GetQuantity(item.id)} */}
-              {haveOnCart.quantity}
+              {haveOnCart[fieldsType.cardAction]}
             </Text>
           </Pressable>
           <Pressable
@@ -109,7 +114,8 @@ const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
                 setLoading,
                 dispatch,
                 fieldsType,
-                schemaActions
+                schemaActions,
+                haveOnCart[fieldsType.cardAction] - 1 || -1
               );
             }}
           >
@@ -133,7 +139,8 @@ const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
               setLoading,
               dispatch,
               fieldsType,
-              schemaActions
+              schemaActions,
+              1
             )
           }
           disabled={!user}

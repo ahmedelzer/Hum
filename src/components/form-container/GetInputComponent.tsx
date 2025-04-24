@@ -16,6 +16,8 @@ import {
   TextParameter,
 } from "./index";
 export function GetInputComponent(type) {
+  console.log(type);
+
   switch (type) {
     case "text":
     case "float":
@@ -27,6 +29,8 @@ export function GetInputComponent(type) {
       return CheckBoxParameter;
     case "datetime":
     case "date":
+    case "birthday":
+    case "pushTime":
       return DateParameter;
     case "boolean":
       return BooleanParameter;

@@ -10,6 +10,8 @@
 3-reload screens
 4-get old card
 5-set the Dates
+--birthday::14-60
+--pushTime::now
 
 6-apply schema of quantity 
 7-

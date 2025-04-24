@@ -1,21 +1,22 @@
-import { useDispatch, useSelector } from "react-redux";
+import { setCartFromStorage } from "../reducers/CartReducer";
 import { setFields } from "../reducers/MenuItemReducer";
-import useFetch from "../../components/hooks/APIsFunctions/useFetch";
-import { GetProjectUrl, SetReoute } from "../../request";
 
-export async function GetCard(schema) {
-  const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart.cart);
+// Keep GetCard as pure function
+export function GetCard(
+  schema,
+  GetCustomerCart = false,
+  dispatch,
+  cart,
+  total
+) {
   const parameters = schema?.dashboardFormSchemaParameters ?? [];
-  console.log("====================================");
-  console.log("in GetCard");
-  console.log("====================================");
+
   const getField = (type: string, includeField = true) =>
     parameters.find(
       (item: any) =>
         item?.parameterType === type &&
         (type !== "menuItemName" || !item.isIDField)
-    )[includeField ? "parameterField" : undefined] ?? null;
+    )?.[includeField ? "parameterField" : undefined] ?? null;
 
   const fieldsType = {
     imageView: getField("menuItemImage"),
@@ -33,12 +34,16 @@ export async function GetCard(schema) {
     dataSourceName: schema.dataSourceName,
     cardAction: getField("cardAction"),
   };
+
   dispatch(setFields(fieldsType));
-  SetReoute(schema.projectProxyRoute);
-  const {
-    data: GetCustomerCart,
-    error,
-    isLoading,
-  } = await useFetch("/ShopNode/GetOldCustomerCart", GetProjectUrl());
-  console.log(GetCustomerCart, error, isLoading, "GetCustomerCart");
+  // if (cart.length === 0) {
+  if (GetCustomerCart) {
+    dispatch(
+      setCartFromStorage({
+        cart: [...GetCustomerCart.dataSource],
+        totalAmount: total,
+      })
+    );
+  }
+  // }
 }

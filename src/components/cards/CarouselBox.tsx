@@ -14,6 +14,7 @@ import {
   Text,
   VStack,
 } from "../../../components/ui";
+import { GetMediaUrl } from "../../utils/GetMediaUrl";
 //!locaization
 export const CarouselBox = ({ item, fieldsType }) => {
   return (
@@ -21,7 +22,7 @@ export const CarouselBox = ({ item, fieldsType }) => {
       {item[fieldsType.imageView] && (
         <View>
           <Image
-            source={item[fieldsType.imageView]}
+            source={GetMediaUrl(item[fieldsType.imageView], "publicImage")}
             alt={item[fieldsType.text]}
             className="w-auto h-[70%] rounded-xl"
             style={{

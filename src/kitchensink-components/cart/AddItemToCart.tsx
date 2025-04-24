@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { SetReoute } from "../../../request";
 import { onApply } from "../../components/form-container/OnApplay";
 import { addToCart } from "../../reducers/CartReducer";
@@ -8,9 +9,17 @@ export const AddItemToCart = async (
   setLoading,
   dispatch,
   fieldsType,
-  schemaActions
+  schemaActions,
+  quantity
 ) => {
   SetReoute(NodeMenuItemsSchema.projectProxyRoute);
+  // const cart = useSelector((state) => state.cart.cart);
+  // const haveOnCart = cart.find((value) => {
+  //   return value[fieldsType.idField] === item[fieldsType.idField];
+  // });
+  // const quantity = item[fieldsType.cardAction]
+  //   ? item[fieldsType.cardAction]
+  //   : 0;
   const postAction =
     schemaActions &&
     schemaActions.find(
@@ -22,7 +31,7 @@ export const AddItemToCart = async (
       (action) => action.dashboardFormActionMethodType === "Delete"
     );
   setLoading(true);
-  if (item.addQuantity < 0 && item.quantity === 1) {
+  if (item.addQuantity < 0 && item[fieldsType.cardAction] === 1) {
     await DeleteItem(
       item[fieldsType.idField],
       dispatch(addToCart({ item: item, fieldsType: fieldsType })),
@@ -32,7 +41,10 @@ export const AddItemToCart = async (
     );
   } else {
     const apply = await onApply(
-      { ...item },
+      {
+        ...item,
+        [fieldsType.cardAction]: quantity,
+      },
       "",
       true,
       postAction,

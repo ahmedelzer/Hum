@@ -55,6 +55,8 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
     );
 
   const { rows, skip, totalCount, loading } = state;
+  console.log(rows);
+
   useEffect(() => {
     LoadData(
       state,

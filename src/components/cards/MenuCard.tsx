@@ -17,6 +17,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import GetIconMenuItem from "../../utils/GetIconMenuItem";
 import { theme } from "../../Theme";
 import { GetMediaUrl } from "../../utils/GetMediaUrl";
+import ImageRoute from "../../utils/ImageRoute";
 export const MenuCard = ({
   item,
   discountedPrice,
@@ -40,12 +41,7 @@ export const MenuCard = ({
             className="rounded-2xl overflow-hidden"
             style={{ width: scale(128), height: scale(128) }}
           >
-            <Image
-              resizeMode="cover"
-              className="w-full h-full"
-              source={GetMediaUrl(item[fieldsType.imageView], "publicImage")}
-              alt="food"
-            />
+            <ImageRoute route={item[fieldsType.imageView]} />
           </Box>
         )}
         <HStack space="lg" className="items-center mt-2 flex-wrap">

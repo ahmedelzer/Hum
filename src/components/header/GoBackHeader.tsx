@@ -8,6 +8,7 @@ export default function GoBackHeader({
   title,
   subTitle,
   specialAction = false,
+  rightComponent,
 }) {
   const navigation = useNavigation();
   const { isRTL } = useContext(LocalizationContext);
@@ -22,7 +23,7 @@ export default function GoBackHeader({
     <View
       className={`${
         !specialAction && "border-b border-card "
-      }flex-row items-center justify-start`}
+      }flex-row items-center justify-start relative`}
     >
       <TouchableOpacity onPress={goBack} className="p-2">
         <AntDesign
@@ -34,6 +35,9 @@ export default function GoBackHeader({
       <View>
         {title && <Text className="text-2xl font-bold">{title}</Text>}
         {subTitle && <Text className="text-sm text-text">{subTitle}</Text>}
+      </View>
+      <View className={"absolute top-2 " + `${isRTL ? "left-5" : "right-5"}`}>
+        {rightComponent ? rightComponent : <View style={{ width: 24 }} />}
       </View>
     </View>
   );

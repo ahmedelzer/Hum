@@ -20,6 +20,31 @@ export default function DateParameter({
 }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
+  const today = new Date();
+  const isBirthday = props.type === "birthday";
+  const isPushTime = props.type === "pushTime";
+  const isDateTime = props.type === "datetime";
+
+  const mode = isPushTime ? "time" : isDateTime ? "datetime" : "date";
+
+  const minDate = isBirthday
+    ? new Date(today.getFullYear() - 60, today.getMonth(), today.getDate())
+    : isPushTime
+      ? new Date()
+      : undefined;
+
+  const maxDate = isBirthday
+    ? new Date(today.getFullYear() - 14, today.getMonth(), today.getDate())
+    : undefined;
+
+  const formatValue = (val) => {
+    if (!val) return placeholder;
+
+    if (isPushTime) return moment(val).format("hh:mm A");
+    if (isDateTime) return moment(val).format("MMMM D, YYYY - hh:mm A");
+    return moment(val).format("MMMM D, YYYY");
+  };
+
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
 
@@ -47,20 +72,19 @@ export default function DateParameter({
             style={styles.touchable}
             {...props}
           >
-            <Text style={styles.text}>
-              {value ? moment(value).format("MMMM D, YYYY") : placeholder}
-            </Text>
+            <Text style={styles.text}>{formatValue(value)}</Text>
           </TouchableOpacity>
 
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
-            mode="date"
+            mode={mode}
             onConfirm={(selectedDate) => {
               onChange(selectedDate);
               hideDatePicker();
             }}
             onCancel={hideDatePicker}
-            maximumDate={new Date()}
+            minimumDate={minDate}
+            maximumDate={maxDate}
             display={Platform.OS === "ios" ? "spinner" : "default"}
           />
         </View>

@@ -27,6 +27,8 @@ import loginFormSchema from "../../../Schemas/LoginSchema/LoginFormSchema.json";
 import schemaActions from "../../../Schemas/LoginSchema/LoginFormSchemaActions.json";
 import { saveSecureValue } from "../../../store/zustandStore";
 import LoadingButton from "../../../utils/LoadingButton";
+import RNRestart from "react-native-restart";
+
 const ACTION_SCHEMA = [
   {
     dashboardFormSchemaActionID: "46ac8869-4745-41c8-8839-d02dfe9999f0",
@@ -100,6 +102,7 @@ export const LoginWithLeftBackground = () => {
         }
         setUser(user);
         console.log("Decoded Token:", decodedToken);
+        RNRestart.Restart();
         // DevSettings.reload();
       } catch (error) {
         console.error("Failed to decode token:", error.message);

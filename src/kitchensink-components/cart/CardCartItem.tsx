@@ -16,6 +16,7 @@ import { AddToCartSecondaryButton } from "./AddToCartButton";
 import GoBackHeader from "../../components/header/GoBackHeader";
 import { Image } from "../../../components/ui";
 import { GetMediaUrl } from "../../utils/GetMediaUrl";
+import ImageRoute from "../../utils/ImageRoute";
 
 export default function CardCartItem({ item }) {
   const { isRTL, localization } = useContext(LocalizationContext);
@@ -31,11 +32,7 @@ export default function CardCartItem({ item }) {
             borderRadius: moderateScale(10),
           }}
         >
-          <Image
-            source={GetMediaUrl(item[fieldsType.imageView], "publicImage")}
-            className="w-full h-full rounded-md"
-            alt={item[fieldsType.text]}
-          />
+          <ImageRoute route={item[fieldsType.imageView]} />
         </View>
       )}
       <View className="ml-4 flex-1 items-start">
