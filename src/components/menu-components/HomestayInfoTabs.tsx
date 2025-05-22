@@ -121,7 +121,9 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                 <Text
                   size="sm"
                   className={`${
-                    activeTab === tab[idField] ? "text-accent" : "!text-card"
+                    activeTab === tab[idField]
+                      ? "text-accent"
+                      : "!text-dark_card"
                   } font-medium ${
                     I18nManager.isRTL ? "text-right" : "text-left"
                   }`}

@@ -14,10 +14,12 @@ export const handleWSMessage = async ({
 
   try {
     console.log("📩 WS message received, processing...");
+    console.log();
 
     // Process WebSocket message
     const ws_updatedRows = WSOperation(
       _WSsetMessage,
+      () => {},
       () => {},
       fieldsType.idField,
       fieldsType.dataSourceName,

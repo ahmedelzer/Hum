@@ -154,6 +154,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
   const fieldsType = useSelector((state) => state.menuItem.fieldsType);
   useEffect(() => {
     if (WS_Connected) return;
+    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
     ConnectToWS(setWSsetMessage, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));

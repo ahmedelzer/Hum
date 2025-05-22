@@ -105,7 +105,7 @@ const BottomBarTabs: FC = () => {
               headerShown: true,
               headerTitle: () => <HeaderParent />,
               headerStyle: {
-                backgroundColor: theme.card, // Set your custom color here
+                backgroundColor: theme.dark_card, // Set your custom color here
                 elevation: 0, // Remove shadow on Android
                 shadowOpacity: 0, // Remove shadow on iOS
               },

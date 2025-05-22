@@ -2,15 +2,23 @@ import React, { useContext } from "react";
 import { View } from "react-native";
 import { Text } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
-export default function CardPriceDiscount({ item, fieldsType }) {
+import { theme } from "../../Theme";
+export default function CardPriceDiscount({
+  item,
+  fieldsType,
+  colorOfPriceAfterDiscount = theme.body,
+}) {
   const { localization } = useContext(LocalizationContext);
 
   return (
     <View
-      className={`${item[fieldsType.discount] ? "justify-between" : "justify-center"} flex flex-row flex-wrap items-center mt-2 space-x-2`}
+      className={`${item[fieldsType.discount] ? "justify-between" : "justify-center"} flex gap-2 flex-row flex-wrap items-center mt-2 space-x-2`}
     >
       {item[fieldsType.priceAfterDiscount] >= 0 && (
-        <Text className="text-xl text-body font-bold">
+        <Text
+          className="text-xl font-bold"
+          style={{ color: colorOfPriceAfterDiscount }}
+        >
           {localization.menu.currency}{" "}
           {item[fieldsType.priceAfterDiscount].toFixed(2)}
         </Text>

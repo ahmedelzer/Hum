@@ -84,7 +84,7 @@ const MenuCardView = ({
     <Pressable onPress={handlePress} onLongPress={handleLongPress}>
       <Card
         className={`items-center rounded-xl my-4 border-1 ${
-          selected ? "border-2 border-green-500 bg-green-100" : "bg-card"
+          selected ? "border-2 border-green-500 bg-green-100" : "bg-dark_card"
         }`}
       >
         <SetComponentsPlatforms

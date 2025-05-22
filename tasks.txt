@@ -14,5 +14,9 @@ in login
 can users in web show the content like a gust in mobile
 
 //////
-some fetuses
-1-make skeleton loading 
+some features
+1-make skeleton loading
+
+/////
+addition questions
+1-are the schema of menu is the same of the cart in price and the

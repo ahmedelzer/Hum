@@ -20,7 +20,6 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
     item[fieldsType.priceAfterDiscount],
     "item[fieldsType.priceAfterDiscount]"
   );
-
   return (
     <View>
       <View className={`relative flex flex-row`}>

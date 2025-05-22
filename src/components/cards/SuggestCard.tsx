@@ -15,39 +15,56 @@ import { getField } from "../../utils/operation/getField";
 import CardPriceDiscount from "../../utils/component/CardPriceDiscount";
 import ImageCardActions from "./ImageCardActions";
 
-export default function SuggestCard({ item }) {
+export default function SuggestCard({
+  item,
+  imageStyle = { width: scale(120), height: scale(120) },
+}) {
   const schemaActions = useSelector((state) => state.menuItem.schemaActions);
   const parameters = SuggestCardSchema?.dashboardFormSchemaParameters ?? [];
   const { localization } = useContext(LocalizationContext);
-
-  const fieldsType = {
-    imageView: getField(parameters, "menuItemImage"),
-    text: getField(parameters, "menuItemName"),
-    price: getField(parameters, "price"),
-    isAvailable: getField(parameters, "isAvailable"),
-    idField: SuggestCardSchema.idField,
-    dataSourceName: SuggestCardSchema.dataSourceName,
-    cardAction: getField(parameters, "cardAction"),
-  };
+  const fieldsType = useSelector((state) => state.menuItem.fieldsType);
   return (
-    <View className="bg-surface rounded-lg items-center p-2 mr-4">
-      {item[fieldsType.text] && (
-        <Text
-          style={{
-            maxWidth: scale(90),
-          }}
-          className="text-lg text-text mt-1"
-        >
-          {item[fieldsType.text]}
-        </Text>
-      )}
-      <ImageCardActions
-        fieldsType={fieldsType}
-        item={item}
-        style={{ width: scale(120), height: scale(120) }}
-      ></ImageCardActions>
+    <View className="bg-card rounded-lg flex flex-col justify-center items-center p-2">
+      <View className="items-center relative">
+        {/* Image with relative wrapper */}
+        <ImageCardActions
+          fieldsType={fieldsType}
+          item={item}
+          style={imageStyle}
+        />
 
-      <CardPriceDiscount item={item} fieldsType={fieldsType} />
+        {/* Label half inside and half outside image */}
+        {item[fieldsType.text] && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: scale(-20), // Push half outside the image
+              alignItems: "center",
+            }}
+            className="mb-4 !size-full"
+          >
+            <View
+              style={{
+                backgroundColor: theme.accent, // or use theme or class like "bg-accent"
+                borderRadius: scale(12),
+                paddingHorizontal: scale(8),
+                paddingVertical: scale(4),
+              }}
+              className="!size-full"
+            >
+              <Text className="text-body" numberOfLines={1}>
+                {item[fieldsType.text]}
+              </Text>
+            </View>
+          </View>
+        )}
+      </View>
+
+      <CardPriceDiscount
+        colorOfPriceAfterDiscount={theme.dark_card}
+        item={item}
+        fieldsType={fieldsType}
+      />
 
       {item[fieldsType.imageView] && (
         <AddToCartPrimaryButton item={item} fieldsType={fieldsType} isSuggest />

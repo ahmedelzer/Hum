@@ -34,7 +34,6 @@ export async function ConnectToWS(setWSsetMessage, setWS_Connected, row = {}) {
     },
     websocketBaseURI + "/" + projectProxyRoute
   );
-  console.log(buildUrl, "buildUrl");
 
   const handleMessage = (WSMessage) => {
     try {

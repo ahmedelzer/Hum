@@ -14,7 +14,7 @@ import SuggestCard from "../../components/cards/SuggestCard";
 import GoBackHeader from "../../components/header/GoBackHeader";
 import CardCartItem from "./CardCartItem";
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
-import { GetProjectUrl } from "../../../request";
+import { GetProjectUrl, SetReoute } from "../../../request";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import CustomerCartInfo from "./CustomerCartInfo";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
@@ -22,16 +22,39 @@ import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
 import { handleWSMessage } from "../../utils/WS/handleWSMessage";
 import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import InputWithAction from "../../utils/component/InputWithAction";
+import { getField } from "../../utils/operation/getField";
+import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart.cart);
-  const fieldsType = useSelector((state) => state.menuItem.fieldsType);
   const total = useSelector((state) => state.cart.totalAmount);
   const [reRequest, setReRequest] = useState(false);
   const [_WSsetMessage, setWSsetMessage] = useState("{}");
+  const [WS_Connected, setWS_Connected] = useState(false);
   const cartLength = cart.length;
   const navigation = useNavigation();
   const { localization } = useContext(LocalizationContext);
+  const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
+  const fieldsType = {
+    imageView: getField(parameters, "menuItemImage"),
+    text: getField(parameters, "menuItemName"),
+    description: getField(parameters, "menuItemDescription"),
+    price: getField(parameters, "price"),
+    rate: getField(parameters, "rate"),
+    likes: getField(parameters, "likes"),
+    dislikes: getField(parameters, "dislikes"),
+    orders: getField(parameters, "orders"),
+    reviews: getField(parameters, "reviews"),
+    isAvailable: getField(parameters, "isAvailable"),
+    menuCategoryID: getField(parameters, "menuCategoryID"),
+    idField: CartSchema.idField,
+    dataSourceName: CartSchema.dataSourceName,
+    cardAction: getField(parameters, "cardAction"),
+    discount: getField(parameters, "discount"),
+    priceAfterDiscount: getField(parameters, "priceAfterDiscount"),
+    note: getField(parameters, "note"),
+    proxyRoute: CartSchema.projectProxyRoute,
+  };
   // SetReoute(NodeMenuItemsSchema.projectProxyRoute);
   const {
     data: GetOldCustomerCart,
@@ -69,7 +92,7 @@ const CartPage = () => {
   };
   const oldCartCount = GetOldCustomerCart?.count ?? 0;
   const callbackReducerUpdate = async (ws_updatedRows) => {
-    console.log(ws_updatedRows);
+    console.log(ws_updatedRows, "callbackReducerUpdate form cart");
 
     // await reducerDispatch({
     //   type: "WS_OPE_ROW",
@@ -80,10 +103,12 @@ const CartPage = () => {
     // });
   };
   useEffect(() => {
-    ConnectToWS(setWSsetMessage)
+    if (WS_Connected) return;
+    SetReoute(CartSchema.projectProxyRoute);
+    ConnectToWS(setWSsetMessage, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));
-  }, []);
+  }, [WS_Connected]);
   useEffect(() => {
     handleWSMessage({
       _WSsetMessage,
@@ -129,50 +154,51 @@ const CartPage = () => {
       />
 
       {/* Scrollable Content */}
-      <ScrollView className="flex-1  py-2">
-        {cart.map((item) => (
+      <ScrollView className=" flex-1  py-2">
+        <View>
           <CardCartItem
-            schema={CartSchema}
-            item={item}
-            key={item[fieldsType.idField]}
             schemaActions={CartSchemaActions}
+            fieldsType={fieldsType}
+            item={{
+              canReturn: true,
+              quantity: 2,
+              discount: 15,
+              heightCm: 0,
+              indexOflike: 0,
+              isActive: true,
+              isAvailable: true,
+              itemImage:
+                "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
+              keywords: "wee,apples12",
+              lengthCm: 0,
+              menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
+              menuCategoryName: "طعام",
+              menuItemDescription: "rtr",
+              menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
+              menuItemName: "apples12",
+              nodeAddress: null,
+              nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
+              nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
+              node_Name: "MainNode",
+              numberOfDislikes: 0,
+              numberOfLikes: 47,
+              numberOfOrders: 0,
+              numberOfReviews: 0,
+              packageDegree: 0,
+              preparingTimeAmountPerMinute: 0,
+              price: 5,
+              priceAfterDiscount: 4,
+              rate: 5,
+              size: 0,
+              sku: "",
+              taxAmount: 0,
+              taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              volume: 0,
+              weightKg: 0,
+              widthCm: 0,
+            }}
           />
-        ))}
-        <CardCartItem
-          schemaActions={CartSchemaActions}
-          schema={CartSchema}
-          item={{
-            canReturn: false,
-            indexOflike: 0,
-
-            cartItemID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            isActive: true,
-            isAvailable: true,
-            itemImage:
-              "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d84.jpg?v5/18/2025 12:09:21 PM?v5/18/2025 12:09:21 PM",
-            keywords: "string,test",
-            menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-            menuCategoryName: "Foods",
-            menuItemDescription: "string",
-            menuItemID: "00f6d641-84db-4937-9143-10667ac33442",
-            menuItemName: "test",
-            nodeAddress: null,
-            nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-            nodeMenuItemID: "5583d18b-7bff-4d91-aef8-2390a80972ae",
-            node_Name: "MainNode",
-            numberOfDislikes: 0,
-            numberOfLikes: 8,
-            numberOfOrders: 0,
-            numberOfReviews: 0,
-            preparingTimeAmountPerMinute: 0,
-            price: 50,
-            rate: 5,
-            size: 0,
-            sku: "",
-            taxAmount: 0,
-            taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          }}
-        />
+        </View>
 
         {cartLength < 1 && (
           <View className="flex-1 bg-body justify-center items-center">
@@ -187,41 +213,7 @@ const CartPage = () => {
             {localization.Hum_screens.cart.suggests}
           </Text>
         </View>
-        <ScrollView horizontal className="mt-2">
-          {/* {suggestions.map((item) => ( */}
-          <SuggestCard
-            item={{
-              canReturn: false,
-              indexOflike: 0,
-              isActive: true,
-              isAvailable: true,
-              itemImage:
-                "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d84.jpg?v5/18/2025 12:09:21 PM?v5/18/2025 12:09:21 PM",
-              keywords: "string,test",
-              menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-              menuCategoryName: "Foods",
-              menuItemDescription: "string",
-              menuItemID: "00f6d641-84db-4937-9143-10667ac33442",
-              menuItemName: "test",
-              nodeAddress: null,
-              nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-              nodeMenuItemID: "5583d18b-7bff-4d91-aef8-2390a80972ae",
-              node_Name: "MainNode",
-              numberOfDislikes: 0,
-              numberOfLikes: 8,
-              numberOfOrders: 0,
-              numberOfReviews: 0,
-              preparingTimeAmountPerMinute: 0,
-              price: 50,
-              rate: 5,
-              size: 0,
-              sku: "",
-              taxAmount: 0,
-              taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            }}
-          />
-          {/* ))} */}
-        </ScrollView>
+        <SuggestCardContainer />
 
         {/* Special Request */}
         <View className="mt-4">

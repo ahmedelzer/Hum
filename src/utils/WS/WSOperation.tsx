@@ -29,17 +29,11 @@ export function WSOperation(
       callback();
     },
     Update: () => {
-      const updatedRows = rows.map(
-        (row) => {
-          return row[idField] === updated[idField]
-            ? { ...row, ...updated }
-            : row;
-        }
-
-        // row[idField] === updatedRow[idField] ? { ...row, ...updatedRow } : row
-      );
-      console.log(updatedRows, "updatedRows");
-
+      const updatedRows = Array.isArray(rows)
+        ? rows.map((row) =>
+            row[idField] === updated[idField] ? { ...row, ...updated } : row
+          )
+        : [];
       return {
         rows: updatedRows,
         totalCount: TotalCount(totalCount, message.ope),

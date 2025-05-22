@@ -21,13 +21,16 @@ const PopupModal = ({
   schema,
   errors,
   disable,
+  headerTitle = "Invite your team",
+  isFormModal = true,
+  children,
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="md">
       <ModalContent>
         <ModalHeader>
           <Heading size="md" className="text-text">
-            Invite your team
+            {headerTitle}
           </Heading>
           <ModalCloseButton>
             <AntDesign name="closecircle" size={24} color="black" />
@@ -35,12 +38,15 @@ const PopupModal = ({
         </ModalHeader>
 
         <ModalBody>
-          <FormContainer
-            tableSchema={schema}
-            row={{}}
-            errorResult={errors}
-            control={control}
-          />
+          {isFormModal && (
+            <FormContainer
+              tableSchema={schema}
+              row={{}}
+              errorResult={errors}
+              control={control}
+            />
+          )}
+          {children && children}
         </ModalBody>
 
         <ModalFooter>
