@@ -18,11 +18,17 @@ import {
   useToast,
   VStack,
 } from "../../../components/ui";
-import { useDeviceInfo } from "../../utils/useDeviceInfo";
-import SetComponentsPlatforms from "../../utils/SetComponentsPlatforms";
+import { useDeviceInfo } from "../../utils/component/useDeviceInfo";
+import SetComponentsPlatforms from "../../utils/component/SetComponentsPlatforms";
 import { WebContainer } from "./WebContainer";
 import { MobileContainer } from "./MobileContainer";
-function FormContainer({ tableSchema, row, errorResult, control }: any) {
+function FormContainer({
+  tableSchema,
+  row,
+  errorResult,
+  control,
+  ...props
+}: any) {
   const toast = useToast();
   const { os } = useDeviceInfo();
   const actionField = tableSchema?.dashboardFormSchemaParameters?.find(
@@ -30,7 +36,12 @@ function FormContainer({ tableSchema, row, errorResult, control }: any) {
   ).parameterField;
 
   function SetValue(param: any | undefined) {
-    if (param.lookupID) {
+    if (
+      param.lookupID ||
+      param.parameterType === "areaMapLongitudePoint" ||
+      param.parameterType === "mapLongitudePoint" ||
+      param.parameterType === "rate"
+    ) {
       return row;
     } else {
       return row[param.parameterField];
@@ -54,6 +65,7 @@ function FormContainer({ tableSchema, row, errorResult, control }: any) {
               control={control}
               errorResult={errorResult}
               tableSchema={tableSchema}
+              {...props}
             />
           ),
         },
@@ -66,6 +78,7 @@ function FormContainer({ tableSchema, row, errorResult, control }: any) {
               control={control}
               errorResult={errorResult}
               tableSchema={tableSchema}
+              {...props}
             />
           ),
         },
@@ -78,6 +91,7 @@ function FormContainer({ tableSchema, row, errorResult, control }: any) {
               control={control}
               errorResult={errorResult}
               tableSchema={tableSchema}
+              {...props}
             />
           ),
         },

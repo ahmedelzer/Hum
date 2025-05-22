@@ -26,6 +26,7 @@ module.exports = {
           DEFAULT: theme.accent,
           hover: theme.accentHover,
         },
+        ...theme,
         primary: {
           custom: theme.primary,
           0: "rgb(var(--color-primary-0)/<alpha-value>)",

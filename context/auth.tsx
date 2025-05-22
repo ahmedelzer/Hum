@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { deleteKey, retrieveSecureValue } from "../src/store/zustandStore";
 import { DevSettings } from "react-native";
-import { useDeviceInfo } from "../src/utils/useDeviceInfo";
+import { useDeviceInfo } from "../src/utils/component/useDeviceInfo";
 import { jwtDecode } from "jwt-decode";
 function AuthProvider(props) {
   const [user, setUser] = useState(null);
@@ -19,14 +19,21 @@ function AuthProvider(props) {
   useEffect(() => {
     (async function () {
       const result = await retrieveSecureValue("token");
-      if (result) {
-        const decodedToken = jwtDecode(result);
-        const user = {
-          avatarUrl:
-            "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
-          ...decodedToken,
-        };
-        setUser(user);
+      const remember = await retrieveSecureValue("rememberMe");
+      if (remember !== "true") {
+        // either "false" or missing → wipe out the token
+        await deleteKey("token");
+        await deleteKey("rememberMe");
+      } else {
+        if (result) {
+          const decodedToken = jwtDecode(result);
+          const user = {
+            avatarUrl:
+              "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
+            ...decodedToken,
+          };
+          setUser(user);
+        }
       }
       setLoading(false);
     })();

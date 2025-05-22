@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { tabs } from "../components/menu-components/tabsData";
 
 // Utility functions for AsyncStorage
 const saveProductsToStorage = async (products) => {
@@ -27,7 +26,7 @@ export const productSlice = createSlice({
   initialState: {
     product: [],
     allProducts: [],
-    currentCategory: tabs[0],
+    currentCategory: {},
   },
   reducers: {
     getProducts: (state, action) => {

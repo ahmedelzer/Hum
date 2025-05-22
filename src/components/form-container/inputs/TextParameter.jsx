@@ -19,8 +19,7 @@ class TextParameter extends BaseInput {
 
   setParameterType = (parameterType) => {
     switch (parameterType) {
-      case "float" || "numeric":
-        return "number";
+      case "float":
       case "numeric":
         return "number";
       default:

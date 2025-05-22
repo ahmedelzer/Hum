@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../../context/auth";
 import { AddItemToCart } from "./AddItemToCart";
 
-const AddToCartSecondaryButton = ({ item, fieldsType, schemaActions }) => {
+const AddToCartSecondaryButton = ({ item, fieldsType }) => {
+  const schemaActions = useSelector((state) => state.menuItem.schemaActions);
+
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
@@ -28,15 +30,15 @@ const AddToCartSecondaryButton = ({ item, fieldsType, schemaActions }) => {
             haveOnCart[fieldsType.cardAction] + 1 || 1
           );
         }}
-        className="px-3 py-1 bg-card rounded-full"
+        className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
       >
-        <Text className="text-lg font-bold">+</Text>
+        <Feather name="plus" size={20} className="!text-body" />
       </TouchableOpacity>
-      <Text className="mx-4 text-lg">{item.quantity}</Text>
+      <Text className="mx-4 text-lg text-surface">{item.quantity || 1}</Text>
       <TouchableOpacity
         onPress={() => {
           AddItemToCart(
-            { ...item, addQuantity: 1 },
+            { ...item, addQuantity: -1 },
             setLoading,
             dispatch,
             fieldsType,
@@ -44,28 +46,43 @@ const AddToCartSecondaryButton = ({ item, fieldsType, schemaActions }) => {
             haveOnCart[fieldsType.cardAction] - 1 || 1
           );
         }}
-        className={
-          "px-2 text-body rounded-full " +
-          `${item.quantity === 1 ? "py-2 bg-red-500" : "!px-3 py-1 bg-card"}`
-        }
+        className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
       >
-        {item.quantity === 1 ? (
-          <AntDesign name="delete" size={18} className="text-body" />
-        ) : (
-          <Text className="text-lg font-bold">-</Text>
-        )}
+        <Feather name="minus" size={20} className="!text-body" />
       </TouchableOpacity>
     </View>
   );
 };
-const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
+const AddToCartPrimaryButton = ({ item, fieldsType, isSuggest = false }) => {
   const [loading, setLoading] = useState(false);
+  const schemaActions = useSelector((state) => state.menuItem.schemaActions);
+
   const { user } = useAuth();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
   const haveOnCart = cart.find((value) => {
     return value[fieldsType.idField] === item[fieldsType.idField];
   });
+  if (isSuggest) {
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          AddItemToCart(
+            { ...item, addQuantity: 1 },
+            setLoading,
+            dispatch,
+            fieldsType,
+            schemaActions,
+            1
+          )
+        }
+        disabled={!user}
+        className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
+      >
+        <Feather name="plus" size={24} className="!text-body" />
+      </TouchableOpacity>
+    );
+  }
   return (
     <View>
       {haveOnCart ? (
@@ -115,7 +132,7 @@ const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
                 dispatch,
                 fieldsType,
                 schemaActions,
-                haveOnCart[fieldsType.cardAction] - 1 || -1
+                haveOnCart[fieldsType.cardAction] - 1 || 1
               );
             }}
           >
@@ -144,9 +161,10 @@ const AddToCartPrimaryButton = ({ item, fieldsType, schemaActions }) => {
             )
           }
           disabled={!user}
-          className="mt-2 p-2 rounded-lg bg-accent items-center justify-center"
+          className="mt-2 p-2 rounded-lg bg-accent items-center justify-center flex flex-row"
         >
-          <Feather name="plus" size={22} className="!text-body" />
+          <Feather name="shopping-cart" size={22} className="!text-body px-1" />
+          <Text className="text-body text-lg font-bold">Add to Cart</Text>
         </TouchableOpacity>
       )}
     </View>

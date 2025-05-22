@@ -7,3 +7,5 @@ export { default as SelectParameter } from "./inputs/SelectParameter";
 export { default as DateParameter } from "./inputs/DateParameter";
 export { default as RadioParameter } from "./inputs/RadioParameter";
 export { default as InputPassword } from "./inputs/InputPassword";
+export { default as LocationParameter } from "./inputs/LocationParameter";
+export { default as RadioListParameter } from "./inputs/RadioListParameter";

@@ -1,23 +1,18 @@
-1-make the card of Details more friendly //not the best
 2-make application woke in web browser // the proplem in the icons lib
 3-localization//all done but still checkout and profile
 4-clear logs and un useable files
 5-on delete operation remove item if in items but in cart hint the customer is out of stock
-6-clean and clean and clean the files unnecessary code  
+6-clean the files unnecessary code  
 /////
-1-rememberme problem//Done
-2-forget pass page 
-3-reload screens
-4-get old card
-5-set the Dates
---birthday::14-60
---pushTime::now
+8-run WS in different datascource
+12-run profile 
+18-resend
+19-RTL direction and fit it with languages
 
-6-apply schema of quantity 
-7-
 //suggests
 in login 
 can users in web show the content like a gust in mobile
-//advices
-1-react router the best =>for web 
-2-
+
+//////
+some fetuses
+1-make skeleton loading 

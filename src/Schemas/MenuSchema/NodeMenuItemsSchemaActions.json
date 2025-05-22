@@ -42,5 +42,21 @@
         "dashboardFormParameterField": "filterRow"
       }
     ]
+  },
+  {
+    "dashboardFormSchemaActionID": "46ac8869-4745-41c8-8839-d02dfe9999f0",
+    "dashboardFormActionMethodType": "Post:numberOfLikes",
+    "routeAdderss": "ShopNode/LikeNodeMenuItem",
+    "body": "",
+    "returnPropertyName": "",
+    "dashboardFormSchemaActionQueryParams": []
+  },
+  {
+    "dashboardFormSchemaActionID": "46ac8869-4745-41c8-8839-d02dfe9999f0",
+    "dashboardFormActionMethodType": "Post:numberOfDislikes",
+    "routeAdderss": "ShopNode/DislikeNodeMenuItem",
+    "body": "",
+    "returnPropertyName": "",
+    "dashboardFormSchemaActionQueryParams": []
   }
 ]

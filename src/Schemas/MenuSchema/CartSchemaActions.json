@@ -9,6 +9,14 @@
   },
   {
     "dashboardFormSchemaActionID": "46ac8869-4745-41c8-8839-d02dfe9999f0",
+    "dashboardFormActionMethodType": "Put",
+    "routeAdderss": "ShopNode/SetCustomerCartItemNote",
+    "body": "",
+    "returnPropertyName": "",
+    "dashboardFormSchemaActionQueryParams": []
+  },
+  {
+    "dashboardFormSchemaActionID": "46ac8869-4745-41c8-8839-d02dfe9999f0",
     "dashboardFormActionMethodType": "Delete",
     "routeAdderss": "ShopNode/DeleteCustomerCartItem",
     "body": "",

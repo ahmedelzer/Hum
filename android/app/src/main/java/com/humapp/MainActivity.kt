@@ -1,4 +1,5 @@
 package com.HumApp
+import com.facebook.react.modules.i18nmanager.I18nUtil
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
@@ -21,6 +22,12 @@ class MainActivity : ReactActivity() {
     SplashScreenManager.registerOnActivity(this)
     // @generated end expo-splashscreen
     super.onCreate(null)
+    I18nUtil.getInstance().allowRTL(this, true)
+    I18nUtil.getInstance().forceRTL(this, true)
+    I18nUtil.getInstance().allowRTL(this, true)
+    I18nUtil.getInstance().forceRTL(this, true)
+    I18nUtil.getInstance().allowRTL(this, true)
+    I18nUtil.getInstance().forceRTL(this, true)
   }
 
   /**

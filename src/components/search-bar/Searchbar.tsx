@@ -18,7 +18,11 @@ const Searchbar = ({ schema, row, setRow }) => {
   return (
     <Box className="w-full">
       {searchBarSchema && (
-        <Input variant="rounded" size="sm" className="w-full h-10">
+        <Input
+          variant="rounded"
+          size="sm"
+          className="w-full h-10 border-border bg-surface"
+        >
           <InputField
             value={row[firstPram.parameterField]}
             onChangeText={handleSearch}
@@ -26,7 +30,7 @@ const Searchbar = ({ schema, row, setRow }) => {
           />
           <InputSlot className="rounded-full h-6 w-6 m-1.5 bg">
             {/* <InputIcon> */}
-            <FontAwesome name="search" size={24} color="black" />
+            <FontAwesome name="search" size={24} className="text-text" />
             {/* </InputIcon> */}
           </InputSlot>
         </Input>

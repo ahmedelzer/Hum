@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useContext, useState } from "react";
-import AddLocation from "../components/menu-components/AddLocation";
+import AddLocation from "../components/addressLocation/AddLocation";
 import { Feather } from "@expo/vector-icons";
 import { LocalizationContext } from "../../context/LocalizationContext";
 
@@ -10,7 +10,6 @@ export default function MarketPlace() {
     { id: "2", name: "Organic Farm" },
     { id: "3", name: "City Center" },
   ]);
-  const { isRTL } = useContext(LocalizationContext);
 
   const handleDelete = (id: string) => {
     setMarketPlaces((prev) => prev.filter((place) => place.id !== id));

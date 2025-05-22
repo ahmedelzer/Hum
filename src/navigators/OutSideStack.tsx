@@ -3,6 +3,7 @@ import { SignUp } from "../kitchensink-components/auth/signup";
 import { ForgotPassword } from "../kitchensink-components/auth/forgot-password";
 import { createStackNavigator } from "@react-navigation/stack";
 import VerifyScreen from "../kitchensink-components/auth/verfiy";
+import { CreatePassword } from "../kitchensink-components/auth/create-password";
 // import SignIn from "../screens/auth/SignIn";
 // import ResetPassword from "../screens/auth/ResetPassword";
 // import NoDataUrl from "../components/NoDataUrl/NoDataUrl";
@@ -25,6 +26,7 @@ export default function OutsideStack() {
       }}
     >
       <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen name="CreatePassword" component={CreatePassword} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Verify" component={VerifyScreen} />
       <Stack.Screen name="ForgetPassword" component={ForgotPassword} />

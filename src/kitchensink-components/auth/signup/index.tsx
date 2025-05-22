@@ -24,7 +24,10 @@ import { onApply } from "../../../components/form-container/OnApplay";
 import SighupSchema from "../../../Schemas/LoginSchema/SighupSchema.json";
 import PersonalInfo from "../../../Schemas/PersonalInfo.json";
 import { AuthLayout } from "../layout";
-import LoadingButton from "../../../utils/LoadingButton";
+import LoadingButton from "../../../utils/component/LoadingButton";
+import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
+import { AntDesign } from "@expo/vector-icons";
+import VerifySchema from "../../../Schemas/LoginSchema/VerifySchemaAction.json";
 
 const USERS = [
   {
@@ -60,6 +63,7 @@ const signUpSchema = Yup.object().shape({
 
 const SignUpWithLeftBackground = () => {
   const { localization } = useContext(LocalizationContext);
+  const { os } = useDeviceInfo();
 
   const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
@@ -75,7 +79,7 @@ const SignUpWithLeftBackground = () => {
     messageType: "0",
     password: "123456",
     confirmPassword: "123456",
-    phoneNumber: "010",
+    phoneNumber: "01067921420",
     username: "testAhmed1",
   };
   const navigation = useNavigation();
@@ -102,18 +106,8 @@ const SignUpWithLeftBackground = () => {
   });
 
   const onSubmit = async (data: any) => {
-    // Check if passwords match
-    if (data.password !== data.confirmPassword) {
-      setError("confirmPassword", {
-        type: "manual",
-        message: "Passwords do not match",
-      });
-      return;
-    }
-
     // Destructure to remove confirmPassword from the sent data
     const { confirmPassword, ...sanitizedData } = data;
-
     setDisable(true);
     try {
       const request = await onApply(
@@ -126,7 +120,11 @@ const SignUpWithLeftBackground = () => {
       setResult(request);
 
       if (request && request.success === true) {
-        navigation.navigate("Verify", { ...data, ...request.data });
+        navigation.navigate("Verify", {
+          ...data,
+          ...request.data,
+          VerifySchema: VerifySchema,
+        });
       }
     } catch (error) {
       console.error("API call failed:", error);
@@ -135,11 +133,17 @@ const SignUpWithLeftBackground = () => {
       // Enable the button after the API call
       setDisable(false);
     }
+    console.log("response", result);
   };
   console.log(errors);
 
   return (
-    <VStack className="max-w-[440px] w-full mt-2" space="md">
+    <VStack
+      className={`max-w-[440px] w-full mt-2 ${
+        os == "web" && "m-auto bg-card shadow-lg !h-fit px-6 py-3 rounded-lg"
+      }`}
+      space="md"
+    >
       <VStack className="md:items-center" space="md">
         <Pressable
           onPress={() => {
@@ -189,7 +193,12 @@ const SignUpWithLeftBackground = () => {
             aria-label="accept Privacy"
           >
             <CheckboxIndicator>
-              <CheckboxIcon as={CheckIcon} />
+              <CheckboxIcon
+                as={() => (
+                  <AntDesign name="check" size={20} className="text-body" />
+                )}
+              />
+              {/* <CheckboxIcon as={CheckIcon} /> */}
             </CheckboxIndicator>
             <CheckboxLabel>{localization.sighUp.acceptPrivacy}</CheckboxLabel>
           </Checkbox>

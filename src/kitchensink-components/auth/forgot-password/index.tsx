@@ -6,25 +6,36 @@ import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Keyboard } from "react-native";
 import * as Yup from "yup";
 import { LocalizationContext } from "../../../../context/LocalizationContext";
 import FormContainer from "../../../components/form-container/FormContainer";
 import ForgetSchema from "../../../Schemas/ForgetSchema/ForgetSchema.json";
+import LoginFormSchema from "../../../Schemas/LoginSchema/LoginFormSchema.json";
+import ForgetSchemaActions from "../../../Schemas/ForgetSchema/ForgetSchemaActions.json";
 import { AuthLayout } from "../layout";
+import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
+import GoBackHeader from "../../../components/header/GoBackHeader";
+import { handleSubmitWithCallback } from "../../../utils/operation/handleSubmitWithCallback";
+import { buildApiUrl } from "../../../../components/hooks/APIsFunctions/BuildApiUrl";
+import { SetReoute } from "../../../../request";
+import LoadingButton from "../../../utils/component/LoadingButton";
+import VerifySchema from "../../../Schemas/ForgetSchema/VerifySchema.json";
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
 });
 
-const ForgotPasswordScreen = () => {
+const ForgotPasswordScreen = ({ route }) => {
   const { localization } = useContext(LocalizationContext);
-
+  const { os } = useDeviceInfo();
+  const [reqError, setReqError] = useState(null);
+  const [disable, setDisable] = useState(null);
   const toast = useToast();
   const navigation = useNavigation();
-
+  const DValues = { messageType: "0", username: "testAhmed12" };
   const handleKeyPress = (handleSubmit: any) => {
     Keyboard.dismiss();
     handleSubmit();
@@ -33,17 +44,42 @@ const ForgotPasswordScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    setValue,
+    clearErrors,
+  } = useForm({ defaultValues: route.params });
 
   const onSubmit = async (data: any) => {
-    console.log("====================================");
     console.log(data);
-    console.log("====================================");
-    // await saveSecureValue("token", "static");
-    // DevSettings.reload();
+    const body = { ...control._formValues, ...data };
+
+    const postAction =
+      ForgetSchemaActions &&
+      ForgetSchemaActions.find(
+        (action) => action.dashboardFormActionMethodType === "Post"
+      );
+    handleSubmitWithCallback({
+      data: body,
+      setDisable,
+      action: postAction,
+      proxyRoute: ForgetSchema.projectProxyRoute,
+      setReq: setReqError,
+      onSuccess: (resultData) => {
+        console.log(resultData);
+        navigation.navigate("Verify", {
+          ...data,
+          ...resultData,
+          VerifySchema: VerifySchema,
+        });
+      },
+    });
   };
   return (
-    <VStack className="max-w-[440px] w-full  h-full mt-2" space="md">
+    <VStack
+      className={`max-w-[440px] w-full  h-full mt-2 ${
+        os == "web" && "m-auto bg-card shadow-lg !h-fit px-6 py-3 rounded-lg"
+      }`}
+      space="md"
+    >
       <VStack className="md:items-center" space="md">
         <Pressable
           className="flex-1"
@@ -51,11 +87,7 @@ const ForgotPasswordScreen = () => {
             navigation.goBack();
           }}
         >
-          <Icon
-            as={ArrowLeftIcon}
-            className="md:hidden stroke-background-800"
-            size="xl"
-          />
+          <Icon as={ArrowLeftIcon} className="text-text" size="xl" />
         </Pressable>
         <VStack>
           <Heading className="md:text-center text-accent" size="3xl">
@@ -69,27 +101,27 @@ const ForgotPasswordScreen = () => {
       <FormContainer
         tableSchema={ForgetSchema}
         row={{}}
+        setValue={setValue}
         control={control}
-        errorResult={{}}
+        errorResult={errors || reqError}
+        clearErrors={clearErrors}
       />
       <VStack space="xl" className="w-full my-7">
-        <Button
-          className="w-full rounded-lg bg-accent"
+        <LoadingButton
+          buttonText={localization.forgotPassword.sighUpButton}
+          loading={disable}
           onPress={handleSubmit(onSubmit)}
-        >
-          <ButtonText className="font-medium">
-            {localization.forgotPassword.sighUpButton}
-          </ButtonText>
-        </Button>
+          className="w-full rounded-lg"
+        />
       </VStack>
     </VStack>
   );
 };
 
-export const ForgotPassword = () => {
+export const ForgotPassword = ({ route }) => {
   return (
     <AuthLayout>
-      <ForgotPasswordScreen />
+      <ForgotPasswordScreen route={route} />
     </AuthLayout>
   );
 };

@@ -1,26 +1,24 @@
-import { Icon } from "@/components/ui";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Fontisto from "@expo/vector-icons/Fontisto";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Home, Mail, Menu, User } from "lucide-react-native";
-import { FC } from "react";
-import HeaderParent from "../components/header/HeaderParent";
-import DetailsScreen from "../components/menu-components/DetailsScreen";
-import CartPage from "../kitchensink-components/cart/CartPage";
-import CheckoutScreen from "../kitchensink-components/cart/CheckoutScreen";
-import { SetResponsiveContainer } from "../utils/SetResponsiveContainer";
-import { getTabBarVisibility } from "../utils/getTabBarVisibility";
-import RenderItemsView from "../utils/renderItemsView";
-import { RootStackParamList } from "./RootStack";
+import { createStackNavigator } from "@react-navigation/stack";
+import React, { FC } from "react";
 import { Platform, View } from "react-native";
 import MenuFilter from "../components/filters/MenuFilter";
-import { createStackNavigator } from "@react-navigation/stack";
+import HeaderParent from "../components/header/HeaderParent";
+import DetailsScreen from "../components/menu-components/DetailsScreen";
 import NotificationScreen from "../components/notification/NotificationScreen";
-import { theme } from "../Theme";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ForgotPassword } from "../kitchensink-components/auth/forgot-password";
 import { SignIn } from "../kitchensink-components/auth/signin";
 import { SignUp } from "../kitchensink-components/auth/signup";
-import { ForgotPassword } from "../kitchensink-components/auth/forgot-password";
-import Fontisto from "@expo/vector-icons/Fontisto";
+import CartPage from "../kitchensink-components/cart/CartPage";
+import CheckoutScreen from "../kitchensink-components/cart/CheckoutScreen";
+import { theme } from "../Theme";
+import RenderItemsView from "../utils/component/renderItemsView";
+import { SetResponsiveContainer } from "../utils/component/SetResponsiveContainer";
+import { getTabBarVisibility } from "../utils/operation/getTabBarVisibility";
+import { RootStackParamList } from "./RootStack";
 const Stack =
   Platform.OS === "web" ? createStackNavigator() : createNativeStackNavigator();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -105,8 +103,20 @@ const BottomBarTabs: FC = () => {
           options={
             item.routePath !== "Profile" && {
               headerShown: true,
-              headerTitle: () =>
-                SetResponsiveContainer(<HeaderParent />, false), // Show HeaderParent
+              headerTitle: () => <HeaderParent />,
+              headerStyle: {
+                backgroundColor: theme.card, // Set your custom color here
+                elevation: 0, // Remove shadow on Android
+                shadowOpacity: 0, // Remove shadow on iOS
+              },
+              headerLeftContainerStyle: {
+                paddingLeft: 0,
+                marginLeft: 0,
+              },
+              headerTitleContainerStyle: {
+                paddingLeft: 0,
+                marginLeft: 0,
+              },
             }
           }
           name={item.routePath}
@@ -144,7 +154,9 @@ const BottomBarTabs: FC = () => {
       case "dynamicMenuItemsView":
         return {
           headerShown: false,
+          // tabBarIconName: homeIcon,
           tabBarIcon: homeIcon,
+
           // headerTitle: () => <HeaderParent />,
         };
       case "Profile":
@@ -168,24 +180,65 @@ const BottomBarTabs: FC = () => {
   return (
     <Tab.Navigator
       id={undefined}
+      tabBarPosition="right"
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: theme.body, // Dark blue-gray background
+          backgroundColor: theme.surface, // Dark blue-gray background
         },
         tabBarActiveTintColor: theme.accent, // Bright yellow for active tab text/icon
-        tabBarInactiveTintColor: theme.text, // Light gray for inactive tab text/icon
+        tabBarInactiveTintColor: theme.primary, // Light gray for inactive tab text/icon
       }}
     >
       {dummyArr.map((item: any) => (
         <Tab.Screen
           key={item.dashboardMenuItemName}
           name={item.routePath}
-          options={({ route }) => ({
-            ...SetOptions(item),
-            tabBarStyle: {
-              display: getTabBarVisibility(route),
-            },
-          })}
+          options={({ route }) => {
+            // Get visibility status of the tab (e.g., hide tab bar for some screens)
+            const visibility = getTabBarVisibility(route);
+
+            // Get tab-specific options from a centralized function
+            const options = SetOptions(item);
+
+            // This is the icon that must always be displayed
+            const SelectedIcon = options.tabBarIcon;
+
+            return {
+              ...options,
+
+              // Customize how the tab icon is rendered
+              tabBarIcon: ({ focused, color, size }) => (
+                <View style={{ alignItems: "center" }}>
+                  {/* Show a top border when the tab is focused */}
+                  {focused && (
+                    <View
+                      style={{
+                        width: 30,
+                        height: 3,
+                        backgroundColor: theme.accent,
+                        borderRadius: 2,
+                        marginBottom: 4,
+                      }}
+                    />
+                  )}
+                  {/* Render the icon returned from SetOptions */}
+                  {
+                    <SelectedIcon
+                      color={focused ? theme.accent : theme.primary}
+                    />
+                  }
+                </View>
+              ),
+
+              // Customize the tab bar style
+              tabBarStyle: [
+                {
+                  backgroundColor: theme.body, // Set tab bar background
+                },
+                visibility === "none" && { display: "none" }, // Conditionally hide tab bar
+              ],
+            };
+          }}
         >
           {() => {
             // if (item.routePath === "test") {

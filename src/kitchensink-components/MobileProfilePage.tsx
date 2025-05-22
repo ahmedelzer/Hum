@@ -24,7 +24,7 @@ import LanguageSelector from "../components/language/LanguageSelector";
 import {
   CollapsibleNavigation,
   CollapsibleSection,
-} from "../utils/Collapsible";
+} from "../utils/component/Collapsible";
 import LogoutAlertDialog from "./LogoutAlertDialog";
 import { useAuth } from "../../context/auth";
 import { LocalizationContext } from "../../context/LocalizationContext";
@@ -165,6 +165,7 @@ const ProfileCard = () => {
           </Link>
         </VStack>
       </HStack>
+      <LanguageSelector key={1} />
     </HStack>
   );
 };

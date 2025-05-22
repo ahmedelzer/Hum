@@ -1,5 +1,5 @@
 /* Mimicking Bootstrap's col-sm behavior */
-@media (min-width: 576px) {
+@media (min-width: 176px) {
   .col-sm-12 {
     width: 100%;
   }

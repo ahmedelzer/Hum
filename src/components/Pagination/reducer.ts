@@ -14,11 +14,11 @@ function reducer(state, { type, payload }) {
         totalCount: payload.totalCount,
         loading: false,
       };
-    case "WS_DELETE_ROW":
+    case "WS_OPE_ROW":
       return {
         ...state,
-        rows: payload.rows, // Append new rows to the existing rows
-        totalCount: state.totalCount - 1,
+        rows: [...payload.rows],
+        totalCount: payload.totalCount,
         loading: false,
       };
     case "START_LOADING":

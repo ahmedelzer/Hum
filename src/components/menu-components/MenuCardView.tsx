@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import { Pressable } from "react-native";
 import { useSelector } from "react-redux";
 import { Card } from "../../../components/ui";
-import SetComponentsPlatforms from "../../utils/SetComponentsPlatforms";
+import SetComponentsPlatforms from "../../utils/component/SetComponentsPlatforms";
 import { MenuCard, MenuCardWeb } from "../cards";
+import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSchemaActions.json";
+
 //todo update att when any param changes
 //todo then take att and make utility that helps to get the correct item form items by attribute so the utility with make sure that the two objs is the same
 //todo then update the item my item that get from the attributes
@@ -24,7 +26,6 @@ const MenuCardView = ({
   const selected = selectedItems.find(
     (selected) => selected[fieldsType.idField] === item[fieldsType.idField]
   );
-
   // Form control
   const {
     control,
@@ -75,19 +76,14 @@ const MenuCardView = ({
       navigation.navigate("DetailsProductScreen", {
         item: item,
         fieldsType: fieldsType,
+        schemaActions: schemaActions,
       });
     }
   };
-  const discountPercentage = item.discount
-    ? parseFloat(item.discount.replace("%", ""))
-    : 0;
-  const discountedPrice =
-    item[fieldsType.price] -
-    (item[fieldsType.price] * discountPercentage) / 100;
   return (
     <Pressable onPress={handlePress} onLongPress={handleLongPress}>
       <Card
-        className={`items-center rounded-xl p-2 my-4 shadow-md ${
+        className={`items-center rounded-xl my-4 border-1 ${
           selected ? "border-2 border-green-500 bg-green-100" : "bg-card"
         }`}
       >
@@ -97,8 +93,7 @@ const MenuCardView = ({
               platform: "android",
               component: (
                 <MenuCard
-                  discountedPrice={discountedPrice}
-                  item={item}
+                  item={itemPackage}
                   fieldsType={fieldsType}
                   schemaActions={schemaActions}
                 />
@@ -108,8 +103,7 @@ const MenuCardView = ({
               platform: "ios",
               component: (
                 <MenuCard
-                  discountedPrice={discountedPrice}
-                  item={item}
+                  item={itemPackage}
                   fieldsType={fieldsType}
                   schemaActions={schemaActions}
                 />
@@ -118,11 +112,7 @@ const MenuCardView = ({
             {
               platform: "web",
               component: (
-                <MenuCardWeb
-                  discountedPrice={discountedPrice}
-                  item={item}
-                  fieldsType={fieldsType}
-                />
+                <MenuCardWeb item={itemPackage} fieldsType={fieldsType} />
               ),
             },
           ]}

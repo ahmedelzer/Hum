@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useLayoutEffect } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import {
+  I18nManager,
   ScrollView,
   Text,
   TextInput,
@@ -15,14 +16,22 @@ import CardCartItem from "./CardCartItem";
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 import { GetProjectUrl } from "../../../request";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import CustomerCartInfo from "./CustomerCartInfo";
+import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
+import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
+import { handleWSMessage } from "../../utils/WS/handleWSMessage";
+import { ConnectToWS } from "../../utils/WS/ConnectToWS";
+import InputWithAction from "../../utils/component/InputWithAction";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart.cart);
   const fieldsType = useSelector((state) => state.menuItem.fieldsType);
   const total = useSelector((state) => state.cart.totalAmount);
+  const [reRequest, setReRequest] = useState(false);
+  const [_WSsetMessage, setWSsetMessage] = useState("{}");
   const cartLength = cart.length;
   const navigation = useNavigation();
-  const { isRTL, localization } = useContext(LocalizationContext);
+  const { localization } = useContext(LocalizationContext);
   // SetReoute(NodeMenuItemsSchema.projectProxyRoute);
   const {
     data: GetOldCustomerCart,
@@ -59,7 +68,31 @@ const CartPage = () => {
     navigation.navigate("Home");
   };
   const oldCartCount = GetOldCustomerCart?.count ?? 0;
+  const callbackReducerUpdate = async (ws_updatedRows) => {
+    console.log(ws_updatedRows);
 
+    // await reducerDispatch({
+    //   type: "WS_OPE_ROW",
+    //   payload: {
+    //     rows: ws_updatedRows.rows,
+    //     totalCount: ws_updatedRows.totalCount,
+    //   },
+    // });
+  };
+  useEffect(() => {
+    ConnectToWS(setWSsetMessage)
+      .then(() => console.log("🔌 WebSocket setup done"))
+      .catch((e) => console.error("❌ WebSocket setup error", e));
+  }, []);
+  useEffect(() => {
+    handleWSMessage({
+      _WSsetMessage,
+      fieldsType,
+      cart,
+      cartLength,
+      callbackReducerUpdate,
+    });
+  }, [_WSsetMessage]);
   const oldCartButton = (
     <TouchableOpacity
       // onPress={() => navigation.navigate("OldCustomerCartScreen")}
@@ -75,7 +108,7 @@ const CartPage = () => {
           <View
             className={
               "absolute -top-1 -right-1 bg-red-500 rounded-full h-4 w-4 items-center justify-center " +
-              `${isRTL ? "-left-1" : "-right-1"}`
+              `${I18nManager.isRTL ? "-left-1" : "-right-1"}`
             }
           >
             <Text className="text-white text-[10px] font-bold">
@@ -98,8 +131,48 @@ const CartPage = () => {
       {/* Scrollable Content */}
       <ScrollView className="flex-1  py-2">
         {cart.map((item) => (
-          <CardCartItem item={item} key={item[fieldsType.idField]} />
+          <CardCartItem
+            schema={CartSchema}
+            item={item}
+            key={item[fieldsType.idField]}
+            schemaActions={CartSchemaActions}
+          />
         ))}
+        <CardCartItem
+          schemaActions={CartSchemaActions}
+          schema={CartSchema}
+          item={{
+            canReturn: false,
+            indexOflike: 0,
+
+            cartItemID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            isActive: true,
+            isAvailable: true,
+            itemImage:
+              "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d84.jpg?v5/18/2025 12:09:21 PM?v5/18/2025 12:09:21 PM",
+            keywords: "string,test",
+            menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
+            menuCategoryName: "Foods",
+            menuItemDescription: "string",
+            menuItemID: "00f6d641-84db-4937-9143-10667ac33442",
+            menuItemName: "test",
+            nodeAddress: null,
+            nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
+            nodeMenuItemID: "5583d18b-7bff-4d91-aef8-2390a80972ae",
+            node_Name: "MainNode",
+            numberOfDislikes: 0,
+            numberOfLikes: 8,
+            numberOfOrders: 0,
+            numberOfReviews: 0,
+            preparingTimeAmountPerMinute: 0,
+            price: 50,
+            rate: 5,
+            size: 0,
+            sku: "",
+            taxAmount: 0,
+            taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          }}
+        />
 
         {cartLength < 1 && (
           <View className="flex-1 bg-body justify-center items-center">
@@ -115,14 +188,39 @@ const CartPage = () => {
           </Text>
         </View>
         <ScrollView horizontal className="mt-2">
-          {suggestions.map((item) => (
-            <SuggestCard
-              key={item.id}
-              image={item.image}
-              name={item.name}
-              price={item.price}
-            />
-          ))}
+          {/* {suggestions.map((item) => ( */}
+          <SuggestCard
+            item={{
+              canReturn: false,
+              indexOflike: 0,
+              isActive: true,
+              isAvailable: true,
+              itemImage:
+                "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d84.jpg?v5/18/2025 12:09:21 PM?v5/18/2025 12:09:21 PM",
+              keywords: "string,test",
+              menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
+              menuCategoryName: "Foods",
+              menuItemDescription: "string",
+              menuItemID: "00f6d641-84db-4937-9143-10667ac33442",
+              menuItemName: "test",
+              nodeAddress: null,
+              nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
+              nodeMenuItemID: "5583d18b-7bff-4d91-aef8-2390a80972ae",
+              node_Name: "MainNode",
+              numberOfDislikes: 0,
+              numberOfLikes: 8,
+              numberOfOrders: 0,
+              numberOfReviews: 0,
+              preparingTimeAmountPerMinute: 0,
+              price: 50,
+              rate: 5,
+              size: 0,
+              sku: "",
+              taxAmount: 0,
+              taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            }}
+          />
+          {/* ))} */}
         </ScrollView>
 
         {/* Special Request */}
@@ -136,7 +234,7 @@ const CartPage = () => {
             placeholder={localization.Hum_screens.cart.specialRequest + "?"}
             className={
               "mt-2 bg-card p-3 items-end rounded-lg text-sm border border-body " +
-              `${isRTL ? "text-right" : "text-left"}`
+              `${I18nManager.isRTL ? "text-right" : "text-left"}`
             }
           />
         </View>
@@ -148,20 +246,10 @@ const CartPage = () => {
               {localization.Hum_screens.cart.saveOrder}
             </Text>
           </View>
-          <View className="flex-row mt-2 items-center">
-            <TextInput
-              placeholder={localization.Hum_screens.cart.saveOrderPlaceholder}
-              className={
-                "flex-1 bg-card p-3 rounded-l-lg text-sm border border-body " +
-                `${isRTL ? "text-right" : "text-left"}`
-              }
-            />
-            <TouchableOpacity className="bg-accent px-4 py-3 flex flex-row justify-center items-center h-full rounded-r-lg">
-              <Text className="text-body text-sm">
-                {localization.Hum_screens.cart.submitButton}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <InputWithAction
+            placeholder={localization.Hum_screens.cart.saveOrderPlaceholder}
+            submitButtonText={localization.Hum_screens.cart.submitButton}
+          />
         </View>
         {/* total price */}
         <View className="mt-4 mb-6">
@@ -170,14 +258,7 @@ const CartPage = () => {
               {localization.Hum_screens.cart.paymentSummary.title}
             </Text>
           </View>
-          <View className="flex-row mt-2 items-center justify-between">
-            <Text className="text-md ">
-              {localization.Hum_screens.cart.paymentSummary.totalAmount}
-            </Text>
-            <Text className="text-md">
-              {localization.menu.currency} {total}
-            </Text>
-          </View>
+          <CustomerCartInfo />
         </View>
       </ScrollView>
 

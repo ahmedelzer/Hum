@@ -33,6 +33,8 @@ export default function FieldGroup({
             onChangeText={onChange}
             onBlur={onBlur}
             defaultValue={defaultValue}
+            keyboardType={props.type === "number" ? "numeric" : "default"}
+            step={props.step}
             // onFocus={onFocus}
             // {...props}
             placeholder={props.placeholder}
@@ -43,24 +45,6 @@ export default function FieldGroup({
       name={name}
     />
   );
-}
-{
-  /* <Input
-  variant="outline"
-  size="md"
-  isDisabled={false}
-  isInvalid={false}
-  isReadOnly={false}
->
-  <InputField
-    value={value}
-    onChangeText={onChange}
-    onFocus={onFocus}
-    // {...props}
-    placeholder={props.placeholder}
-    // style={[inputStyle, props.style]}
-  />
-</Input> */
 }
 
 const styles = StyleSheet.create({

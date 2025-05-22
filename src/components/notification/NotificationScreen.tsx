@@ -1,17 +1,9 @@
+import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
-import {
-  VStack,
-  HStack,
-  Text,
-  Heading,
-  Icon,
-  Divider,
-} from "../../../components/ui";
-import { Bell } from "lucide-react-native";
+import { Divider, HStack, Icon, Text, VStack } from "../../../components/ui";
+import { CollapsibleSection } from "../../utils/component/Collapsible";
 import GoBackHeader from "../header/GoBackHeader";
-import { CollapsibleSection } from "../../utils/Collapsible";
-import { Feather } from "@expo/vector-icons";
 
 const notifications = [
   {

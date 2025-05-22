@@ -1,7 +1,7 @@
 {
   "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
   "schemaType": "Service",
-  "idField": "nodeMenuItemID",
+  "idField": "cartItemID",
   "dashboardFormSchemaInfoDTOView": {
     "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
     "schemaHeader": "Menu Item",
@@ -9,6 +9,34 @@
     "editingHeader": "Edit Menu Item"
   },
   "dashboardFormSchemaParameters": [
+    {
+      "dashboardFormSchemaParameterID": "b7100c23-a107-4898-afb3-0a4994aa3bd0",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": true,
+      "parameterType": "cartItemID",
+      "parameterField": "cartItemID",
+      "parameterTitel": "cartItemID",
+      "parameterLookupTitel": "cartItemID",
+      "isIDField": true,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 1
+    },
+    {
+      "dashboardFormSchemaParameterID": "b7100c23-a107-4898-afb3-0a4994aa3bd0",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": true,
+      "parameterType": "nodeMenuItemID",
+      "parameterField": "nodeMenuItemID",
+      "parameterTitel": "nodeMenuItemID",
+      "parameterLookupTitel": null,
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 1
+    },
     {
       "dashboardFormSchemaParameterID": "b7100c23-a107-4898-afb3-0a4994aa3bd0",
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
@@ -106,11 +134,25 @@
       "lookupReturnField": null,
       "lookupDisplayField": null,
       "indexNumber": 9
+    },
+    {
+      "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": false,
+      "parameterType": "note",
+      "parameterField": "note",
+      "parameterTitel": "note",
+      "parameterLookupTitel": null,
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 9
     }
   ],
   "projectProxyRoute": "BrandingMartPOS",
   "isMainSchema": true,
-  "dataSourceName": "",
+  "dataSourceName": "CustomerCart",
   "propertyName": null,
   "indexNumber": 0
 }

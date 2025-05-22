@@ -8,16 +8,14 @@ import React, {
 } from "react";
 import { ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Text, VStack } from "../../../components/ui";
+import { Text, VStack } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import { getAllMenuItems } from "../../reducers/MenuItemReducer";
 import { initialState } from "../Pagination/initialState";
 import reducer from "../Pagination/reducer";
 import MenuCardView from "./MenuCardView";
-import { tabsData } from "./tabsData";
 // import { createRowCache } from "@devexpress/dx-react-grid";
 import { useNavigation } from "@react-navigation/native";
-import { SetResponsiveContainer } from "../../utils/SetResponsiveContainer";
 import ActionBar from "../cards/ActionBar";
 import HeaderParent from "../header/HeaderParent";
 // import { createRowCache } from "../Pagination/createRowCache";
@@ -26,39 +24,43 @@ import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl
 import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
 import { SetReoute } from "../../../request";
 import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
+import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSchemaActions.json";
-import { useDeviceInfo } from "../../utils/useDeviceInfo";
+import { ConnectToWS } from "../../utils/WS/ConnectToWS";
+import { WSOperation } from "../../utils/WS/WSOperation";
 import { createRowCache } from "../Pagination/createRowCache";
 import { getRemoteRows } from "../Pagination/getRemoteRows";
 import { updateRows } from "../Pagination/updateRows";
-import { ConnectToWS } from "../../utils/ConnectToWS";
-import { WSOperation } from "../../utils/WSOperation";
-import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
+import SuggestCard from "../cards/SuggestCard";
+import { handleWSMessage } from "../../utils/WS/handleWSMessage";
+import { selectSelectedNode } from "../../reducers/LocationReducer";
 const VIRTUAL_PAGE_SIZE = 4;
 
-const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
+const MenuCardsView = ({ row, isRefreshed }: any) => {
   const products = useSelector((state) => state.menuItem.menuItem);
+  const cart = useSelector((state) => state.cart.cart);
+  const customerCartInfo = useSelector((state) => state.cart.customerCartInfo);
   const { localization } = useContext(LocalizationContext);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [reRequest, setReRequest] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [_WSsetMessage, setWSsetMessage] = useState("{}");
+  const [WS_Connected, setWS_Connected] = useState(false);
   const activeTab = useSelector((state) => state.menuItem.currentCategory);
   const previousRowRef = useRef({});
+  // const selectedNode = selectSelectedNode(store.getState());
   // Add this ref:
   const previousControllerRef = useRef(null);
-  useEffect(() => {
-    // if (products.length > 0) return;
-    //! set here the conditions of is have new products and online users
-    const data = tabsData.filter((tab) => tab.categoryId === activeTab.id);
-
-    const fetchProducts = () => {
-      dispatch(getAllMenuItems(data));
-    };
-    fetchProducts();
-  }, []);
+  // const WS_prams={
+  //   dataSourceNames:[
+  //     fieldsType.dataSourceName,
+  //     CustomerInfoSchema.dataSourceName,
+  //     CartSchema.dataSourceName,
+  //   ],
+  //   rows:
+  // }
   const [state, reducerDispatch] = useReducer(
     reducer,
     initialState(10, NodeMenuItemsSchema.idField)
@@ -80,6 +82,7 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
     );
 
   const { rows, skip, totalCount, loading } = state;
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -135,12 +138,6 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
       setCurrentSkip(currentSkip + 1);
     }
   };
-
-  useEffect(() => {
-    //todo:here when ws get messages like updates and delete
-    //make that
-    // if(WSOperation)
-  }, []);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () =>
@@ -150,48 +147,90 @@ const MenuCardsView = ({ menuCardItem, row, setRow }: any) => {
             setSelectedItems={setSelectedItems}
           />
         ) : (
-          SetResponsiveContainer(<HeaderParent />, false)
+          <HeaderParent />
         ),
     });
   }, [selectedItems, navigation]);
-  const d = "ss";
   const fieldsType = useSelector((state) => state.menuItem.fieldsType);
   useEffect(() => {
-    ConnectToWS(setWSsetMessage)
+    if (WS_Connected) return;
+    ConnectToWS(setWSsetMessage, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));
-    WSOperation(
-      _WSsetMessage,
-      setReRequest,
-      reducerDispatch,
-      null,
-      () => {},
-      fieldsType.idField,
-      fieldsType.dataSourceName,
-      rows
-    );
-  }, [d, _WSsetMessage]);
+  }, [WS_Connected]);
+  const callbackReducerUpdate = async (ws_updatedRows) => {
+    await reducerDispatch({
+      type: "WS_OPE_ROW",
+      payload: {
+        rows: ws_updatedRows.rows,
+        totalCount: ws_updatedRows.totalCount,
+      },
+    });
+  };
+  useEffect(() => {
+    if (rows.length > 0) {
+      handleWSMessage({
+        _WSsetMessage,
+        fieldsType,
+        rows,
+        totalCount,
+        callbackReducerUpdate,
+      });
+    }
+  }, [_WSsetMessage]); // Add other dependencies if needed (rows, totalCount, etc.)
+  // const staticRows = [
+  //   {
+  //     nodeMenuItemID: "2",
+  //     menuItemName: "test",
+  //     menuItemDescription: "test",
+  //     rate: 3.5,
+  //     numberOfLikes: 10,
+  //     numberOfDislikes: 10,
+  //     numberOfOrders: 10,
+  //     numberOfReviews: 10,
+  //     itemImage: image,
+  //     price: "70",
+  //     isAvailable: true,
+  //     indexOflike: 1,
+  //   },
+  // ];
+
   //[token, isOnline, languageID,nodeID]
+  // useEffect(() => {
+  //   setWSsetMessage("{}");
+  // }, [isRefreshed]);
   return (
     <ScrollView showsVerticalScrollIndicator={false} onScroll={handleScroll}>
-      <VStack className="grid grid-cols-1 md:grid-cols-2 flex-wrap gap-x-4">
-        {rows?.map((item: any) => {
-          return (
-            <MenuCardView
-              key={item[NodeMenuItemsSchema.idField]}
-              itemPackage={item}
-              schemaActions={CartSchemaActions}
-              setSelectedItems={setSelectedItems}
-              selectedItems={selectedItems}
+      {rows?.map((item: any, index: number) => (
+        <React.Fragment key={item[NodeMenuItemsSchema.idField]}>
+          <MenuCardView
+            itemPackage={item}
+            schemaActions={CartSchemaActions}
+            setSelectedItems={setSelectedItems}
+            selectedItems={selectedItems}
+          />
+
+          {/* Insert component after every 2 items */}
+          {(index + 1) % 2 === 0 && (
+            <SuggestCard
+              item={{
+                canReturn: false,
+                indexOflike: 0,
+                isActive: true,
+                isAvailable: true,
+                itemImage:
+                  "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d84.jpg?v5/18/2025 12:09:21 PM?v5/18/2025 12:09:21 PM",
+                keywords: "string,test",
+                menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
+                menuCategoryName: "Foods",
+
+                price: 50,
+              }}
+              key={`custom-${index}`}
             />
-          );
-        })}
-        {rows?.length === 0 && !loading && (
-          <Text className="text-center justify-center items-center flex-1 mt-4">
-            {localization.Hum_screens.menu.noItems}
-          </Text>
-        )}
-      </VStack>
+          )}
+        </React.Fragment>
+      ))}
       {loading && <LoadingScreen LoadingComponent={<Chase size={40} />} />}
     </ScrollView>
   );

@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import DisplayError from "./DisplayError";
 import { Input } from "../../../components/ui/input"; // Import the Gluestack input component
+import { theme } from "../../Theme";
 
 function InputDisplay({ props, BaseInput, errorResult }) {
   const [inputErrorResult, setInputErrorResult] = useState(null);
   const [inputStyle, setInputStyle] = useState(styles.input);
   const [changed, setChanged] = useState(false);
+  const isRTL = true;
   // const {localization} = useContext(lang)
   const handleChange = (e) => {
     if (!inputErrorResult) {
@@ -32,30 +34,43 @@ function InputDisplay({ props, BaseInput, errorResult }) {
     return false;
   };
   return (
-    <View>
-      {props.type !== "detailsCell" && (
+    <View
+    // style={{
+    //   direction: isRTL ? "rtl" : "ltr",
+    //   writingDirection: isRTL ? "rtl" : "ltr",
+    // }}
+    >
+      {props.type !== "detailsCell" && props.type !== "displayLookup" && (
         <View style={styles.formGroup}>
-          <Text style={styles.label}>{props.title}</Text>
-          {/* <Input
-            {...props}
-            onChangeText={handleChange}
-            title={inputErrorResult || props.title}
-            placeholder={`${props.title}`}
-            style={[inputStyle, props.style]}
-          /> */}
+          <Text
+            style={[
+              styles.label,
+              // { justifyContent: isRTL ? "flex-end" : "flex-end" },
+            ]}
+          >
+            {props.title}
+          </Text>
+
           <BaseInput
             {...props}
             onChange={handleChange}
             title={inputErrorResult ? inputErrorResult : props.title}
             placeholder={props.title}
-            style={inputStyle}
+            style={[
+              inputStyle,
+              {
+                textAlign: isRTL ? "right" : "left",
+                writingDirection: isRTL ? "rtl" : "ltr",
+              },
+              props.style,
+            ]}
             invalidInput={invalidInput()}
           />
+
           <DisplayError
             dataError={errorResult}
             parameterField={props.fieldName}
             setTitle={setInputErrorResult}
-            // setStyle={setInputStyle}
           />
         </View>
       )}
@@ -68,12 +83,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   label: {
-    color: "#000",
+    color: theme.text,
     marginBottom: 5,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: theme.border,
     padding: 10,
     borderRadius: 30,
   },

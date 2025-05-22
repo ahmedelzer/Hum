@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { Controller } from "react-hook-form";
+import { View } from "react-native";
 import {
-  RadioGroup,
-  Radio,
-  RadioLabel,
-  RadioIcon,
-  RadioIndicator,
   Input,
   InputField,
+  Radio,
+  RadioGroup,
+  RadioIcon,
+  RadioIndicator,
+  RadioLabel,
 } from "../../../../components/ui"; // Hypothetical Glustak components
-import { CircleIcon } from "lucide-react-native";
-import { Controller } from "react-hook-form";
-import { MaterialIcons } from "@expo/vector-icons";
 
 const BooleanParameter = ({
   values,

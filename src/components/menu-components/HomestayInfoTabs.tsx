@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { I18nManager, ScrollView } from "react-native";
+import { I18nManager } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, HStack, Pressable, Text } from "../../../components/ui";
 import {
@@ -23,6 +23,7 @@ import NodeMenuCatSchemaActions from "../../Schemas/MenuSchema/NodeMenuCatSchema
 import { createRowCache } from "../Pagination/createRowCache";
 import { getRemoteRows } from "../Pagination/getRemoteRows";
 import { updateRows } from "../Pagination/updateRows";
+import { ScrollView } from "react-native-gesture-handler";
 const VIRTUAL_PAGE_SIZE = 4;
 export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
   // Shop/GetMenuCategories?PageSize=11&PageNumber=1
@@ -87,8 +88,9 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
           onScroll={handleScroll}
           horizontal
           showsHorizontalScrollIndicator={false}
+          inverted={I18nManager.isRTL} // <-- makes horizontal scrolling work in RTL
           contentContainerStyle={{
-            flexDirection: I18nManager.isRTL ? "row-reverse" : "row", // Adjust layout for RTL
+            flexDirection: "row", // Always row; inversion handles RTL
           }}
         >
           <HStack
@@ -102,7 +104,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                 key={tab[idField]}
                 className={`my-0.5 py-1 ${
                   activeTab === tab[idField] ? "border-b-[3px]" : "border-b-0"
-                } !border-text hover:border-b-[3px] ${
+                } !border-border hover:border-b-[3px] ${
                   activeTab === tab[idField]
                     ? "hover:border-accent"
                     : "hover:border-accent-hover"
@@ -119,7 +121,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                 <Text
                   size="sm"
                   className={`${
-                    activeTab === tab[idField] ? "text-accent" : "text-text"
+                    activeTab === tab[idField] ? "text-accent" : "!text-card"
                   } font-medium ${
                     I18nManager.isRTL ? "text-right" : "text-left"
                   }`}

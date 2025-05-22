@@ -2,22 +2,15 @@ import {
   BooleanParameter,
   CheckBoxParameter,
   DateParameter,
-  // BooleanParameter,
-  // DateParameter,
-  // PhoneNumberParameter,
-  // SelectParameter,
-  // DateTimeParameter,
-  // ImageParameterWithPanelActions,
-  // LookupInput,
   InputPassword,
   MeddleRangeParameter,
   RadioParameter,
   SelectParameter,
   TextParameter,
+  RadioListParameter,
+  LocationParameter,
 } from "./index";
 export function GetInputComponent(type) {
-  console.log(type);
-
   switch (type) {
     case "text":
     case "float":
@@ -36,11 +29,16 @@ export function GetInputComponent(type) {
       return BooleanParameter;
     case "radio":
       return RadioParameter;
+    case "radioList":
+      return RadioListParameter;
     case "minMax":
       return MeddleRangeParameter;
     case "password":
+    case "confirmPassword":
       return InputPassword;
-
+    case "areaMapLongitudePoint":
+    case "mapLongitudePoint":
+      return LocationParameter;
     default:
       return TextParameter;
   }

@@ -1,8 +1,7 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import React, { useContext } from "react";
 import { Image } from "react-native";
-import { Text, VStack, Card, HStack, Icon } from "../../../components/ui";
-import { SquareArrowUpRight } from "lucide-react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Card, HStack, Icon, Text, VStack } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 
 const shortcuts = [

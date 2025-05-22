@@ -1,120 +1,109 @@
-import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useContext } from "react";
 import { I18nManager, View } from "react-native";
-import { moderateScale, scale } from "react-native-size-matters";
-import {
-  Box,
-  Button,
-  ButtonText,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from "../../../components/ui";
-import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
+import { scale } from "react-native-size-matters";
+import { Box, Text, VStack } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import GetIconMenuItem from "../../utils/GetIconMenuItem";
 import { theme } from "../../Theme";
-import { GetMediaUrl } from "../../utils/GetMediaUrl";
-import ImageRoute from "../../utils/ImageRoute";
-export const MenuCard = ({
-  item,
-  discountedPrice,
-  fieldsType,
-  schemaActions,
-}) => {
+import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
+import ImageRoute from "../../utils/component/ImageRoute";
+import StarsIcons from "../../utils/component/StarsIcons";
+import CardInteraction from "./CardInteraction";
+import FaovertCardIcon from "./FaovertCardIcon";
+import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
+import ImageCardActions from "./ImageCardActions";
+import { getPaddedText } from "../../utils/operation/getPaddedText";
+import CardPriceDiscount from "../../utils/component/CardPriceDiscount";
+export const MenuCard = ({ item, fieldsType, schemaActions }) => {
   const { localization } = useContext(LocalizationContext);
+
+  console.log(
+    item[fieldsType.priceAfterDiscount],
+    "item[fieldsType.priceAfterDiscount]"
+  );
+
   return (
-    <View className={`relative flex flex-row `}>
-      {item.discount && (
-        <View className="absolute top-0 left-0 bg-red-500 px-2 py-1 rounded-tr-lg rounded-bl-lg">
-          <Text className="text-body font-bold text-sm">
-            {item.discount} OFF
-          </Text>
-        </View>
-      )}
+    <View>
+      <View className={`relative flex flex-row`}>
+        <View className="w-1/2 justify-center items-end px-1">
+          <ImageCardActions fieldsType={fieldsType} item={item}>
+            <View
+              pointerEvents="box-none"
+              key={`${fieldsType.imageView}-${item[fieldsType.imageView]}`}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: "rgba(0,0,0,0.25)",
+                zIndex: 100,
+                // zIndex: 0,
+              }}
+            >
+              <CardInteraction fieldsType={fieldsType} item={item} />
+            </View>
+          </ImageCardActions>
 
-      <View className="w-1/2 flex justify-center items-center">
-        {item[fieldsType.imageView] && (
-          <Box
-            className="rounded-2xl overflow-hidden"
-            style={{ width: scale(128), height: scale(128) }}
-          >
-            <ImageRoute route={item[fieldsType.imageView]} />
-          </Box>
-        )}
-        <HStack space="lg" className="items-center mt-2 flex-wrap">
-          <GetIconMenuItem
-            count={item[fieldsType.orders]}
-            iconName={"orders"}
-            size={18}
-            style={{ marginHorizontal: scale(1), color: theme.accent }}
-          />
-          <GetIconMenuItem
-            count={item[fieldsType.rate]}
-            iconName={"rate"}
-            size={18}
-            style={{ marginHorizontal: scale(1), color: theme.accent }}
-          />
-
-          <GetIconMenuItem
-            count={item[fieldsType.likes]}
-            iconName={"likes"}
-            size={18}
-            style={{ marginHorizontal: scale(1), color: theme.accent }}
-          />
-          <GetIconMenuItem
-            count={item[fieldsType.dislikes]}
-            iconName={"dislikes"}
-            size={18}
-            style={{ marginHorizontal: scale(1), color: theme.accent }}
-          />
-        </HStack>
-      </View>
-
-      <View className="w-1/2 px-1">
-        <VStack>
+          {/* Rating + Orders Row */}
           <View
-            className={
-              I18nManager.isRTL ? "items-start" : "items-start" + " min-h-28"
-            }
+            className="flex-row justify-between items-center mt-1"
+            style={{ width: "100%", paddingHorizontal: scale(10) }}
           >
-            {item[fieldsType.text] && (
-              <Text bold size="lg" className="!text-accent font-bold text-xl">
-                {item[fieldsType.text]}
-              </Text>
+            {item[fieldsType.rate] && (
+              <View className="flex-row items-center px-2">
+                <StarsIcons value={parseFloat(item[fieldsType.rate])} />
+              </View>
             )}
-            {item[fieldsType.description] && (
-              <Text className="text-primary-custom text-lg" numberOfLines={6}>
-                {item[fieldsType.description]}
-              </Text>
-            )}
-          </View>
-
-          <View className="flex flex-col justify-end items-end mt-2 space-x-2">
-            {item.discount && (
-              <Text className="text-lg font-bold text-red-500 line-through">
-                {localization.menu.currency} {item.price.toFixed(2)}
-              </Text>
-            )}
-            {item[fieldsType.price] && (
-              <Text className="text-xl font-bold">
-                {localization.menu.currency} {discountedPrice.toFixed(2)}
-              </Text>
-            )}
-          </View>
-          {fieldsType.cardAction && (
-            <AddToCartPrimaryButton
-              item={item}
-              // idField={fieldsType.idField}
-              // field={fieldsType.cardAction}
-              fieldsType={fieldsType}
-              schemaActions={schemaActions}
+            <GetIconMenuItem
+              count={item[fieldsType.orders]}
+              iconName={"orders"}
+              size={18}
+              style={{ marginHorizontal: scale(1), color: theme.accent }}
             />
-          )}
-        </VStack>
+          </View>
+        </View>
+
+        <View className="w-1/2 px-1">
+          <VStack>
+            <View
+              className={
+                I18nManager.isRTL ? "items-start" : "items-start" + " min-h-28"
+              }
+            >
+              {item[fieldsType.text] && (
+                <Text
+                  bold
+                  size="lg"
+                  // key={`${item[fieldsType.text]}-${randomID}`}
+                  className="!text-accent font-bold text-xl"
+                >
+                  {item[fieldsType.text]}
+                </Text>
+              )}
+              {item[fieldsType.description] && (
+                <Text
+                  className="text-primary-custom text-lg"
+                  numberOfLines={6}
+                  //key={`${item[fieldsType.description]}-${randomID}`}
+                >
+                  {getPaddedText(`${item[fieldsType.description]}`)}
+                </Text>
+              )}
+            </View>
+            <CardPriceDiscount fieldsType={fieldsType} item={item} />
+
+            {fieldsType.cardAction && (
+              <AddToCartPrimaryButton
+                item={item}
+                // idField={fieldsType.idField}
+                // field={fieldsType.cardAction}
+                fieldsType={fieldsType}
+                schemaActions={schemaActions}
+              />
+            )}
+          </VStack>
+        </View>
       </View>
+      {/* !make that section like in social media */}
     </View>
   );
 };

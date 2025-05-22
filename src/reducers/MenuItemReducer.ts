@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { tabs } from "../components/menu-components/tabsData";
+import CartSchemaActions from "../Schemas/MenuSchema/CartSchemaActions.json";
 
 // Utility functions for AsyncStorage
 const saveMenuItemsToStorage = async (menuItems) => {
@@ -27,8 +27,9 @@ export const menuItemSlice = createSlice({
   initialState: {
     menuItem: [],
     allMenuItems: [],
-    currentCategory: tabs[0],
+    currentCategory: "",
     currentItemType: "",
+    schemaActions: CartSchemaActions,
     favoriteItems: [],
     fieldsType: {},
   },

@@ -26,9 +26,10 @@ import { SetReoute } from "../../../../request";
 import loginFormSchema from "../../../Schemas/LoginSchema/LoginFormSchema.json";
 import schemaActions from "../../../Schemas/LoginSchema/LoginFormSchemaActions.json";
 import { saveSecureValue } from "../../../store/zustandStore";
-import LoadingButton from "../../../utils/LoadingButton";
+import LoadingButton from "../../../utils/component/LoadingButton";
 import RNRestart from "react-native-restart";
-
+import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
+import AntDesign from "@expo/vector-icons/AntDesign";
 const ACTION_SCHEMA = [
   {
     dashboardFormSchemaActionID: "46ac8869-4745-41c8-8839-d02dfe9999f0",
@@ -42,6 +43,8 @@ const ACTION_SCHEMA = [
 
 export const LoginWithLeftBackground = () => {
   const { localization } = useContext(LocalizationContext);
+  const { os } = useDeviceInfo();
+
   const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
@@ -89,6 +92,8 @@ export const LoginWithLeftBackground = () => {
       postAction,
       loginFormSchema.projectProxyRoute
     );
+    console.log(apply);
+
     if (apply && apply.success === true) {
       try {
         const decodedToken = jwtDecode(apply.data.token);
@@ -97,12 +102,13 @@ export const LoginWithLeftBackground = () => {
             "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
           ...decodedToken,
         };
-        if (rememberme) {
-          await saveSecureValue("token", apply.data.token);
-        }
+        // if (rememberme) {//!must set rememberme in saveSecureValue and when open app agin if not rememberme will be dle token
+        await saveSecureValue("token", apply.data.token);
+        await saveSecureValue("rememberMe", rememberme ? "true" : "false");
+        // }
         setUser(user);
         console.log("Decoded Token:", decodedToken);
-        RNRestart.Restart();
+        // RNRestart.Restart();
         // DevSettings.reload();
       } catch (error) {
         console.error("Failed to decode token:", error.message);
@@ -112,9 +118,13 @@ export const LoginWithLeftBackground = () => {
     }
     setLoading(false);
   };
-
   return (
-    <VStack className="max-w-[440px] w-full h-full" space="md">
+    <VStack
+      className={`max-w-[440px] w-full h-full ${
+        os == "web" && "m-auto bg-card shadow-lg !h-fit px-6 py-3 rounded-lg"
+      }`}
+      space="md"
+    >
       <VStack className="items-center" space="md">
         <Image
           alt="login-logo"
@@ -149,12 +159,30 @@ export const LoginWithLeftBackground = () => {
                   size="sm"
                   value="Remember me"
                   isChecked={value}
-                  onBlur={onBlur}
-                  onChange={(isChecked: boolean) => onChange(isChecked)} // <-- Explicitly set
+                  // onBlur={onBlur}
+                  // onChange={(isChecked: boolean) => onChange(isChecked)} // <-- Explicitly set
+                  onChange={(isCheckedOrEvent: any) => {
+                    const isChecked =
+                      typeof isCheckedOrEvent === "boolean"
+                        ? isCheckedOrEvent
+                        : isCheckedOrEvent?.nativeEvent?.checked;
+                    console.log(isChecked, "isChecked");
+
+                    onChange(isChecked);
+                  }}
                   aria-label="Remember me"
                 >
                   <CheckboxIndicator>
-                    <CheckboxIcon as={CheckIcon} />
+                    <CheckboxIcon
+                      as={() => (
+                        <AntDesign
+                          name="check"
+                          size={20}
+                          className="text-body"
+                        />
+                      )}
+                    />
+                    {/* <CheckboxIcon as={CheckIcon} /> */}
                   </CheckboxIndicator>
                   <CheckboxLabel>{localization.Login.rememberme}</CheckboxLabel>
                 </Checkbox>
@@ -162,7 +190,11 @@ export const LoginWithLeftBackground = () => {
             />
 
             <TouchableOpacity
-              onPress={() => navigation.navigate("ForgetPassword" as never)}
+              onPress={() =>
+                navigation.navigate("ForgetPassword" as never, {
+                  ...control._formValues,
+                })
+              }
             >
               <LinkText className="font-medium text-sm text-primary">
                 {localization.Login.forgotPassword}

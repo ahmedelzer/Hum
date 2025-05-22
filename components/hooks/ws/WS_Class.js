@@ -3,7 +3,7 @@ import { projectProxyRoute, websocketBaseURI } from "../../../request";
 export class WSclass {
   constructor(url) {
     this.socket = new WebSocket(
-      websocketBaseURI + "/" + projectProxyRoute + url
+      url
       // "ws://192.168.1.3:8080"
     ); //! retuen it with websocketBaseURI
     this.url = url;

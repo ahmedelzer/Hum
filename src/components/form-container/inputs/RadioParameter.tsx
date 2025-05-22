@@ -13,7 +13,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { Controller } from "react-hook-form";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useDeviceInfo } from "../../../utils/useDeviceInfo";
+import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 const RadioParameter = ({
   values,
   value: defaultValue = "0", // Expect index (0, 1, etc.)

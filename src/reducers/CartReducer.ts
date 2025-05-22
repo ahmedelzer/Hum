@@ -18,6 +18,8 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState: {
     cart: [],
+    customerCartInfo: {},
+    notes: [],
     totalAmount: 0,
   },
   reducers: {
@@ -49,6 +51,17 @@ export const cartSlice = createSlice({
       state.cart = action.payload.cart;
       state.totalAmount = action.payload.totalAmount;
     },
+    updateNotes: (state, action) => {
+      if (action.payload.type == "add") {
+        state.notes.push(action.payload.value);
+      }
+      if (action.payload.type == "delete") {
+        const noteIdToDelete = action.payload.value;
+        state.notes = state.notes.filter(
+          (note) => note.value !== noteIdToDelete
+        );
+      }
+    },
   },
 });
 
@@ -58,6 +71,6 @@ export const loadCartFromStorage = () => async (dispatch) => {
   dispatch(setCartFromStorage({ cart, totalAmount }));
 };
 
-export const { addToCart, setCartFromStorage } = cartSlice.actions;
+export const { addToCart, setCartFromStorage, updateNotes } = cartSlice.actions;
 
 export default cartSlice.reducer;

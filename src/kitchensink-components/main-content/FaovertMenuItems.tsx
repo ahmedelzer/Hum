@@ -1,19 +1,18 @@
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
+import { TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import {
-  Text,
-  VStack,
   Card,
   HStack,
   Icon,
   Image,
+  Text,
+  VStack,
 } from "../../../components/ui";
-import { SquareArrowUpRight } from "lucide-react-native";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { LocalizationContext } from "../../../context/LocalizationContext";
-import { useSelector } from "react-redux";
-import { TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { GetMediaUrl } from "../../utils/GetMediaUrl";
+import { GetMediaUrl } from "../../utils/operation/GetMediaUrl";
 
 const FaovertMenuItems = () => {
   const favoriteItems = useSelector((state) => state.menuItem.favoriteItems);

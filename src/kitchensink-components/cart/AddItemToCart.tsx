@@ -3,7 +3,7 @@ import { SetReoute } from "../../../request";
 import { onApply } from "../../components/form-container/OnApplay";
 import { addToCart } from "../../reducers/CartReducer";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
-import DeleteItem from "../../utils/DeleteItem";
+import DeleteItem from "../../utils/operation/DeleteItem";
 export const AddItemToCart = async (
   item,
   setLoading,
@@ -34,7 +34,8 @@ export const AddItemToCart = async (
   if (item.addQuantity < 0 && item[fieldsType.cardAction] === 1) {
     await DeleteItem(
       item[fieldsType.idField],
-      dispatch(addToCart({ item: item, fieldsType: fieldsType })),
+      () => {},
+      // dispatch(addToCart({ item: item, fieldsType: fieldsType })),
       true,
       deleteAction,
       NodeMenuItemsSchema.projectProxyRoute
@@ -50,8 +51,8 @@ export const AddItemToCart = async (
       postAction,
       NodeMenuItemsSchema.projectProxyRoute
     );
-    if (apply.data && apply.success) {
-      dispatch(addToCart({ item: item, fieldsType: fieldsType }));
-    }
+    // if (apply.data && apply.success) {
+    //   dispatch(addToCart({ item: item, fieldsType: fieldsType }));
+    // }
   }
 };

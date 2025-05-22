@@ -9,9 +9,10 @@ export default function DataCellRender({
   onChange,
   value,
   control,
+  ...props
 }) {
   // Determine the key to use for input mapping
-  const inputKey = data.lookupID ? "lookup" : data.parameterType;
+  const inputKey = data.parameterType;
 
   const InputComponentClass = GetInputComponent(inputKey);
   // Optionally instantiate the class (if needed)
@@ -21,6 +22,7 @@ export default function DataCellRender({
         ...CreateInputProps(data, value),
         onChange: onChange,
         control: control,
+        ...props,
       }}
       errorResult={errorResult}
       BaseInput={InputComponentClass}

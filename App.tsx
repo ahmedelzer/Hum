@@ -1,26 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { GluestackUIProvider } from "./components/ui";
 import "./global.css";
 // import AppNavigation from "./navigation/AppNavigation";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Provider } from "react-redux";
 import { LocalizationProvider } from "./context/LocalizationContext";
 import { WS_Provider } from "./context/WS";
 import { AuthProvider } from "./context/auth";
 import RootStack from "./src/navigators/RootStack";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Provider } from "react-redux";
-import store from "./src/store/cartStore";
-import Notification from "./src/components/notification/Notification";
-import HeaderParent from "./src/components/header/HeaderParent";
-import TestWithStaticServer from "./src/components/notification/TestWithStaticServer";
-import RenderItemsView from "./src/utils/renderItemsView";
+import store from "./src/store/reduxStore";
 
 const queryClient = new QueryClient();
 // Task name constant
@@ -44,19 +33,18 @@ const queryClient = new QueryClient();
 // );
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <GluestackUIProvider mode="light">
+          <GluestackUIProvider>
             <LocalizationProvider>
               <WS_Provider>
                 <AuthProvider>
                   <SafeAreaView
                     style={{
                       flex: 1,
-                      // backgroundColor: "#fff",
+                      // backgroundColor: "#000",
                     }}
-                    // className="bg-body"
                   >
                     <RootStack />
                   </SafeAreaView>

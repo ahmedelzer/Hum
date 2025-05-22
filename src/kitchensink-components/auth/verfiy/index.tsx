@@ -4,28 +4,24 @@ import OTPTextInput from "react-native-otp-textinput";
 import { useNavigation } from "@react-navigation/native";
 import { onApply } from "../../../components/form-container/OnApplay";
 import { buildApiUrl } from "../../../../components/hooks/APIsFunctions/BuildApiUrl";
-import VerifySchema from "../../../Schemas/LoginSchema/VerifySchema.json";
+import ResendSchemaAction from "../../../Schemas/LoginSchema/ResendSchemaAction.json";
+import VerifySchemaPrams from "../../../Schemas/LoginSchema/VerifySchema.json";
 import GoBackHeader from "../../../components/header/GoBackHeader";
+import { handleSubmitWithCallback } from "../../../utils/operation/handleSubmitWithCallback";
 
 const VerifyScreen = ({ route }) => {
   const [otpCode, setOtpCode] = useState("");
   const [disable, setDisable] = useState(false);
   const [result, setResult] = useState(null);
   const navigation = useNavigation();
-  const { email } = route.params || {}; // if passed from previous screen
+  const { email, VerifySchema } = route.params || {}; // if passed from previous screen
   const handleOTPSubmit = async () => {
     if (otpCode.length === 6) {
-      // Replace with actual API call or validation logic
-      console.log("Submitted OTP: ", otpCode);
-      Alert.alert("OTP Verified!", `Code: ${otpCode}`);
-      const verificationID = {
-        verificationID: route.params.verificationID,
-      };
       setDisable(true);
       const dataSourceAPI = (query) => {
         return buildApiUrl(query, {
-          ...{ CodeNumber: otpCode },
-          ...verificationID,
+          ...{ [VerifySchemaPrams.idField]: otpCode },
+          ...route.params,
         });
       };
       setDisable(true);
@@ -40,7 +36,9 @@ const VerifyScreen = ({ route }) => {
           dataSourceAPI(VerifySchema)
         );
         setResult(request);
-        if (request && request.success === true) {
+        console.log(request);
+
+        if (request.data === true && request.success === true) {
           navigation.navigate("SignIn"); // or any other screen
         }
       } catch (error) {
@@ -51,8 +49,31 @@ const VerifyScreen = ({ route }) => {
         setDisable(false);
       }
     } else {
-      Alert.alert("Invalid OTP", "Please enter the full 4-digit code.");
+      Alert.alert("Invalid OTP", "Please enter the full 6-digit code.");
     }
+  };
+  const handleResend = async () => {
+    const postAction =
+      ResendSchemaAction &&
+      ResendSchemaAction.find(
+        (action) => action.dashboardFormActionMethodType === "Post"
+      );
+    handleSubmitWithCallback({
+      data: { ...route.params },
+      setDisable,
+      action: postAction,
+      proxyRoute: VerifySchemaPrams.projectProxyRoute,
+      setReq: setResult,
+      isNew: true,
+      onSuccess: (resultData) => {
+        console.log(resultData);
+        // navigation.navigate("Verify", {
+        //   ...data,
+        //   ...resultData,
+        //   VerifySchema: VerifySchema,
+        // });
+      },
+    });
   };
 
   return (
@@ -68,12 +89,20 @@ const VerifyScreen = ({ route }) => {
       <Text style={styles.subtitle}>
         Please enter the 4-digit code sent to {email || "your email"}
       </Text>
+
       <OTPTextInput
         inputCount={6}
         handleTextChange={(val) => setOtpCode(val)}
         tintColor="#6200ee"
         offTintColor="#ccc"
       />
+      <Text
+        style={styles.title}
+        onPress={handleResend}
+        className="text-[#6200ee] mt-2"
+      >
+        Resend
+      </Text>
       <TouchableOpacity
         style={styles.button}
         onPress={handleOTPSubmit}

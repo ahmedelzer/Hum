@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import GoBackHeader from "../header/GoBackHeader";
 import { useDispatch, useSelector } from "react-redux";
-import { areArraysEqualByKey } from "../../utils/areArraysEqual";
-import { IsSecondListSubsetOfFirstList } from "../../utils/IsSecondListSubsetOfFirstList";
+import { areArraysEqualByKey } from "../../utils/operation/areArraysEqual";
+import { IsSecondListSubsetOfFirstList } from "../../utils/operation/IsSecondListSubsetOfFirstList";
 import { updateFavoriteItems } from "../../reducers/MenuItemReducer";
-import { filterArrayByKey } from "../../utils/filterArrayByKey";
+import { filterArrayByKey } from "../../utils/operation/filterArrayByKey";
 
 export default function ActionBar({ selectedItems, setSelectedItems }) {
   const favoriteItems = useSelector((state) => state.menuItem.favoriteItems);

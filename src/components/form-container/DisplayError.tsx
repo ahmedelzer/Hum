@@ -22,16 +22,9 @@ function DisplayError({ dataError, parameterField, setTitle }) {
 
   if (dataError?.success === false) {
     const errorMessages = lowercaseError[fieldLowercase];
+    console.log("error", lowercaseError);
     if (errorMessages?.length > 0) {
       setTitle(`${errorMessages}`);
-      // toast.show({
-      //   placement: "bottom",
-      //   render: ({ id }) => (
-      //     <Toast nativeID={id} variant="solid" action="error">
-      //       <ToastTitle>{errorMessages}</ToastTitle>
-      //     </Toast>
-      //   ),
-      // });
       return (
         <View>
           <Text className="!text-red-500 mt-1 text-sm">{errorMessages}</Text>

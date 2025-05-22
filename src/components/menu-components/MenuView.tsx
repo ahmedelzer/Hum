@@ -3,10 +3,12 @@ import { View, ScrollView, RefreshControl } from "react-native";
 import { Box, HStack } from "../../../components/ui";
 import SearchBarFilter from "../filters/SearchBarFilter";
 import Searchbar from "../search-bar/Searchbar";
-import AddLocation from "./AddLocation";
+import AddLocation from "../addressLocation/AddLocation";
 import MenuCardsView from "./MenuCardsView";
-import { useDeviceInfo } from "../../utils/useDeviceInfo";
+import { useDeviceInfo } from "../../utils/component/useDeviceInfo";
 import { HomestayInfoTabs } from "./HomestayInfoTabs";
+import AddressLocationCollapsible from "../../utils/AddressLocationCollapsible";
+import { theme } from "../../Theme";
 
 const MenuView = ({ schemas }: any) => {
   const [row, setRow] = useState({});
@@ -41,7 +43,8 @@ const MenuView = ({ schemas }: any) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <HStack space="2xl" className="items-center md:my-2">
+      {/* <AddressLocationCollapsible /> */}
+      <HStack space="2xl" className="items-center md:my-2 !bg-surface">
         <View style={{ flex: 1 }}>
           <Searchbar schema={searchBarSchema} setRow={setRow} row={row} />
         </View>
@@ -59,7 +62,7 @@ const MenuView = ({ schemas }: any) => {
         <View className="my-5">
           <HomestayInfoTabs setRow={setRow} row={row} />
         </View>
-        <MenuCardsView menuCardItem={menuCardItem} row={row} setRow={setRow} />
+        <MenuCardsView isRefreshed={key} row={row} />
       </Box>
     </ScrollView>
   );

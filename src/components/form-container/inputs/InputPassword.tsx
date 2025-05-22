@@ -7,12 +7,23 @@ import {
   InputIcon,
   InputSlot,
 } from "../../../../components/ui";
+import { View } from "react-native";
 function InputPassword({ ...props }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState(null);
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-  let { value: defaultValue, enable, title, fieldName, control }: any = props;
+  let {
+    value: defaultValue,
+    enable,
+    title,
+    fieldName,
+    control,
+    type,
+    mustConfirmed = type === "confirmPassword",
+    clearErrors,
+  }: any = props;
   return (
     <Controller
       control={control}
@@ -20,32 +31,70 @@ function InputPassword({ ...props }) {
         required: true,
       }}
       render={({ field: { onChange, onBlur, value } }) => (
-        <Input isInvalid={props.invalidInput}>
-          <InputField
-            type={passwordVisible ? "text" : "password"}
-            // {...props}
-            className="!h-12"
-            size="md"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            secureTextEntry={!passwordVisible}
-            value={value}
-            defaultValue={defaultValue}
-            editable={enable}
-            placeholder={title}
-            id={fieldName}
-          />
-          <InputSlot
-            onPress={togglePasswordVisibility}
-            className="w-8 items-center"
-          >
-            {passwordVisible ? (
-              <Entypo name="eye" size={24} color="black" />
-            ) : (
-              <Entypo name="eye-with-line" size={24} color="black" />
-            )}
-          </InputSlot>
-        </Input>
+        <View>
+          <Input isInvalid={props.invalidInput}>
+            <InputField
+              type={passwordVisible ? "text" : "password"}
+              // {...props}
+              className="!h-12"
+              size="md"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              secureTextEntry={!passwordVisible}
+              value={value}
+              defaultValue={defaultValue}
+              editable={enable}
+              placeholder={title}
+              id={fieldName}
+            />
+            <InputSlot
+              onPress={togglePasswordVisibility}
+              className="w-8 items-center"
+            >
+              {passwordVisible ? (
+                <Entypo name="eye" size={24} color="black" />
+              ) : (
+                <Entypo name="eye-with-line" size={24} color="black" />
+              )}
+            </InputSlot>
+          </Input>
+          {mustConfirmed && (
+            <Input isInvalid={props.invalidInput}>
+              <InputField
+                type={passwordVisible ? "text" : "password"}
+                // {...props}
+                className="!h-12 mt-2"
+                size="md"
+                onChangeText={(newValue) => {
+                  if (value !== newValue) {
+                    //make here vladtion
+                    console.log(confirmPassword);
+
+                    control.setError(fieldName, {
+                      type: "manual",
+                      message: "Passwords do not match",
+                    });
+                  } else {
+                    clearErrors(fieldName);
+                  }
+                }}
+                secureTextEntry={!passwordVisible}
+                editable={enable}
+                placeholder={`confirm ${title}`} //!localiztion
+              />
+              <InputSlot
+                onPress={togglePasswordVisibility}
+                className="w-8 items-center"
+              >
+                {passwordVisible ? (
+                  <Entypo name="eye" size={24} color="black" />
+                ) : (
+                  <Entypo name="eye-with-line" size={24} color="black" />
+                )}
+              </InputSlot>
+            </Input>
+          )}
+        </View>
       )}
       name={fieldName}
     />

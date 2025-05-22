@@ -1,13 +1,14 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LanguageSchema from "./src/Schemas/LanguageSchema/LanguageSchema.json";
 import { retrieveSecureValue } from "./src/store/zustandStore";
-
+import { getField } from "./src/utils/operation/getField";
 export const baseURL = "https://maingatewayapi.ihs-solutions.com:8000";
 export const defaultProjectProxyRoute =
   "http://maingatewayapi.ihs-solutions.com:8000/BrandingMart/api/";
 export const defaultProjectProxyRouteWithoutAPI =
   "http://maingatewayapi.ihs-solutions.com:8000/BrandingMart/";
-export const publicImageURL = "http://41.196.0.25:5004/";
+export const publicImageURL = "https://ihs-solutions.com:5055/";
 export const websocketBaseURI =
   "wss://maingatewayapi.ihs-solutions.com:8000/Chanels";
 // export const languageName = window.localStorage.getItem("language");
@@ -15,7 +16,6 @@ export const websocketBaseURI =
 // export const projectProxyRoute =
 //   window.sessionStorage.getItem("projectProxyRoute");//!make it by storge
 export let projectProxyRoute = "BrandingMart";
-// Set projectProxyRoute
 export function SetReoute(Route) {
   projectProxyRoute = Route;
 }
@@ -35,14 +35,22 @@ export async function SetHeaders() {
   // console.log("====================================");
   // console.log(await GetToken(), "req");
   // console.log("====================================");
+  const langField = getField(
+    LanguageSchema.dashboardFormSchemaParameters,
+    "Language"
+  );
+  const languageRow = await AsyncStorage.getItem("languageRow");
+  const languageRowObj =
+    typeof languageRow === "string" ? JSON.parse(languageRow) : languageRow;
+  const savedLanguageName = await AsyncStorage.getItem("languageName");
   const headers = {
-    languageName: "",
-    // languageName: encodeURIComponent(AsyncStorage.getItem("language")) || "",
+    languageName: encodeURIComponent(languageRowObj[langField]) || "",
     "Content-Type": "application/json",
     token: await GetToken(),
+    ...languageRowObj,
     // "Access-Control-Allow-Credentials": "true",
     // "Access-Control-Allow-Origin": "*",
-    languageID: "",
+    // languageID: savedLanguageID || "",
     // languageID: AsyncStorage.getItem("languageID") || "",
   };
 

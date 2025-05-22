@@ -1,0 +1,5 @@
+1-make note cart - notes interface-add function-set in redex
+2-make delete cart item - delete interface-delete function
+3-clean the app from all un useable packages
+4-make layout run in rtl but still in formContainer
+5-

@@ -1,20 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { WS_Class } from "../../../components/hooks/ws/WS_Class";
 // import { LocalizationContext } from "../../../context/LocalizationContext";
 // import { WSContext } from "../../../context/WS";
-import { Text, TouchableOpacity, View } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
-import * as TaskManager from "expo-task-manager";
-import * as BackgroundFetch from "expo-background-fetch";
-import * as IntentLauncher from "expo-intent-launcher";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Icon } from "../../../components/ui";
-import { moderateScale } from "react-native-size-matters";
-import { Bell } from "lucide-react-native";
-import TestBackGroundServices from "./TestBackGroundServices";
-import RedCounter from "../../utils/RedCounter";
+import * as BackgroundFetch from "expo-background-fetch";
+import * as Notifications from "expo-notifications";
+import * as TaskManager from "expo-task-manager";
+import { I18nManager, TouchableOpacity, View } from "react-native";
+import RedCounter from "../../utils/component/RedCounter";
 
 // Notification handler
 Notifications.setNotificationHandler({
@@ -118,12 +112,14 @@ function Notification() {
   //   };
   // }, []);
   const navigation = useNavigation();
+  console.log(I18nManager.isRTL, "I18nManager.isRTL ");
 
   return (
     <View className="flex justify-center items-center">
       {/* <TestBackGroundServices /> */}
       <TouchableOpacity
         onPress={() => navigation.navigate("NotificationScreen")}
+        // onPress={()=> }
         className="p-2 rounded-lg bg-accent items-center justify-center"
       >
         {/* <Icon as={Bell} size={"md"}  /> */}

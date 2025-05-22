@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Icon } from "../../../components/ui";
-// import { Truck, MapPin, CreditCard } from "lucide-react-native";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import GoBackHeader from "../../components/header/GoBackHeader";
 import { useSelector } from "react-redux";
@@ -37,7 +36,7 @@ export default function CheckoutScreen() {
       <GoBackHeader subTitle={"McDonald's"} title={"Checkout"} />
       <ScrollView>
         <View className="my-2 w-full h-[500]">
-          {/* <BranchesByLocationMap branches={branches} /> */}
+          <BranchesByLocationMap branches={branches} />
         </View>
         {/* Delivery Address */}
         <View className="mt-4 bg-body p-4 border border-card rounded-xl">

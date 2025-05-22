@@ -1,22 +1,14 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 // react navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import BottomBarTabs from "./BottomTabBar";
-import OutsideStack from "./OutSideStack";
-import { retrieveSecureValue } from "../store/zustandStore";
+import { Chase } from "react-native-animated-spinkit";
 import { useAuth } from "../../context/auth";
 import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
-import StackNavigator from "./StackNavigator";
-import HeaderParent from "../components/header/HeaderParent";
-import RenderItemsView from "../utils/renderItemsView";
-import { FontAwesome } from "@expo/vector-icons";
-import { SquareArrowUpRight } from "lucide-react-native";
-import HomestayPage from "../kitchensink-components/HomestayPage";
-import { useDeviceInfo } from "../utils/useDeviceInfo";
-import DrawerNavigator from "./DrawerNavigator";
-import WebNavigation from "./WebNavigation";
+import { useDeviceInfo } from "../utils/component/useDeviceInfo";
+import BottomBarTabs from "./BottomTabBar";
+import OutsideStack from "./OutSideStack";
 
 // types
 export type RootStackParamList = {
@@ -58,9 +50,9 @@ const RootStack: FC = (props: any) => {
           <OutsideStack />
         )
       ) : (
-        <LoadingScreen />
+        <LoadingScreen LoadingComponent={os == "web" && <Chase size={40} />} />
       )}
-      {/* <OutsideStack /> */}
+      {/* <WebNavigation /> */}
       {/* <OutsideStack /> */}
       {/* todo make here anther component for web  */}
       {/* {os === "web" ? <WebNavigation /> : <BottomBarTabs />} */}

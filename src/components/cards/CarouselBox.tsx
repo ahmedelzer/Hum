@@ -1,22 +1,57 @@
 import { AnimatePresence, Motion } from "@legendapp/motion";
-import React from "react";
-import { View } from "react-native";
-import { moderateScale } from "react-native-size-matters";
+import React, { useEffect, useState } from "react";
+import { ScrollView, View } from "react-native";
+import { moderateScale, scale } from "react-native-size-matters";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
+  AvatarImage,
   Box,
   Button,
   Card,
   HStack,
   Icon,
-  Image,
+  Image as GlustackImage,
   Pressable,
   Text,
   VStack,
+  Image,
 } from "../../../components/ui";
-import { GetMediaUrl } from "../../utils/GetMediaUrl";
+import { GetMediaUrl } from "../../utils/operation/GetMediaUrl";
+import ImageRoute from "../../utils/component/ImageRoute";
+import { Image as ReactImage } from "react-native";
+import { publicImageURL } from "../../../request";
+import FastImage from "react-native-fast-image";
+import ImageViewer from "react-native-image-zoom-viewer";
+import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
+import { theme } from "../../Theme";
+import { RunsSpacialAction } from "../../utils/operation/RunsSpacialAction";
+import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSchemaActions.json";
+
 //!locaization
+// fasimge,react-native-image-zoom-viewer
 export const CarouselBox = ({ item, fieldsType }) => {
+  let url = `${publicImageURL}/${item[fieldsType.imageView]}`;
+  const [imageFetch, setImageFetch] = useState("");
+  const indexOfLike = item.indexOflike;
+  const randomID = item[fieldsType.idField];
+
+  useEffect(() => {
+    const checkImageUrl = async () => {
+      try {
+        const res = await fetch(url);
+        if (res.ok) {
+          setImageFetch(url);
+        } else {
+          console.log("Image fetch failed:", res.status);
+        }
+      } catch (error) {
+        console.log("Image fetch error:", error);
+      }
+    };
+
+    checkImageUrl();
+  }, [url]);
+
   return (
     <Box className="justify-center items-center">
       {item[fieldsType.imageView] && (
@@ -33,12 +68,11 @@ export const CarouselBox = ({ item, fieldsType }) => {
           />
         </View>
       )}
-
       <Card
         variant="elevated"
         className="absolute bottom-6 w-[90%] md:w-[80%] lg:w-[70%] p-4 rounded-3xl shadow-xl"
       >
-        {item[fieldsType.likes] && (
+        {/* {item[fieldsType.likes] && (
           <Pressable
             // onPress={() => setLikes(!likes)}
             className="absolute top-3 right-4 h-6 w-6 justify-center items-center"
@@ -64,7 +98,7 @@ export const CarouselBox = ({ item, fieldsType }) => {
               </Motion.View>
             </AnimatePresence>
           </Pressable>
-        )}
+        )} */}
         <VStack space="sm">
           {item[fieldsType.text] && (
             <Text bold size="sm" className="text-primary">
@@ -98,6 +132,54 @@ export const CarouselBox = ({ item, fieldsType }) => {
               name="account-check"
               size={16}
               color="green"
+            />
+          </HStack>
+          <HStack
+            space="lg"
+            className="items-center w-full justify-between mt-2 flex flex-row px-4 py-2"
+            key={`${item[fieldsType.orders]}-${item[fieldsType.rate]}-${item[fieldsType.likes]}-${item[fieldsType.dislikes]}-${randomID}`}
+          >
+            <GetIconMenuItem
+              count={item[fieldsType.orders]}
+              iconName={"orders"}
+              size={18}
+              style={{ marginHorizontal: scale(1), color: theme.accent }}
+            />
+            <GetIconMenuItem
+              count={item[fieldsType.rate]}
+              iconName={"rate"}
+              size={18}
+              style={{ marginHorizontal: scale(1), color: theme.accent }}
+              scaluton
+            />
+            <GetIconMenuItem
+              count={item[fieldsType.likes]}
+              iconName={indexOfLike == 1 ? "likes" : "likes2"}
+              onPress={() =>
+                RunsSpacialAction(
+                  fieldsType.likes,
+                  item[fieldsType.idField],
+                  indexOfLike == 1 ? false : true,
+                  NodeMenuItemsSchemaActions
+                )
+              }
+              size={18}
+              style={{ marginHorizontal: scale(1), color: theme.accent }}
+            />
+            <GetIconMenuItem
+              // key={`${item[fieldsType.dislikes]}-${randomID}`}
+              count={item[fieldsType.dislikes]}
+              onPress={() =>
+                RunsSpacialAction(
+                  fieldsType.likes,
+                  item[fieldsType.idField],
+                  indexOfLike == -1 ? false : true,
+                  NodeMenuItemsSchemaActions
+                )
+              }
+              iconName={indexOfLike == -1 ? "dislikes" : "dislikes2"}
+              size={18}
+              style={{ marginHorizontal: scale(1), color: theme.accent }}
             />
           </HStack>
           <HStack space="lg" className="items-center">
