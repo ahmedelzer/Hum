@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 // react navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -9,6 +9,8 @@ import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
 import { useDeviceInfo } from "../utils/component/useDeviceInfo";
 import BottomBarTabs from "./BottomTabBar";
 import OutsideStack from "./OutSideStack";
+import { checkOnboarding } from "../utils/operation/checkOnboarding";
+import SplashNavigation from "./SplashNavigation";
 
 // types
 export type RootStackParamList = {
@@ -39,18 +41,25 @@ const linking = {
 
 const Stack = createStackNavigator<RootStackParamList>();
 const RootStack: FC = (props: any) => {
-  const { user, loading } = useAuth();
+  const { user, hasOnboarded, loading } = useAuth();
   const { os } = useDeviceInfo();
+
   return (
     <NavigationContainer linking={linking}>
-      {!loading ? (
-        user ? (
-          <BottomBarTabs />
+      {hasOnboarded ? (
+        !loading ? (
+          user ? (
+            <BottomBarTabs />
+          ) : (
+            <OutsideStack />
+          )
         ) : (
-          <OutsideStack />
+          <LoadingScreen
+            LoadingComponent={os == "web" && <Chase size={40} />}
+          />
         )
       ) : (
-        <LoadingScreen LoadingComponent={os == "web" && <Chase size={40} />} />
+        <SplashNavigation />
       )}
       {/* <WebNavigation /> */}
       {/* <OutsideStack /> */}

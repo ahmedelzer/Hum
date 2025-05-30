@@ -9,10 +9,12 @@ import { deleteKey, retrieveSecureValue } from "../src/store/zustandStore";
 import { DevSettings } from "react-native";
 import { useDeviceInfo } from "../src/utils/component/useDeviceInfo";
 import { jwtDecode } from "jwt-decode";
+import { checkOnboarding } from "../src/utils/operation/checkOnboarding";
 function AuthProvider(props) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
+  const [hasOnboarded, setHasOnboarded] = useState<null | boolean>(false);
   const { os } = useDeviceInfo();
   const [userGust, setUserGust] = useState(os == "web" ? true : false); //TODO:make sure type of  user
 
@@ -20,6 +22,8 @@ function AuthProvider(props) {
     (async function () {
       const result = await retrieveSecureValue("token");
       const remember = await retrieveSecureValue("rememberMe");
+      // const onboarded = await checkOnboarding();
+      // setHasOnboarded(onboarded);
       if (remember !== "true") {
         // either "false" or missing → wipe out the token
         await deleteKey("token");
@@ -71,6 +75,8 @@ function AuthProvider(props) {
         setNotifications,
         userGust,
         setUserGust,
+        setHasOnboarded,
+        hasOnboarded,
       }}
       {...props}
     />
