@@ -1,15 +1,14 @@
 import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { default as React, useContext } from "react";
+import { default as React } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { moderateScale, scale } from "react-native-size-matters";
-import { Box, Button, ButtonText, HStack, Image } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
 import { useDispatch, useSelector } from "react-redux";
+import { Box, Button, ButtonText, HStack, Image } from "../../../components/ui";
+import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
 import { updateFavoriteItems } from "../../reducers/MenuItemReducer";
 
 export const MenuCardWeb = ({ item, discountedPrice, fieldsType }) => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const favoriteItems = useSelector((state) => state.menuItem.favoriteItems);
   const isFavorite = favoriteItems.some((favItem) => favItem.id === item.id);
   const dispatch = useDispatch();

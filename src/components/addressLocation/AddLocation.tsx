@@ -1,21 +1,10 @@
-import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
-import * as Location from "expo-location";
-import React, { useContext, useEffect, useState } from "react";
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { Chase } from "react-native-animated-spinkit";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Button,
-  ButtonText,
-  Heading,
-  Icon,
-  Modal,
-  ModalBackdrop,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Select,
   SelectBackdrop,
   SelectContent,
@@ -27,21 +16,12 @@ import {
   SelectPortal,
   SelectTrigger,
 } from "../../../components/ui";
-import { Text } from "react-native";
-import FormContainer from "../form-container/FormContainer";
 import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
 import AddressLocationAction from "../../Schemas/AddressLocation/AddressLocationAction.json";
-import { onApply } from "../form-container/OnApplay";
-import {
-  updateLocations,
-  updateSelectedLocation,
-} from "../../reducers/LocationReducer";
+import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
+import { updateSelectedLocation } from "../../reducers/LocationReducer";
 import PopupModal from "../../utils/component/PopupModal";
 import { handleSubmitWithCallback } from "../../utils/operation/handleSubmitWithCallback";
-import NearestBranches from "./NearestBranches";
-import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
-import { Chase } from "react-native-animated-spinkit";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 
 export default function AddLocation({
   rows,
@@ -49,7 +29,6 @@ export default function AddLocation({
   AddAddressLocation,
   loading,
 }) {
-  const { localization } = useContext(LocalizationContext);
   const idField = AddressLocationSchema.idField;
   const displayLookupParam =
     AddressLocationSchema.dashboardFormSchemaParameters.find(
@@ -61,6 +40,7 @@ export default function AddLocation({
   const selectedLocation = useSelector(
     (state) => state.location.selectedLocation
   );
+  const localization = useSelector((state) => state.localization.localization);
   const locations = useSelector((state) => state.location.locations);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -77,7 +57,7 @@ export default function AddLocation({
       (action) => action.dashboardFormActionMethodType === "Post"
     );
   const onSubmit = async (data: any) => {
-    handleSubmitWithCallback({
+    await handleSubmitWithCallback({
       data,
       setDisable,
       action: postAction,
@@ -104,7 +84,9 @@ export default function AddLocation({
       <PopupModal
         isOpen={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={async () => {
+          await handleSubmit(onSubmit);
+        }}
         control={control}
         schema={AddressLocationSchema}
         errors={reqError || errors}

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 // react navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -9,8 +9,8 @@ import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
 import { useDeviceInfo } from "../utils/component/useDeviceInfo";
 import BottomBarTabs from "./BottomTabBar";
 import OutsideStack from "./OutSideStack";
-import { checkOnboarding } from "../utils/operation/checkOnboarding";
 import SplashNavigation from "./SplashNavigation";
+import WebNavigator from "./WebNavigation";
 
 // types
 export type RootStackParamList = {
@@ -46,21 +46,7 @@ const RootStack: FC = (props: any) => {
 
   return (
     <NavigationContainer linking={linking}>
-      {hasOnboarded ? (
-        !loading ? (
-          user ? (
-            <BottomBarTabs />
-          ) : (
-            <OutsideStack />
-          )
-        ) : (
-          <LoadingScreen
-            LoadingComponent={os == "web" && <Chase size={40} />}
-          />
-        )
-      ) : (
-        <SplashNavigation />
-      )}
+      {RequiredScreens()}
       {/* <WebNavigation /> */}
       {/* <OutsideStack /> */}
       {/* todo make here anther component for web  */}
@@ -70,36 +56,31 @@ const RootStack: FC = (props: any) => {
     </NavigationContainer>
   );
 };
-
+const RequiredScreens = () => {
+  const { user, hasOnboarded, loading } = useAuth();
+  const { os } = useDeviceInfo();
+  if (loading) {
+    return (
+      <LoadingScreen LoadingComponent={os == "web" && <Chase size={40} />} />
+    );
+  }
+  const mobileScreens = () => {
+    if (!hasOnboarded) {
+      return <SplashNavigation />;
+    } else if (user) {
+      return <BottomBarTabs />;
+    } else {
+      return <OutsideStack />;
+    }
+  };
+  switch (os) {
+    case "android":
+    case "ios":
+    case "windows":
+    case "macos":
+      return mobileScreens();
+    case "web":
+      return <WebNavigator />;
+  }
+};
 export default RootStack;
-
-// function NoDataUrls() {
-//   return (
-//     <Stack.Navigator
-//       screenOptions={{
-//         headerShown: false,
-//       }}>
-//       <Stack.Screen name="ChooseEvents" component={NoDataUrl} />
-//     </Stack.Navigator>
-//   );
-// }
-// function ErrorStack() {
-//   return (
-//     <Stack.Navigator
-//       screenOptions={{
-//         headerShown: false,
-//       }}>
-//       <Stack.Screen name="Error" component={Error} />
-//     </Stack.Navigator>
-//   );
-// }
-
-// {subDomain !== undefined ? (
-//   !user.access_token ? (
-//     <OutsideStack />
-//   ) : (
-//     <BottomBarTabs />
-//   )
-// ) : (
-//   <ErrorStack />
-// )}

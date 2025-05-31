@@ -20,49 +20,35 @@ import { Keyboard, TouchableOpacity } from "react-native";
 import * as Yup from "yup";
 import { LocalizationContext } from "../../../../context/LocalizationContext";
 import FormContainer from "../../../components/form-container/FormContainer";
-import { onApply } from "../../../components/form-container/OnApplay";
+import { onApply } from "../../../components/form-container/OnApply";
 import SighupSchema from "../../../Schemas/LoginSchema/SighupSchema.json";
 import PersonalInfo from "../../../Schemas/PersonalInfo.json";
 import { AuthLayout } from "../layout";
 import LoadingButton from "../../../utils/component/LoadingButton";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 import { AntDesign } from "@expo/vector-icons";
-import VerifySchema from "../../../Schemas/LoginSchema/VerifySchemaAction.json";
+import VerifySchemaAction from "../../../Schemas/LoginSchema/VerifySchemaAction.json";
+import { useSelector } from "react-redux";
 
-const USERS = [
-  {
-    email: "gabrial@gmail.com",
-    password: "Gabrial@123",
-  },
-  {
-    email: "tom@gmail.com",
-    password: "Tom@123",
-  },
-  {
-    email: "thomas@gmail.com",
-    password: "Thomas@1234",
-  },
-];
-
-const signUpSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .min(6, "Must be at least 8 characters in length")
-    .matches(new RegExp(".*[A-Z].*"), "One uppercase character")
-    .matches(new RegExp(".*[a-z].*"), "One lowercase character")
-    .matches(new RegExp(".*\\d.*"), "One number")
-    .matches(
-      new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
-      "One special character"
-    ),
-  confirmpassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm Password is required"),
-  rememberme: Yup.boolean().optional(),
-});
+// const signUpSchema = Yup.object().shape({
+//   email: Yup.string().email("Invalid email").required("Email is required"),
+//   password: Yup.string()
+//     .min(6, "Must be at least 8 characters in length")
+//     .matches(new RegExp(".*[A-Z].*"), "One uppercase character")
+//     .matches(new RegExp(".*[a-z].*"), "One lowercase character")
+//     .matches(new RegExp(".*\\d.*"), "One number")
+//     .matches(
+//       new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
+//       "One special character"
+//     ),
+//   confirmpassword: Yup.string()
+//     .oneOf([Yup.ref("password"), null], "Passwords must match")
+//     .required("Confirm Password is required"),
+//   rememberme: Yup.boolean().optional(),
+// });
 
 const SignUpWithLeftBackground = () => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const { os } = useDeviceInfo();
 
   const toast = useToast();
@@ -72,15 +58,15 @@ const SignUpWithLeftBackground = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const DValues = {
     birthdate: `2025-04-09T06:18:00.000Z`,
-    email: "test@gmail.com",
-    firstName: "ahmed",
-    gender: "0",
+    email: "testUser123@gmail.com",
+    firstName: "test",
+    gender: "1",
     lastName: "2",
     messageType: "0",
     password: "123456",
     confirmPassword: "123456",
-    phoneNumber: "01067921420",
-    username: "testAhmed1",
+    phoneNumber: "01029607040",
+    username: "testUser100",
   };
   const navigation = useNavigation();
 
@@ -101,6 +87,7 @@ const SignUpWithLeftBackground = () => {
     handleSubmit,
     formState: { defaultValues = DValues, errors },
     setError,
+    clearErrors,
   } = useForm({
     defaultValues: DValues,
   });
@@ -123,7 +110,7 @@ const SignUpWithLeftBackground = () => {
         navigation.navigate("Verify", {
           ...data,
           ...request.data,
-          VerifySchema: VerifySchema,
+          VerifySchemaAction: VerifySchemaAction,
         });
       }
     } catch (error) {
@@ -133,9 +120,7 @@ const SignUpWithLeftBackground = () => {
       // Enable the button after the API call
       setDisable(false);
     }
-    console.log("response", result);
   };
-  console.log(errors);
 
   return (
     <VStack
@@ -186,6 +171,7 @@ const SignUpWithLeftBackground = () => {
             row={DValues}
             control={control}
             errorResult={result || errors}
+            clearErrors={clearErrors}
           />
           <Checkbox
             size="sm"
@@ -207,7 +193,9 @@ const SignUpWithLeftBackground = () => {
           <LoadingButton
             buttonText={localization.sighUp.sighUpButton}
             loading={disable}
-            onPress={handleSubmit(onSubmit)}
+            onPress={async () => {
+              await handleSubmit(onSubmit)();
+            }}
             className="w-full rounded-lg"
           />
         </VStack>

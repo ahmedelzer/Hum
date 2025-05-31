@@ -9,7 +9,7 @@ import BranchesByLocationMap from "../../components/maps/BranchesByLocationMap";
 //!localization
 export default function CheckoutScreen() {
   const [selectedPayment, setSelectedPayment] = useState("visa");
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const total = useSelector((state) => state.cart.totalAmount);
   const branches = [
     {

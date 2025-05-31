@@ -8,7 +8,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { updateFilters } from "../../reducers/FilterReducer";
 import { tabsData } from "../menu-components/tabsData";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 
 export default function MenuFilter() {
   const [updateKey, setUpdateKey] = useState(1);
@@ -18,7 +17,7 @@ export default function MenuFilter() {
     formState: { errors },
     reset,
   } = useForm();
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
 
   const filterRow = useSelector((state) => state.filter.filterRow); // Read filterRow from Redux
   const dispatch = useDispatch();
@@ -66,21 +65,16 @@ export default function MenuFilter() {
     dispatch(updateFilters({ ...filterRow, ...data })); // Update Redux state with submitted data
   };
   // Update filtered data when filters change
-  useEffect(() => {
-    console.log(11, filterData(filterRow));
-  }, [filterRow]);
+  useEffect(() => {}, [filterRow]);
   // Clear all filters
   const handleClearAll = () => {
     dispatch(updateFilters({})); // Reset filters in Redux state
     reset({}); // Reset form values to initial state
     setUpdateKey((prevTrigger) => prevTrigger + 1);
-    console.log("Filters cleared");
   };
 
   // Watch for updates to filterRow
-  useEffect(() => {
-    console.log("FilterRow Updated:", filterRow); // Log Redux state changes
-  }, [filterRow]);
+  useEffect(() => {}, [filterRow]);
 
   return (
     <View className="flex-1 bg-body">

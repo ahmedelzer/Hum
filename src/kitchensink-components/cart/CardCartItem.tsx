@@ -3,36 +3,30 @@ import { I18nManager, Text, TouchableOpacity, View } from "react-native";
 import { moderateScale, scale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
 import { LocalizationContext } from "../../../context/LocalizationContext";
-import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
-import ImageRoute from "../../utils/component/ImageRoute";
 import { AddToCartSecondaryButton } from "./AddToCartButton";
-import FaovertCardIcon from "../../components/cards/FaovertCardIcon";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import ImageCardActions from "../../components/cards/ImageCardActions";
-import { getField } from "../../utils/operation/getField";
-import { AddItemToCart } from "./AddItemToCart";
 import { Swipeable } from "react-native-gesture-handler";
 import { RenderDeleteAction } from "../../utils/component/renderDeleteAction";
 import { getPaddedText } from "../../utils/operation/getPaddedText";
 import InputWithAction from "../../utils/component/InputWithAction";
-import { updateNotes } from "../../reducers/CartReducer";
 import { handleSubmitWithCallback } from "../../utils/operation/handleSubmitWithCallback";
 import CardPriceDiscount from "../../utils/component/CardPriceDiscount";
 import PopupModal from "../../utils/component/PopupModal";
+import { theme } from "../../Theme";
 // import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 export default function CardCartItem({ fieldsType, schemaActions, item }) {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const dispatch = useDispatch();
   const [disable, setDisable] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const onSubmitFun = (value) => {
+  const onSubmitFun = async (value) => {
     const putAction =
       schemaActions &&
       schemaActions.find(
-        (action) => action.dashboardFormActionMethodType === "Post"
+        (action) => action.dashboardFormActionMethodType === "Put"
       );
-    // dispatch(updateNotes({type:'add',value:value}))
-    handleSubmitWithCallback({
+    await handleSubmitWithCallback({
       data: {
         [fieldsType.note]: value,
         [fieldsType.idField]: item[fieldsType.idField],
@@ -48,7 +42,10 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
     item[fieldsType.priceAfterDiscount] * item[fieldsType.cardAction];
   const [isSwiped, setIsSwiped] = useState(false);
   return (
-    <View className="!bg-error ">
+    <View
+      className="rounded-xl overflow-hidden"
+      style={{ backgroundColor: theme.error }}
+    >
       <Swipeable
         onSwipeableOpen={() => setIsSwiped(true)}
         onSwipeableClose={() => setIsSwiped(false)}
@@ -148,8 +145,11 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
           </View>
 
           <PopupModal
+            haveFooter={false}
             isOpen={modalOpen}
-            onSubmit={onSubmitFun}
+            onSubmit={async () => {
+              await onSubmitFun("");
+            }}
             onClose={() => setModalOpen(false)}
             headerTitle="set notes"
             isFormModal={false}
@@ -160,14 +160,6 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
                 submitButtonText={localization.Hum_screens.cart.submitButton}
                 onSubmitFun={onSubmitFun}
               />
-            </View>
-
-            <View className="flex flex-row justify-center items-center gap-2 mt-2">
-              {["note1", "note2", "note3"].map((item) => (
-                <Text className="p-2 bg-primary-custom text-text rounded-full ">
-                  {item}
-                </Text>
-              ))}
             </View>
           </PopupModal>
         </View>

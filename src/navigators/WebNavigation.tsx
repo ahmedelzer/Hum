@@ -1,21 +1,18 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
+import HeaderParent from "../components/header/HeaderParent";
+import NotificationScreen from "../components/notification/NotificationScreen";
 import CartPage from "../kitchensink-components/cart/CartPage";
 import CheckoutScreen from "../kitchensink-components/cart/CheckoutScreen";
-import NotificationScreen from "../components/notification/NotificationScreen";
-import MenuView from "../components/menu-components/MenuView";
-import MobileProfilePage from "../kitchensink-components/MobileProfilePage";
-import { SetResponsiveContainer } from "../utils/SetResponsiveContainer";
+import { SetResponsiveContainer } from "../utils/component/SetResponsiveContainer";
 import RenderItemsView from "../utils/component/renderItemsView";
-import HeaderParent from "../components/header/HeaderParent";
 // import MenuFilter from "../components/filters/MenuFilter";
+import { Suspense, lazy } from "react";
+import { Chase } from "react-native-animated-spinkit";
 import DetailsScreen from "../components/menu-components/DetailsScreen";
+import { ForgotPassword } from "../kitchensink-components/auth/forgot-password";
 import { SignIn } from "../kitchensink-components/auth/signin";
 import { SignUp } from "../kitchensink-components/auth/signup";
-import { ForgotPassword } from "../kitchensink-components/auth/forgot-password";
-import { Suspense, lazy } from "react";
 import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
-import { Chase } from "react-native-animated-spinkit";
 
 const Stack = createStackNavigator();
 const MenuFilter = lazy(() => import("../components/filters/MenuFilter"));

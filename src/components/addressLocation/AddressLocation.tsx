@@ -1,26 +1,17 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useContext, useEffect, useReducer, useState } from "react";
-import AddLocation from "./AddLocation";
-import AddressLocationAction from "../../Schemas/AddressLocation/AddressLocationAction.json";
-import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import { useDispatch } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
-import reducer from "../Pagination/reducer";
-import { initialState } from "../Pagination/initialState";
+import React, { useEffect, useReducer, useState } from "react";
+import { ScrollView } from "react-native";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import { SetReoute } from "../../../request";
+import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
+import AddressLocationAction from "../../Schemas/AddressLocation/AddressLocationAction.json";
+import { prepareLoad } from "../../utils/operation/loadHelpers";
 import { createRowCache } from "../Pagination/createRowCache";
-import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
-import { updateRows } from "../Pagination/updateRows";
 import { getRemoteRows } from "../Pagination/getRemoteRows";
-import { VStack } from "../../../components/ui";
-import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
-import { Chase } from "react-native-animated-spinkit";
-import Pickup from "./selectedNode";
+import { initialState } from "../Pagination/initialState";
+import reducer from "../Pagination/reducer";
+import AddLocation from "./AddLocation";
 const VIRTUAL_PAGE_SIZE = 4;
 export default function AddressLocation() {
-  const { localization } = useContext(LocalizationContext);
   const [state, reducerDispatch] = useReducer(
     reducer,
     initialState(10, AddressLocationSchema.idField)
@@ -42,19 +33,16 @@ export default function AddressLocation() {
     );
 
   const { rows, skip, totalCount, loading } = state;
-  useEffect(() => {
-    // console.log(dataSourceAPI(getAction, 10, 20));
 
-    LoadData(
+  useEffect(() => {
+    prepareLoad({
       state,
       dataSourceAPI,
       getAction,
       cache,
-      updateRows(reducerDispatch, cache, state),
-      reducerDispatch
-    );
-    // Call LoadData with the controller
-  });
+      reducerDispatch,
+    });
+  }, []);
 
   const handleScroll = (event) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;

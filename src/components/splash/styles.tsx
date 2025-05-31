@@ -1,9 +1,10 @@
 import { StyleSheet } from "react-native";
+import { theme } from "../../Theme";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: theme.body,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
@@ -21,23 +22,23 @@ export const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: "#555",
+    color: theme.primary,
     textAlign: "center",
     marginBottom: 40,
   },
   button: {
-    backgroundColor: "#007bff",
+    backgroundColor: theme.accent,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
     marginBottom: 16,
   },
   buttonText: {
-    color: "#fff",
+    color: theme.body,
     fontSize: 16,
   },
   skipText: {
-    color: "#888",
+    color: theme.primary,
     fontSize: 14,
     textDecorationLine: "underline",
   },
@@ -62,7 +63,7 @@ export const styles = StyleSheet.create({
   modernButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#007bff",
+    backgroundColor: theme.accent,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,

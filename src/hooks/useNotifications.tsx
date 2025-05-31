@@ -59,7 +59,7 @@ const useNotifications = () => {
     if (lastMessage?.data) {
       const { message, type } = JSON.parse(lastMessage.data) as Message;
       message && setNotification([...message]);
-      console.log(message, "message");
+
     }
   }, [lastMessage?.data]);
 

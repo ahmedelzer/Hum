@@ -14,6 +14,7 @@ import { AntDesign } from "@expo/vector-icons";
 import FormContainer from "../../components/form-container/FormContainer";
 
 const PopupModal = ({
+  haveFooter = true,
   isOpen,
   onClose,
   onSubmit,
@@ -48,8 +49,7 @@ const PopupModal = ({
           )}
           {children && children}
         </ModalBody>
-
-        <ModalFooter>
+          {haveFooter&&(<ModalFooter>
           <Button
             isDisabled={disable}
             variant="outline"
@@ -61,7 +61,8 @@ const PopupModal = ({
           <Button onPress={onSubmit} isDisabled={disable}>
             <ButtonText>Save</ButtonText>
           </Button>
-        </ModalFooter>
+        </ModalFooter>)}
+        
       </ModalContent>
     </Modal>
   );

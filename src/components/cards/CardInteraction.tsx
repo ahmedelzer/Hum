@@ -8,39 +8,49 @@ import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSc
 import { theme } from "../../Theme";
 
 export default function CardInteraction({ item, fieldsType }) {
-  const indexOfLike = item.indexOflike;
-  const [active, setActive] = useState(indexOfLike); // 1: like, -1: dislike, 0: none
 
-  const likeAnim = useRef(
-    new Animated.Value(indexOfLike === 1 ? 1 : 0)
-  ).current;
-  const dislikeAnim = useRef(
-    new Animated.Value(indexOfLike === -1 ? 1 : 0)
-  ).current;
+  const [active, setActive] = useState(item[fieldsType.indexOfInteraction]??0); // 1: like, -1: dislike, 0: none
+ useEffect(() => {
+    setActive(item[fieldsType.indexOfInteraction] ?? 0);
+  }, [item[fieldsType.indexOfInteraction]]);
+  // const likeAnim = useRef(
+  //   new Animated.Value(item[fieldsType.indexOfInteraction] === 1 ? 1 : 0)
+  // ).current;
+  // const dislikeAnim = useRef(
+  //   new Animated.Value(item[fieldsType.indexOfInteraction] === -1 ? 1 : 0)
+  // ).current;
+
+ // Re-initialize animations when active state changes
+  const likeAnim = useRef(new Animated.Value(0)).current;
+  const dislikeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(likeAnim, {
-      toValue: active === 1 ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
+    // Reset animations based on current active state
+    likeAnim.setValue(active === 1 ? 1 : 0);
+    dislikeAnim.setValue(active === -1 ? 1 : 0);
 
-    Animated.timing(dislikeAnim, {
-      toValue: active === -1 ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-    // console.log(item[fieldsType.likes], Key, "CardInteraction");
-  }, [active]);
+    Animated.parallel([
+      Animated.timing(likeAnim, {
+        toValue: active === 1 ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(dislikeAnim, {
+        toValue: active === -1 ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  }, [active, likeAnim, dislikeAnim]);
 
   const likeBackground = likeAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["transparent", theme.accent],
+    outputRange: ["rgba(0,0,0,0)", theme.accent], // Changed from "transparent"
   });
 
   const dislikeBackground = dislikeAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["transparent", theme.accent],
+    outputRange: ["rgba(0,0,0,0)", theme.accent], // Changed from "transparent"
   });
 
   const handlePress = async (type, field) => {
@@ -53,11 +63,11 @@ export default function CardInteraction({ item, fieldsType }) {
       newIndex !== 0,
       NodeMenuItemsSchemaActions
     );
+    
     if (req) {
       setActive(newIndex);
     }
   };
-  console.log(item[fieldsType.likes], "likes");
 
   return (
     <HStack
@@ -67,18 +77,17 @@ export default function CardInteraction({ item, fieldsType }) {
         flexDirection: "row",
         alignItems: "center",
         height: scale(28),
-      }}
-      key={`${item[fieldsType.orders]}-${item[fieldsType.rate]}-${item[fieldsType.likes]}-${item[fieldsType.dislikes]}`}
+      }}// Simplified key
     >
       {/* LIKE */}
       <TouchableOpacity
         onPress={() => handlePress("like", fieldsType.likes)}
-        key={`${fieldsType.likes}-${item[fieldsType.likes]}`}
+        key={`${fieldsType.likes}-btn`} // Simplified key
         activeOpacity={0.8}
         style={{
           flex: 1,
           borderRadius: 8,
-          overflow: "hidden", // important for rounded animation clipping
+          overflow: "hidden",
         }}
       >
         <Animated.View
@@ -87,13 +96,19 @@ export default function CardInteraction({ item, fieldsType }) {
             backgroundColor: likeBackground,
             justifyContent: "center",
             alignItems: "center",
+            opacity: 1, // Explicitly set
+            borderWidth: 0, // Explicitly set
           }}
         >
           <GetIconMenuItem
+            key={`${item[fieldsType.idField]}-happy-${item[fieldsType.indexOfInteraction]}`} // Removed active from key
             count={item[fieldsType.likes]}
             iconName="happy"
             size={18}
-            style={{ color: active == 1 ? theme.text : theme.text }}
+            style={{ 
+              color: active == 1 ? theme.text : theme.text,
+              backgroundColor: 'transparent' // Ensure icon bg is transparent
+            }}
           />
         </Animated.View>
       </TouchableOpacity>
@@ -112,10 +127,11 @@ export default function CardInteraction({ item, fieldsType }) {
       <TouchableOpacity
         onPress={() => handlePress("dislike", fieldsType.dislikes)}
         activeOpacity={0.8}
+        key={`${fieldsType.dislikes}-btn`} // Added consistent key
         style={{
           flex: 1,
           borderRadius: 8,
-          overflow: "hidden", // important for rounded animation clipping
+          overflow: "hidden",
         }}
       >
         <Animated.View
@@ -124,13 +140,19 @@ export default function CardInteraction({ item, fieldsType }) {
             backgroundColor: dislikeBackground,
             justifyContent: "center",
             alignItems: "center",
+            opacity: 1, // Explicitly set
+            borderWidth: 0, // Explicitly set
           }}
         >
           <GetIconMenuItem
+            key={`${item[fieldsType.idField]}-normal-${item[fieldsType.indexOfInteraction]}`} // Removed active from key
             count={item[fieldsType.dislikes]}
             iconName="normal"
             size={18}
-            style={{ color: active == -1 ? theme.card : theme.text }}
+            style={{ 
+              color: active == -1 ? theme.card : theme.text,
+              backgroundColor: 'transparent' // Ensure icon bg is transparent
+            }}
           />
         </Animated.View>
       </TouchableOpacity>

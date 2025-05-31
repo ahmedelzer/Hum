@@ -3,7 +3,8 @@ import { GetProjectUrl, request, SetHeaders } from "../../../request";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 
 const useFetchWithoutBaseUrl = (realurl) => {
-  const { language: Lan } = useContext(LocalizationContext);
+  const languageRow = useSelector((state) => state.localization.languageRow);
+
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -39,7 +40,7 @@ const useFetchWithoutBaseUrl = (realurl) => {
     };
 
     if (realurl) fetchData();
-  }, [realurl, Lan]); // refetch if language or url changes
+  }, [realurl, languageRow]); // refetch if language or url changes
 
   return { data, isLoading, error };
 };

@@ -1,7 +1,10 @@
 // components/StepHeader.js
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import StepIndicator from "react-native-step-indicator";
+import { theme } from "../../Theme";
+import { LocalizationContext } from "../../../context/LocalizationContext";
+import { useSelector } from "react-redux";
 
 const labels = ["Welcome", "Language", "Intro"];
 
@@ -10,33 +13,35 @@ const customStyles = {
   currentStepIndicatorSize: 35,
   separatorStrokeWidth: 2,
   currentStepStrokeWidth: 3,
-  stepStrokeCurrentColor: "#007bff",
+  stepStrokeCurrentColor: theme.accentHover,
   stepStrokeWidth: 3,
-  stepStrokeFinishedColor: "#007bff",
-  stepStrokeUnFinishedColor: "#cccccc",
-  separatorFinishedColor: "#007bff",
-  separatorUnFinishedColor: "#cccccc",
-  stepIndicatorFinishedColor: "#007bff",
-  stepIndicatorUnFinishedColor: "#ffffff",
-  stepIndicatorCurrentColor: "#ffffff",
+  stepStrokeFinishedColor: theme.accentHover,
+  stepStrokeUnFinishedColor: theme.primary,
+  separatorFinishedColor: theme.accentHover,
+  separatorUnFinishedColor: theme.primary,
+  stepIndicatorFinishedColor: theme.accentHover,
+  stepIndicatorUnFinishedColor: theme.body,
+  stepIndicatorCurrentColor: theme.body,
   stepIndicatorLabelFontSize: 13,
   currentStepIndicatorLabelFontSize: 13,
-  stepIndicatorLabelCurrentColor: "#007bff",
-  stepIndicatorLabelFinishedColor: "#ffffff",
-  stepIndicatorLabelUnFinishedColor: "#cccccc",
-  labelColor: "#cccccc",
+  stepIndicatorLabelCurrentColor: theme.accentHover,
+  stepIndicatorLabelFinishedColor: theme.body,
+  stepIndicatorLabelUnFinishedColor: theme.primary,
+  labelColor: theme.primary,
   labelSize: 12,
-  currentStepLabelColor: "#007bff",
+  currentStepLabelColor: theme.accentHover,
 };
 
 const StepHeader = ({ currentPosition = 0 }) => {
+  const localization = useSelector((state) => state.localization.localization);
+
   return (
     <View style={styles.container}>
       <StepIndicator
         customStyles={customStyles}
         direction="horizontal"
         currentPosition={currentPosition}
-        labels={labels}
+        labels={localization.Hum_screens.splash.headerLabels}
         stepCount={labels.length}
       />
     </View>
@@ -47,7 +52,7 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: theme.body,
   },
 });
 

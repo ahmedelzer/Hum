@@ -3,22 +3,32 @@ import { View } from "react-native";
 import { Text } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import { theme } from "../../Theme";
+import { useSelector } from "react-redux";
 export default function CardPriceDiscount({
   item,
   fieldsType,
   colorOfPriceAfterDiscount = theme.body,
+  style, // don't set default here because it depends on colorOfPriceAfterDiscount
 }) {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
+
+  // Compose final style merging the passed style and colorOfPriceAfterDiscount
+  const finalStyle = [
+    { fontSize: 18, fontWeight: "bold", color: colorOfPriceAfterDiscount },
+    style,
+  ];
 
   return (
     <View
-      className={`${item[fieldsType.discount] ? "justify-between" : "justify-center"} flex gap-2 flex-row flex-wrap items-center mt-2 space-x-2`}
+      className={
+        item[fieldsType.discount]
+          ? "justify-between flex-row flex-wrap items-center mt-2 space-x-2"
+          : "justify-center flex-row flex-wrap items-center mt-2 space-x-2"
+      }
+      // If you don't use nativewind, convert these to style object
     >
       {item[fieldsType.priceAfterDiscount] >= 0 && (
-        <Text
-          className="text-xl font-bold"
-          style={{ color: colorOfPriceAfterDiscount }}
-        >
+        <Text style={finalStyle}>
           {localization.menu.currency}{" "}
           {item[fieldsType.priceAfterDiscount].toFixed(2)}
         </Text>

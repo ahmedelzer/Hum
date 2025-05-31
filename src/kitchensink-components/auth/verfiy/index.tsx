@@ -2,8 +2,7 @@ import React, { useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import OTPTextInput from "react-native-otp-textinput";
 import { useNavigation } from "@react-navigation/native";
-import { onApply } from "../../../components/form-container/OnApplay";
-import { buildApiUrl } from "../../../../components/hooks/APIsFunctions/BuildApiUrl";
+import { onApply } from "../../../components/form-container/OnApply";
 import ResendSchemaAction from "../../../Schemas/LoginSchema/ResendSchemaAction.json";
 import VerifySchemaPrams from "../../../Schemas/LoginSchema/VerifySchema.json";
 import GoBackHeader from "../../../components/header/GoBackHeader";
@@ -14,29 +13,36 @@ const VerifyScreen = ({ route }) => {
   const [disable, setDisable] = useState(false);
   const [result, setResult] = useState(null);
   const navigation = useNavigation();
-  const { email, VerifySchema } = route.params || {}; // if passed from previous screen
+  const { email, VerifySchemaAction } = route.params || {}; // if passed from previous screen
+  
   const handleOTPSubmit = async () => {
+    
     if (otpCode.length === 6) {
-      setDisable(true);
-      const dataSourceAPI = (query) => {
-        return buildApiUrl(query, {
+      
+      //setDisable(true);
+      const getAction =
+  VerifySchemaAction &&
+  VerifySchemaAction.find(
+    (action) => action.dashboardFormActionMethodType === "Get"
+  );
+    
+      const constants ={
           ...{ [VerifySchemaPrams.idField]: otpCode },
           ...route.params,
-        });
-      };
+        };
       setDisable(true);
+      
       try {
         const request = await onApply(
           {},
           null,
           true,
-          VerifySchema,
+          getAction,
           "",
           false,
-          dataSourceAPI(VerifySchema)
+          constants
         );
         setResult(request);
-        console.log(request);
 
         if (request.data === true && request.success === true) {
           navigation.navigate("SignIn"); // or any other screen
@@ -58,7 +64,7 @@ const VerifyScreen = ({ route }) => {
       ResendSchemaAction.find(
         (action) => action.dashboardFormActionMethodType === "Post"
       );
-    handleSubmitWithCallback({
+    await handleSubmitWithCallback({
       data: { ...route.params },
       setDisable,
       action: postAction,
@@ -66,7 +72,6 @@ const VerifyScreen = ({ route }) => {
       setReq: setResult,
       isNew: true,
       onSuccess: (resultData) => {
-        console.log(resultData);
         // navigation.navigate("Verify", {
         //   ...data,
         //   ...resultData,
@@ -98,14 +103,14 @@ const VerifyScreen = ({ route }) => {
       />
       <Text
         style={styles.title}
-        onPress={handleResend}
+        onPress={async () => {await handleResend();}}
         className="text-[#6200ee] mt-2"
       >
         Resend
       </Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={handleOTPSubmit}
+        onPress={async () => { await handleOTPSubmit(); }}
         disabled={disable}
       >
         <Text style={styles.buttonText}>Verify</Text>

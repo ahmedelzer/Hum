@@ -1,77 +1,78 @@
 import { WSclass } from "../../../components/hooks/ws/WS_Class";
-import {
-  addInstance,
-  changeInstanceConnectState,
-} from "../../reducers/WS_Reducer";
-import store from "../../store/reduxStore"; // ⬅️ your Redux store
 
-let wsInstance = null;
 
-export function getWSInstance(url, onMessageCallback, baseURL) {
-  // Access the Redux state directly from the store
-  const wsInstances = store.getState().ws.wsInstances;
 
-  // Find if the instance already exists
-  let existingInstance = wsInstances.find((instance) => instance.key === url);
+// Store sockets in memory, keyed by wsKey (e.g. pathname only)
+const wsMemoryInstances = {};
 
-  // Check if the existing instance is closed or undefined
+export function getWSInstance(url, onMessageCallback) {
+  //const wsKey = getWSKeyFromUrl(url); // normalized key based on path
+  //const wsStateInstances = store.getState().ws.wsInstances;
+
+  let existing = wsMemoryInstances[url];
   const isClosed =
-    !existingInstance ||
-    !existingInstance.socket ||
-    existingInstance.socket.readyState === WebSocket.CLOSING ||
-    existingInstance.socket.readyState === WebSocket.CLOSED;
+    !existing?.socket ||
+    existing.socket.readyState === WebSocket.CLOSING ||
+    existing.socket.readyState === WebSocket.CLOSED;
 
   if (isClosed) {
-    console.log("🆕 Creating new WebSocket instance");
+    console.log("🆕 Creating new WebSocket instance", url);
 
-    // Create a new WebSocket instance
-    existingInstance = new WSclass(url);
+    const wsObject = new WSclass(url); // create your custom WS wrapper
 
-    // Connect the WebSocket instance
-    existingInstance.connect(() => {
-      // Dispatch connected state to Redux once connected
-      store.dispatch(
-        changeInstanceConnectState({
-          key: url,
-          message: existingInstance.ReciveMessages(onMessageCallback),
-          connected: true,
-        })
-      );
+    wsMemoryInstances[url] = wsObject;
+
+ 
+
+    // // Connect and bind callback
+     wsObject.connect(() => {
+    //   store.dispatch(
+    //     changeInstanceConnectState({
+    //       key: wsKey,
+    //       connected: true,
+    //     })
+    //   );
+
+      if (typeof onMessageCallback === "function") {
+        wsObject.ReciveMessages(onMessageCallback);
+      }
     });
 
-    // If an onMessageCallback is provided, use it
-    if (typeof onMessageCallback === "function") {
-      existingInstance.ReciveMessages(onMessageCallback);
-    }
-
-    // Save instance in Redux (initially connected: false)
-    store.dispatch(
-      addInstance({
-        key: url,
-        connected: false, // Will update once connect callback fires
-      })
-    );
+    return wsObject;
   } else {
     console.log("♻️ Reusing existing WebSocket instance");
-  }
 
-  return existingInstance;
-}
+    if (
+      typeof onMessageCallback === "function" &&
+      existing.ReciveMessages
+    ) {
+      existing.ReciveMessages(onMessageCallback);
+    }
 
-export function disconnectWS() {
-  if (wsInstance) {
-    // Disconnect WebSocket if it exists
-    wsInstance.disconnect();
-    wsInstance = null;
-    console.log("🔌 WebSocket instance disconnected");
+    return existing;
   }
 }
 
-export function isWSConnected() {
-  // Check if WebSocket is connected and its readyState is OPEN
-  return (
-    wsInstance &&
-    wsInstance.socket &&
-    wsInstance.socket.readyState === WebSocket.OPEN
-  );
+export function disconnectWS(url) {
+  const instance = wsMemoryInstances[url];
+  if (instance?.disconnect) {
+    instance.disconnect();
+    console.log("🔌 WebSocket disconnected:", url);
+  }
 }
+
+export function isWSConnected(url) {
+  //const wsKey = getWSKeyFromUrl(url);
+  const instance = wsMemoryInstances[url];
+  return instance?.socket?.readyState === WebSocket.OPEN;
+}
+
+// function getWSKeyFromUrl(url) {
+//   try {
+//     const parsedUrl = new URL(url);
+//     return parsedUrl.pathname; // normalize key to avoid duplicates with different params
+//   } catch (err) {
+//     console.error("Invalid WebSocket URL:", url);
+//     return url; // fallback to original
+//   }
+// }

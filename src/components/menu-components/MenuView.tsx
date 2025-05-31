@@ -1,14 +1,10 @@
 import React, { useState, useCallback } from "react";
 import { View, ScrollView, RefreshControl } from "react-native";
 import { Box, HStack } from "../../../components/ui";
-import SearchBarFilter from "../filters/SearchBarFilter";
 import Searchbar from "../search-bar/Searchbar";
-import AddLocation from "../addressLocation/AddLocation";
 import MenuCardsView from "./MenuCardsView";
 import { useDeviceInfo } from "../../utils/component/useDeviceInfo";
 import { HomestayInfoTabs } from "./HomestayInfoTabs";
-import AddressLocationCollapsible from "../../utils/AddressLocationCollapsible";
-import { theme } from "../../Theme";
 
 const MenuView = ({ schemas }: any) => {
   const [row, setRow] = useState({});
@@ -63,6 +59,7 @@ const MenuView = ({ schemas }: any) => {
           <HomestayInfoTabs setRow={setRow} row={row} />
         </View>
         <MenuCardsView isRefreshed={key} row={row} />
+        
       </Box>
     </ScrollView>
   );

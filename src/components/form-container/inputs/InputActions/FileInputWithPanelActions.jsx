@@ -5,7 +5,6 @@ import BrowserUrlAction from "./BrowserUrlAction";
 import WebcamActions from "./WebcamActins";
 import DisplayFile from "../../forms/PartingFrom/DisplayFile";
 import FileInput from "../../forms/PartingFrom/FileInput";
-import convertImageToBase64 from "./ConvertImageToBase64";
 
 class FileInputWithPanelActions extends Component {
   constructor(props) {

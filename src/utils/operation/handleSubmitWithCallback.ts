@@ -1,4 +1,4 @@
-import { onApply } from "../../components/form-container/OnApplay";
+import { onApply } from "../../components/form-container/OnApply";
 
 export const handleSubmitWithCallback = async ({
   data,
@@ -9,7 +9,6 @@ export const handleSubmitWithCallback = async ({
   onSuccess,
   isNew = true,
   iDField = null,
-  query = null,
 }) => {
   setDisable(true);
 
@@ -20,8 +19,7 @@ export const handleSubmitWithCallback = async ({
       isNew,
       action,
       proxyRoute,
-      false,
-      query
+      false
     );
     setReq(request);
     if (request?.success === true) {

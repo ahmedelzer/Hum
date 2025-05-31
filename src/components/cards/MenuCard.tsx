@@ -1,25 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { I18nManager, View } from "react-native";
 import { scale } from "react-native-size-matters";
-import { Box, Text, VStack } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import { theme } from "../../Theme";
-import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
-import ImageRoute from "../../utils/component/ImageRoute";
-import StarsIcons from "../../utils/component/StarsIcons";
-import CardInteraction from "./CardInteraction";
-import FaovertCardIcon from "./FaovertCardIcon";
+import { Text, VStack } from "../../../components/ui";
 import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
-import ImageCardActions from "./ImageCardActions";
-import { getPaddedText } from "../../utils/operation/getPaddedText";
+import { theme } from "../../Theme";
 import CardPriceDiscount from "../../utils/component/CardPriceDiscount";
+import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
+import StarsIcons from "../../utils/component/StarsIcons";
+import { getPaddedText } from "../../utils/operation/getPaddedText";
+import CardInteraction from "./CardInteraction";
+import ImageCardActions from "./ImageCardActions";
 export const MenuCard = ({ item, fieldsType, schemaActions }) => {
-  const { localization } = useContext(LocalizationContext);
-
-  console.log(
-    item[fieldsType.priceAfterDiscount],
-    "item[fieldsType.priceAfterDiscount]"
-  );
   return (
     <View>
       <View className={`relative flex flex-row`}>
@@ -48,7 +39,10 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
             style={{ width: "100%", paddingHorizontal: scale(10) }}
           >
             {item[fieldsType.rate] && (
-              <View className="flex-row items-center px-2">
+              <View
+                className="flex-row items-center px-2"
+                key={`${item[fieldsType.idField]}-${fieldsType.rate}-${item[fieldsType.rate]}`}
+              >
                 <StarsIcons value={parseFloat(item[fieldsType.rate])} />
               </View>
             )}
@@ -72,6 +66,7 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
                 <Text
                   bold
                   size="lg"
+                  key={`${item[fieldsType.idField]}-${fieldsType.text}-${item[fieldsType.text]}`}
                   // key={`${item[fieldsType.text]}-${randomID}`}
                   className="!text-accent font-bold text-xl"
                 >
@@ -82,6 +77,7 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
                 <Text
                   className="text-primary-custom text-lg"
                   numberOfLines={6}
+                  key={`${item[fieldsType.idField]}-${fieldsType.description}-${item[fieldsType.description]}`}
                   //key={`${item[fieldsType.description]}-${randomID}`}
                 >
                   {getPaddedText(`${item[fieldsType.description]}`)}
@@ -92,9 +88,7 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
 
             {fieldsType.cardAction && (
               <AddToCartPrimaryButton
-                item={item}
-                // idField={fieldsType.idField}
-                // field={fieldsType.cardAction}
+                itemPackage={item}
                 fieldsType={fieldsType}
                 schemaActions={schemaActions}
               />
@@ -102,6 +96,25 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
           </VStack>
         </View>
       </View>
+      {!false && (
+        <View
+          style={{
+            position: "absolute",
+            top: 1,
+            right: -50, // push it out so it centers across top-right
+            backgroundColor: theme.error,
+            paddingHorizontal: 30,
+            paddingVertical: 4,
+            transform: [{ rotate: "45deg" }],
+            zIndex: 200,
+            overflow: "hidden",
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>
+            Out of Stock
+          </Text>
+        </View>
+      )}
       {/* !make that section like in social media */}
     </View>
   );

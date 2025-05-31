@@ -1,51 +1,25 @@
-import { AntDesign, Feather } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { Feather } from "@expo/vector-icons";
+import React, { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../../context/auth";
 import { AddItemToCart } from "./AddItemToCart";
+import { useCartItemHandler } from "./useCartItemHandler";
 
 const AddToCartSecondaryButton = ({ item, fieldsType }) => {
-  const schemaActions = useSelector((state) => state.menuItem.schemaActions);
+  const { quantity, updateCart } = useCartItemHandler(item, fieldsType);
 
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState();
-  const cart = useSelector((state) => state.cart.cart);
-  const haveOnCart = cart.find((value) => {
-    return value[fieldsType.idField] === item[fieldsType.idField];
-  });
   return (
     <View className="flex-row items-center mt-2">
       <TouchableOpacity
-        onPress={() => {
-          // dispatch(incrementQty(item)); // cart
-          // dispatch(incrementQuantity(item)); //product
-          AddItemToCart(
-            { ...item, addQuantity: 1 },
-            setLoading,
-            dispatch,
-            fieldsType,
-            schemaActions,
-            haveOnCart[fieldsType.cardAction] + 1 || 1
-          );
-        }}
+        onPress={() => updateCart(1)}
         className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
       >
         <Feather name="plus" size={20} className="!text-body" />
       </TouchableOpacity>
-      <Text className="mx-4 text-lg text-surface">{item.quantity || 1}</Text>
+      <Text className="mx-4 text-lg text-surface">{quantity}</Text>
       <TouchableOpacity
-        onPress={() => {
-          AddItemToCart(
-            { ...item, addQuantity: -1 },
-            setLoading,
-            dispatch,
-            fieldsType,
-            schemaActions,
-            haveOnCart[fieldsType.cardAction] - 1 || 1
-          );
-        }}
+        onPress={() => updateCart(-1)}
         className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
       >
         <Feather name="minus" size={20} className="!text-body" />
@@ -53,114 +27,83 @@ const AddToCartSecondaryButton = ({ item, fieldsType }) => {
     </View>
   );
 };
-const AddToCartPrimaryButton = ({ item, fieldsType, isSuggest = false }) => {
-  const [loading, setLoading] = useState(false);
-  const schemaActions = useSelector((state) => state.menuItem.schemaActions);
 
+
+const AddToCartPrimaryButton = ({ itemPackage = {}, fieldsType = {}, isSuggest = false, schemaActions }) => {
   const { user } = useAuth();
-  const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart.cart);
-  const haveOnCart = cart.find((value) => {
-    return value[fieldsType.idField] === item[fieldsType.idField];
-  });
+  const [loading, setLoading] = useState(false);
+  const [item, setItem] = useState(itemPackage);
+
+  // Update local item state whenever itemPackage changes (e.g. from WS update)
+console.log("quatity",itemPackage?.[fieldsType.cardAction]);
+
+  // Current quantity based on cardAction field
+  //const quantity = itemPackage?.[fieldsType.cardAction] ?? 0;
+
+  const updateCart = useCallback(
+    
+    async (quantityChange) => {
+      
+      if (!itemPackage || !fieldsType?.cardAction) return;
+
+      setLoading(true);
+      try {
+        const newQuantity = itemPackage?.[fieldsType.cardAction] ?? 0 + quantityChange;
+        if (newQuantity < 0) {
+          setLoading(false);
+          return; // Prevent negative quantity
+        }
+
+        await AddItemToCart(
+          { ...item, [fieldsType.cardAction]: newQuantity },
+          setLoading,
+          fieldsType,
+          schemaActions,
+          newQuantity
+        );
+      } catch (error) {
+        console.error("Error updating cart:", error);
+        setLoading(false);
+      }
+    },
+    [itemPackage, fieldsType, schemaActions]
+  );
+
   if (isSuggest) {
     return (
       <TouchableOpacity
-        onPress={() =>
-          AddItemToCart(
-            { ...item, addQuantity: 1 },
-            setLoading,
-            dispatch,
-            fieldsType,
-            schemaActions,
-            1
-          )
-        }
-        disabled={!user}
+        onPress={() => {updateCart(1)}}
+        disabled={!user || loading}
         className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
       >
         <Feather name="plus" size={24} className="!text-body" />
       </TouchableOpacity>
     );
   }
+
   return (
     <View>
-      {haveOnCart ? (
-        <Pressable className="flex flex-row bg-accent justify-between items-center rounded-md mt-2 p-2">
-          <Pressable
-            onPress={() => {
-              AddItemToCart(
-                { ...item, addQuantity: 1 },
-                setLoading,
-                dispatch,
-                fieldsType,
-                schemaActions,
-                haveOnCart[fieldsType.cardAction] + 1 || 1
-              ); // cart
-              // dispatch(incrementQuantity(item)); //product
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                color: "white",
-                paddingHorizontal: 10,
-              }}
-            >
-              {/* <Icon as={Plus} size={"md"} /> */}
-              <Feather name="plus" size={24} className="!text-body" />
-            </Text>
+      {itemPackage?.[fieldsType.cardAction] ?? 0 > 0 ? (
+        <View className="flex flex-row bg-accent justify-between items-center rounded-md mt-2 p-2">
+          <Pressable onPress={() => updateCart(1)} disabled={loading}>
+            <Feather name="plus" size={24} className="!text-body mx-2" />
           </Pressable>
 
-          <Pressable>
-            <Text
-              style={{
-                fontSize: 20,
-                color: "white",
-                paddingHorizontal: 10,
-              }}
-            >
-              {/* {GetQuantity(item.id)} */}
-              {haveOnCart[fieldsType.cardAction]}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              AddItemToCart(
-                { ...item, addQuantity: -1 },
-                setLoading,
-                dispatch,
-                fieldsType,
-                schemaActions,
-                haveOnCart[fieldsType.cardAction] - 1 || 1
-              );
-            }}
+          <Text
+            key={`${item?.[fieldsType.idField]}-${fieldsType.cardAction}-${itemPackage?.[fieldsType.cardAction] ?? 0}`}
+            className="text-white text-lg"
           >
-            <Text
-              style={{
-                fontSize: 25,
-                color: "white",
-                paddingHorizontal: 10,
-              }}
-            >
-              {/* <Icon as={Minus} size={"md"}  /> */}
-              <Feather name="minus" size={24} className="!text-body" />
-            </Text>
+            {itemPackage?.[fieldsType.cardAction] ?? 0}
+          </Text>
+
+          <Pressable onPress={() => updateCart(-1)} disabled={loading || (itemPackage?.[fieldsType.cardAction] ?? 0) === 0}>
+            <Feather name="minus" size={24} className="!text-body mx-2" />
           </Pressable>
-        </Pressable>
+        </View>
       ) : (
         <TouchableOpacity
-          onPress={() =>
-            AddItemToCart(
-              { ...item, addQuantity: 1 },
-              setLoading,
-              dispatch,
-              fieldsType,
-              schemaActions,
-              1
-            )
-          }
-          disabled={!user}
+          onPress={() => updateCart(1)}
+          disabled={!user || loading}
           className="mt-2 p-2 rounded-lg bg-accent items-center justify-center flex flex-row"
         >
           <Feather name="shopping-cart" size={22} className="!text-body px-1" />
@@ -171,4 +114,7 @@ const AddToCartPrimaryButton = ({ item, fieldsType, isSuggest = false }) => {
   );
 };
 
+
+
 export { AddToCartPrimaryButton, AddToCartSecondaryButton };
+

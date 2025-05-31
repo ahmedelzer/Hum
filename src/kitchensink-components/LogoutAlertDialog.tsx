@@ -17,18 +17,21 @@ import {
 import { deleteKey } from "../store/zustandStore";
 import { DevSettings } from "react-native";
 import { LocalizationContext } from "../../context/LocalizationContext";
+import { persistor } from "../store/reduxStore";
+import { useSelector } from "react-redux";
 
 const LogoutAlertDialog = ({
   openLogoutAlertDialog,
   setOpenLogoutAlertDialog,
 }: any) => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
 
   const handleClose = () => {
     setOpenLogoutAlertDialog(false);
   };
   const handleLogout = async () => {
     await deleteKey("token");
+    persistor.purge();
     DevSettings.reload();
   };
 

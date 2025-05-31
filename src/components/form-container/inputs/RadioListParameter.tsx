@@ -60,7 +60,7 @@ const RadioListParameter = ({
   const [selectedValue, setSelectedValue] = useState(null);
   useEffect(() => {
     if (data?.dataSource?.length > 0 && !selectedValue && setValue) {
-      console.log("change", data.dataSource[0][lookupReturnField]);
+
       const defaultVal = data.dataSource[0][lookupReturnField];
       setSelectedValue(defaultVal);
       props.onChange(defaultVal);

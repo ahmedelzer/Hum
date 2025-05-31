@@ -7,7 +7,7 @@ import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import FormContainer from "@/src/components/form-container/FormContainer";
-import { onApply } from "@/src/components/form-container/OnApplay";
+import { onApply } from "@/src/components/form-container/OnApply";
 import { useNavigation } from "@react-navigation/native";
 import { jwtDecode } from "jwt-decode";
 import React, { useContext, useState } from "react";
@@ -30,6 +30,7 @@ import LoadingButton from "../../../utils/component/LoadingButton";
 import RNRestart from "react-native-restart";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useSelector } from "react-redux";
 const ACTION_SCHEMA = [
   {
     dashboardFormSchemaActionID: "46ac8869-4745-41c8-8839-d02dfe9999f0",
@@ -42,7 +43,7 @@ const ACTION_SCHEMA = [
 ];
 
 export const LoginWithLeftBackground = () => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const { os } = useDeviceInfo();
 
   const { setUser } = useAuth();
@@ -92,7 +93,6 @@ export const LoginWithLeftBackground = () => {
       postAction,
       loginFormSchema.projectProxyRoute
     );
-    console.log(apply);
 
     if (apply && apply.success === true) {
       try {
@@ -107,7 +107,7 @@ export const LoginWithLeftBackground = () => {
         await saveSecureValue("rememberMe", rememberme ? "true" : "false");
         // }
         setUser(user);
-        console.log("Decoded Token:", decodedToken);
+
         // RNRestart.Restart();
         // DevSettings.reload();
       } catch (error) {
@@ -166,7 +166,6 @@ export const LoginWithLeftBackground = () => {
                       typeof isCheckedOrEvent === "boolean"
                         ? isCheckedOrEvent
                         : isCheckedOrEvent?.nativeEvent?.checked;
-                    console.log(isChecked, "isChecked");
 
                     onChange(isChecked);
                   }}

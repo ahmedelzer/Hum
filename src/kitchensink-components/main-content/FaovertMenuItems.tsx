@@ -19,7 +19,7 @@ const FaovertMenuItems = () => {
   const fieldsType = useSelector((state) => state.menuItem.fieldsType);
 
   const navigation = useNavigation();
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   return (
     favoriteItems.length > 0 && (
       <>

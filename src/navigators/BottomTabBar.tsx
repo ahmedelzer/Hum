@@ -39,12 +39,12 @@ const BottomBarTabs: FC = () => {
       routePath: "MenuView",
       projectProxyRoute: "HumMenu",
     },
-    {
-      dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
-      dashboardMenuItemName: "MenuItem1",
-      routePath: "marketPlace", // Using the test route for nested navigators
-      projectProxyRoute: "HumMenu",
-    },
+    // {
+    //   dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
+    //   dashboardMenuItemName: "MenuItem1",
+    //   routePath: "marketPlace", // Using the test route for nested navigators
+    //   projectProxyRoute: "HumMenu",
+    // },
 
     {
       dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee84",

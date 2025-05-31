@@ -58,7 +58,6 @@ TaskManager.defineTask(BACKGROUND_TASK_NAME, async () => {
 
 function Notification() {
   // const { notifications, setNotifications } = useContext(WSContext);
-  // const { localization } = useContext(LocalizationContext);
   const [notificationsNewNum, setNotificationsNewNum] = useState(0);
   const socketRef = useRef(null);
 

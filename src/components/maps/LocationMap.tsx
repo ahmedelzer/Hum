@@ -27,7 +27,7 @@ const LocationMap = ({
     longitudeDelta: 0.05,
   };
   const mapRef = useRef(null);
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
 
   const latitudeField = fields.find(
     (param) =>

@@ -6,9 +6,10 @@ import MenuCardDeities from "../cards/MenuCardDeities";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import { View } from "react-native";
 import FaovertCardIcon from "../cards/FaovertCardIcon";
+import { useSelector } from "react-redux";
 
 const DetailsScreen = ({ route }) => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const item = route.params.item;
   const fieldsType = route.params.fieldsType;
   const schemaActions = route.params.schemaActions;

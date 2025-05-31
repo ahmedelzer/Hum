@@ -33,8 +33,8 @@ export const RenderDeleteAction = (
       // style={{ transform: [{ translateX: trans }] }}
       >
         <TouchableOpacity
-          onPress={() => {
-            AddItemToCart(
+          onPress={async() => {
+            await AddItemToCart(
               { ...item, addQuantity: -1, [fieldsType.cardAction]: 1 },
               () => {},
               null,

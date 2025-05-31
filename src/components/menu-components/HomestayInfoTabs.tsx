@@ -56,7 +56,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
     );
 
   const { rows, skip, totalCount, loading } = state;
-  console.log(rows);
+  
 
   useEffect(() => {
     LoadData(
@@ -74,7 +74,6 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
 
     if (isScrolledToBottom && rows.length < totalCount && !loading) {
-      console.log(loading, "loading", rows.length);
       getRemoteRows(currentSkip, VIRTUAL_PAGE_SIZE * 2, reducerDispatch); //todo change dispatch by reducerDispatch
       setCurrentSkip(currentSkip + 1);
     }
@@ -150,7 +149,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                     dispatch(getAllMenuItems(menuItems));
                     dispatch(updateMenuItemType(""));
                   } else {
-                    console.log(data);
+                    
 
                     dispatch(getAllMenuItems(data));
                     dispatch(updateMenuItemType(item.name));

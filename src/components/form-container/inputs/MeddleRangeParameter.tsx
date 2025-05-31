@@ -17,9 +17,7 @@ export default function MeddleRangeParameter({
   const MIN_DEFAULT = 10;
   const MAX_DEFAULT = 500;
 
-  console.log("====================================");
-  console.log(value); // Debugging to log the current value
-  console.log("====================================");
+
 
   const [minValue, setMinValue] = useState(value.min || MIN_DEFAULT);
   const [maxValue, setMaxValue] = useState(value.max || MAX_DEFAULT);

@@ -295,6 +295,16 @@
     "currency": "EGP"
   },
   "Hum_screens": {
+    "splash": {
+      "headerLabels": ["Welcome", "Language", "Intro"],
+      "welcome": "Welcome to ShopMate 🛒",
+      "quickDescription": "Discover amazing products, deals, and more!",
+      "language": "Now choose your Language",
+      "videoTitle": "How to Use ShopMate 📽",
+      "buttonPrevious": "Previous",
+      "buttonNext": "Next",
+      "buttonSkip": "skip"
+    },
     "home": {
       "shortcuts": "Shortcuts",
       "faovert": "Faovert Items"

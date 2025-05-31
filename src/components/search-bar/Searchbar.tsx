@@ -9,7 +9,7 @@ import searchBarSchema from "../../Schemas/MenuSchema/searchBarSchema.json";
 import { Icon, InputIcon, SearchIcon } from "../../../components/ui";
 //!localization
 const Searchbar = ({ schema, row, setRow }) => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const firstPram = searchBarSchema.dashboardFormSchemaParameters[0];
   const handleSearch = (value) => {
     setRow({ ...row, [firstPram.parameterField]: value });

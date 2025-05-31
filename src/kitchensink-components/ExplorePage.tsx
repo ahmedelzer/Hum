@@ -4,7 +4,8 @@ import { Box, VStack } from "../../components/ui";
 import { useDeviceInfo } from "../utils/component/useDeviceInfo";
 import FaovertMenuItems from "./main-content/FaovertMenuItems";
 import HomeCarousel from "./main-content/HomeCarousel";
-import HomeCarouselWeb from "./main-content/HomeCarousel.web";
+
+
 
 const Explorepage = () => {
   const { os } = useDeviceInfo();

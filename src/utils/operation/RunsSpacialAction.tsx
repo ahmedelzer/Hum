@@ -1,5 +1,5 @@
 import APIHandling from "../../../components/hooks/APIsFunctions/APIHandling";
-import { SetReoute } from "../../../request";
+import { GetProjectUrl, SetReoute } from "../../../request";
 
 export const RunsSpacialAction = async (
   name,
@@ -23,12 +23,13 @@ export const RunsSpacialAction = async (
   if (action) {
     setLoading(true); // Disable the switch
     projectProxyRoute && SetReoute(projectProxyRoute);
+    const getProjectUrl = GetProjectUrl();
     const result = await APIHandling(
-      actionWithRightNameAction.routeAdderss + "/" + id,
+      getProjectUrl+'/'+actionWithRightNameAction.routeAdderss + "/" + id,
       actionWithRightNameAction.dashboardFormActionMethodType?.split(":")[0],
       value
     );
-    console.log(result);
+
 
     if (result && result.success) {
       setLoading(false);

@@ -17,28 +17,32 @@ export default function AddressLocationCollapsible() {
   const selectedLocation = useSelector(
     (state) => state.location.selectedLocation
   );
+  console.log(selectedTab);
 
   return (
-    <View className="mb-2">
-      <CollapsibleSection
-        title="Personal Info"
-        icon={null}
-        expandedSection={expandedSection}
-        toggleSection={toggleSection}
-        setheader={true}
-        iconColor={theme.body}
-        textColor={theme.body}
+    <View className=" w-full mb-2 px-3">
+      <View
+        className=" w-full p-1 rounded-xl shadow-sm"
+        style={{ backgroundColor: theme.dark_card }}
       >
-        <TabButtons loading={false} rows={["Pickup", "Address"]} />
-        {selectedTab == 1 ? (
-          <View className="flex-row items-center justify-center overflow-auto mb-3">
-            <AddressLocation />
-          </View>
-        ) : (
-          <></>
-        )}
-        <NearestBranches />
-      </CollapsibleSection>
+        <CollapsibleSection
+          title="Market Places"
+          icon={null}
+          expandedSection={expandedSection}
+          toggleSection={toggleSection}
+          setheader={true}
+          iconColor={theme.body}
+          textColor={theme.body}
+        >
+          <TabButtons loading={false} rows={["Pickup", "Address"]} />
+          {selectedTab == 1 ? (
+            <View className="flex-row items-center justify-center overflow-auto mb-3">
+              <AddressLocation />
+            </View>
+          ) : null}
+          <NearestBranches />
+        </CollapsibleSection>
+      </View>
     </View>
   );
 }

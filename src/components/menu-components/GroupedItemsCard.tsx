@@ -22,7 +22,9 @@
 
 // const GroupedItemsCard = ({ items }) => {
 //   const dispatch = useDispatch();
-//   const { localization } = useContext(LocalizationContext);
+// //   const localization = useSelector(
+//     (state) => state.localization.localization
+//   );
 //   const navigation = useNavigation();
 
 //   const [selectedItems, setSelectedItems] = useState(items);
@@ -97,7 +99,7 @@ import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useState, useContext, useEffect } from "react";
 import { View } from "react-native";
 import { scale } from "react-native-size-matters";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -117,7 +119,7 @@ import { LocalizationContext } from "../../../context/LocalizationContext";
 
 const GroupedItemsCard = ({ items }) => {
   const dispatch = useDispatch();
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const navigation = useNavigation();
 
   const [selectedItems, setSelectedItems] = useState(

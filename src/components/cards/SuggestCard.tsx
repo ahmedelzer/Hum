@@ -1,73 +1,78 @@
-import { View, Text } from "react-native";
-import React, { useContext } from "react";
-import { Box, Image } from "../../../components/ui";
-import { moderateScale, scale } from "react-native-size-matters";
-import { TouchableOpacity } from "react-native";
-import SuggestCardSchema from "../../Schemas/MenuSchema/SuggestCardSchema.json";
+import React from "react";
+import { Text, View } from "react-native";
+import { scale } from "react-native-size-matters";
 import { useSelector } from "react-redux";
 import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
-import ImageRoute from "../../utils/component/ImageRoute";
-import { GetMediaUrl } from "../../utils/operation/GetMediaUrl";
-import { LocalizationContext } from "../../../context/LocalizationContext";
+import SuggestCardSchema from "../../Schemas/MenuSchema/SuggestCardSchema.json";
 import { theme } from "../../Theme";
-import FaovertCardIcon from "./FaovertCardIcon";
-import { getField } from "../../utils/operation/getField";
 import CardPriceDiscount from "../../utils/component/CardPriceDiscount";
 import ImageCardActions from "./ImageCardActions";
 
 export default function SuggestCard({
   item,
   imageStyle = { width: scale(120), height: scale(120) },
+  boxScale = 400,
+  showPrice = true,
 }) {
+  const dynamicScale = boxScale / 100;
   const schemaActions = useSelector((state) => state.menuItem.schemaActions);
   const parameters = SuggestCardSchema?.dashboardFormSchemaParameters ?? [];
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const fieldsType = useSelector((state) => state.menuItem.fieldsType);
   return (
-    <View className="bg-card rounded-lg flex flex-col justify-center items-center p-2">
+    <View
+      className="bg-card rounded-lg items-center"
+      style={{
+        padding: 3 * dynamicScale,
+        borderRadius: 5 * dynamicScale,
+      }}
+    >
+      {/* Inner content with fixed layout */}
       <View className="items-center relative">
-        {/* Image with relative wrapper */}
         <ImageCardActions
           fieldsType={fieldsType}
           item={item}
-          style={imageStyle}
+          style={imageStyle} // ⬅️ leave this fixed
         />
 
-        {/* Label half inside and half outside image */}
         {item[fieldsType.text] && (
           <View
             style={{
               position: "absolute",
-              bottom: scale(-20), // Push half outside the image
-              alignItems: "center",
+              bottom: -10, // ⬅️ fixed
+              alignSelf: "center",
             }}
-            className="mb-4 !size-full"
           >
             <View
-              style={{
-                backgroundColor: theme.accent, // or use theme or class like "bg-accent"
-                borderRadius: scale(12),
-                paddingHorizontal: scale(8),
-                paddingVertical: scale(4),
-              }}
-              className="!size-full"
+              className="px-2 py-1 rounded-md"
+              style={{ backgroundColor: theme.accent }}
             >
-              <Text className="text-body" numberOfLines={1}>
+              <Text className="text-body text-xs" numberOfLines={1}>
                 {item[fieldsType.text]}
               </Text>
             </View>
           </View>
         )}
       </View>
-
-      <CardPriceDiscount
-        colorOfPriceAfterDiscount={theme.dark_card}
-        item={item}
-        fieldsType={fieldsType}
-      />
+      {showPrice && (
+        <View className="mt-5 w-full items-center">
+          <CardPriceDiscount
+            colorOfPriceAfterDiscount={theme.dark_card}
+            item={item}
+            fieldsType={fieldsType}
+            style={{ fontSize: 14 }}
+          />
+        </View>
+      )}
 
       {item[fieldsType.imageView] && (
-        <AddToCartPrimaryButton item={item} fieldsType={fieldsType} isSuggest />
+        <View className="w-full mt-2">
+          <AddToCartPrimaryButton
+            item={item}
+            fieldsType={fieldsType}
+            isSuggest
+          />
+        </View>
       )}
     </View>
   );

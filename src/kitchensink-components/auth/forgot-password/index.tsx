@@ -19,17 +19,16 @@ import { AuthLayout } from "../layout";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 import GoBackHeader from "../../../components/header/GoBackHeader";
 import { handleSubmitWithCallback } from "../../../utils/operation/handleSubmitWithCallback";
-import { buildApiUrl } from "../../../../components/hooks/APIsFunctions/BuildApiUrl";
-import { SetReoute } from "../../../../request";
 import LoadingButton from "../../../utils/component/LoadingButton";
 import VerifySchema from "../../../Schemas/ForgetSchema/VerifySchema.json";
+import { useSelector } from "react-redux";
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
 });
 
 const ForgotPasswordScreen = ({ route }) => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const { os } = useDeviceInfo();
   const [reqError, setReqError] = useState(null);
   const [disable, setDisable] = useState(null);
@@ -49,7 +48,6 @@ const ForgotPasswordScreen = ({ route }) => {
   } = useForm({ defaultValues: route.params });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     const body = { ...control._formValues, ...data };
 
     const postAction =
@@ -57,14 +55,13 @@ const ForgotPasswordScreen = ({ route }) => {
       ForgetSchemaActions.find(
         (action) => action.dashboardFormActionMethodType === "Post"
       );
-    handleSubmitWithCallback({
+    await handleSubmitWithCallback({
       data: body,
       setDisable,
       action: postAction,
       proxyRoute: ForgetSchema.projectProxyRoute,
       setReq: setReqError,
       onSuccess: (resultData) => {
-        console.log(resultData);
         navigation.navigate("Verify", {
           ...data,
           ...resultData,
@@ -110,7 +107,9 @@ const ForgotPasswordScreen = ({ route }) => {
         <LoadingButton
           buttonText={localization.forgotPassword.sighUpButton}
           loading={disable}
-          onPress={handleSubmit(onSubmit)}
+          onPress={async () => {
+            await handleSubmit(onSubmit);
+          }}
           className="w-full rounded-lg"
         />
       </VStack>

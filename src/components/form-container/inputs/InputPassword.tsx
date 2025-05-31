@@ -68,7 +68,7 @@ function InputPassword({ ...props }) {
                 onChangeText={(newValue) => {
                   if (value !== newValue) {
                     //make here vladtion
-                    console.log(confirmPassword);
+         
 
                     control.setError(fieldName, {
                       type: "manual",

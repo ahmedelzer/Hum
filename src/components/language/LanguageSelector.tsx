@@ -1,105 +1,103 @@
-import { AntDesign } from "@expo/vector-icons";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { I18nManager, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useContext, useEffect, useState } from "react";
-import {
-  DevSettings,
-  I18nManager,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
-import UseFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import RNRestart from "react-native-restart";
+
 import {
   Select,
   SelectBackdrop,
   SelectContent,
   SelectDragIndicator,
   SelectDragIndicatorWrapper,
-  SelectIcon,
   SelectInput,
   SelectItem,
   SelectPortal,
   SelectTrigger,
 } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
+
+import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
+import UseFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import staticLocalization from "../../../context/staticLocalization.json";
 import { GetProjectUrl, SetReoute } from "../../../request";
+
 import schemaLanguages from "../../Schemas/LanguageSchema/LanguageSchema.json";
 import LanguageSchemaActions from "../../Schemas/LanguageSchema/LanguageSchemaActions.json";
 import LocalizationSchemaActions from "../../Schemas/Localization/LocalizationSchemaActions.json";
+import {
+  setLanguageRow,
+  setLocalization,
+} from "../../reducers/localizationReducer";
 import { DeepMerge } from "./DeepMerge";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import RNRestart from "react-native-restart";
 const LanguageSelector = () => {
+  const dispatch = useDispatch();
+  const languageRow = useSelector((state) => state.localization.languageRow);
+
   const prams = schemaLanguages.dashboardFormSchemaParameters;
+
   const languageName = prams.find(
-    (pram) => pram.parameterType === "Language"
+    (p) => p.parameterType === "Language"
   ).parameterField;
   const direction = prams.find(
-    (pram) => pram.parameterType === "Direction"
+    (p) => p.parameterType === "Direction"
   ).parameterField;
+
   SetReoute(schemaLanguages.projectProxyRoute);
+
   const dataSourceAPI = (query) =>
     buildApiUrl(query, {
       pageIndex: 1,
       pageSize: 1000,
       activeStatus: 1,
     });
-  const getAction =
-    LanguageSchemaActions &&
-    LanguageSchemaActions.find(
-      (action) => action.dashboardFormActionMethodType === "Get"
-    );
-  const query = dataSourceAPI(getAction);
+
+  const getLanguageAction = LanguageSchemaActions?.find(
+    (action) => action.dashboardFormActionMethodType === "Get"
+  );
+
+  const query = dataSourceAPI(getLanguageAction);
   const { data } = UseFetchWithoutBaseUrl(query);
-  const {
-    languageRow: Lan,
-    setLanguageRow,
-    setLocalization,
-  } = useContext(LocalizationContext);
+
   useEffect(() => {
-    const fetchData = async () => {
-      if (Lan && Object.keys(Lan).length < 0) {
-        const shortName = data?.dataSource[0][languageName];
-
-        const language = data?.dataSource?.find(
-          (language) => language[languageName] === shortName
-        );
-        PrepareLanguage(shortName, language);
-      }
-    };
-
-    fetchData();
+    if (
+      languageRow &&
+      Object.keys(languageRow).length === 0 &&
+      data?.dataSource?.length > 0
+    ) {
+      const shortName = data?.dataSource[0][languageName];
+      const language = data?.dataSource?.find(
+        (lang) => lang[languageName] === shortName
+      );
+      PrepareLanguage(shortName, language);
+    }
   }, [data]);
 
   const changeLanguage = async (lang) => {
     await PrepareLanguage(lang[languageName], lang);
   };
-  async function PrepareLanguage(shortName: string, language: any) {
-    // SetSelectedLanguage(shortName);
-    setLanguageRow(language);
+
+  async function PrepareLanguage(shortName, language) {
+    dispatch(setLanguageRow(language)); // Redux action handles storage
     if (language) {
-      AsyncStorage.setItem("languageRow", JSON.stringify(language));
       if (language[direction] !== I18nManager.isRTL) {
         AsyncStorage.setItem("isRTL", language[direction].toString());
-        console.log("restart", language);
         I18nManager.forceRTL(language[direction]);
         RNRestart.Restart();
       }
     }
   }
-  // //localization
+
+  // fetch localization
   const getLocalizationAction = LocalizationSchemaActions?.find(
     (action) => action.dashboardFormActionMethodType === "Get"
   );
 
-  // // Using useFetch hook to fetch data
-  const language = Lan[languageName];
+  const currentLang = languageRow[languageName];
   const { data: localization } = useFetch(
-    `/${getLocalizationAction?.routeAdderss}/${language}`,
+    `/${getLocalizationAction?.routeAdderss}/${currentLang}`,
     GetProjectUrl()
   );
 
@@ -112,27 +110,30 @@ const LanguageSelector = () => {
       const dataObject = JSON.parse(localFormat);
       delete dataObject._id;
       const merged = DeepMerge(staticLocalization, dataObject);
-      setLocalization(typeof merged === "string" ? JSON.parse(merged) : merged);
-      AsyncStorage.setItem("localization", JSON.stringify(merged));
+      dispatch(
+        setLocalization(
+          typeof merged === "string" ? JSON.parse(merged) : merged
+        )
+      );
     }
-  }, [localization, setLocalization]);
+  }, [localization]);
 
   return (
     <View className="mx-2">
       <Select
-        value={Lan[languageName]}
+        value={languageRow[languageName]}
         onValueChange={changeLanguage}
         className="flex-1"
       >
         <SelectTrigger
-          variant="unstyled" // use 'unstyled' to fully control appearance
+          variant="unstyled"
           size="sm"
           className="flex-1 flex-row items-center justify-between h-11 px-3 bg-transparent border border-border rounded-md"
         >
           <SelectInput
             placeholder="Select option"
-            value={Lan[languageName]}
-            className="text-base text-text "
+            value={languageRow[languageName]}
+            className="text-base text-text"
           />
           <FontAwesome name="edit" size={18} className="text-text ms-2" />
         </SelectTrigger>
@@ -157,4 +158,5 @@ const LanguageSelector = () => {
     </View>
   );
 };
+
 export default LanguageSelector;

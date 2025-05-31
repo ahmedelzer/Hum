@@ -28,6 +28,7 @@ import {
 import LogoutAlertDialog from "./LogoutAlertDialog";
 import { useAuth } from "../../context/auth";
 import { LocalizationContext } from "../../context/LocalizationContext";
+import { useSelector } from "react-redux";
 
 const MobileProfilePage = () => {
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] = useState(false);
@@ -171,7 +172,7 @@ const ProfileCard = () => {
 };
 
 const LogoutButton = ({ setOpenLogoutAlertDialog }) => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
 
   return (
     <Button

@@ -96,9 +96,7 @@ export default function BranchesByLocationMap() {
   const navigation = useNavigation();
   const [region, setRegion] = useState(INITIAL_REGION);
   const onMarkerSelected = (marker: any) => {
-    console.log("====================================");
-    console.log(marker.name);
-    console.log("====================================");
+
   };
   const zoomIn = () => {
     setRegion((prevRegion) => ({

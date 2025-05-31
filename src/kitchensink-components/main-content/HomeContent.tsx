@@ -3,6 +3,9 @@ import React, { useContext } from "react";
 import { Image } from "react-native";
 import { Card, HStack, Icon, Text, VStack } from "../../../components/ui";
 import { LocalizationContext } from "../../../context/LocalizationContext";
+import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
+import AddressLocationCollapsible from "../../utils/component/AddressLocationCollapsible";
+import { useSelector } from "react-redux";
 
 const shortcuts = [
   {
@@ -32,13 +35,14 @@ const shortcuts = [
 ];
 
 const HomeContent = () => {
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   return (
     <>
       <HStack className="flex-1 items-center justify-between">
         <Text>{localization.Hum_screens.home.shortcuts}</Text>
         <Text className="text-primary-custom">{shortcuts.length}</Text>
       </HStack>
+
       <HStack className="flex-wrap flex-row flex mx-2">
         {shortcuts.map((shortcut) => (
           <Card
@@ -68,6 +72,7 @@ const HomeContent = () => {
           </Card>
         ))}
       </HStack>
+      <SuggestCardContainer />
     </>
   );
 };

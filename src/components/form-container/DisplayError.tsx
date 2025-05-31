@@ -22,7 +22,7 @@ function DisplayError({ dataError, parameterField, setTitle }) {
 
   if (dataError?.success === false) {
     const errorMessages = lowercaseError[fieldLowercase];
-    console.log("error", lowercaseError);
+
     if (errorMessages?.length > 0) {
       setTitle(`${errorMessages}`);
       return (

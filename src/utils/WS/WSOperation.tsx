@@ -11,10 +11,9 @@ export function WSOperation(
   totalCount = 0
 ) {
   const message = JSON.parse(messageString);
-  const payload = message[dataSourceName];
-  console.log(message, payload, "payload");
+  const payload = keysToLowerFirstChar(message[dataSourceName]);
 
-  const updated = keysToLowerFirstChar(payload);
+
   const handlers = {
     Insert: () => {
       const newRows = Array.isArray(payload) ? payload : [payload];
@@ -31,7 +30,7 @@ export function WSOperation(
     Update: () => {
       const updatedRows = Array.isArray(rows)
         ? rows.map((row) =>
-            row[idField] === updated[idField] ? { ...row, ...updated } : row
+            row[idField] === payload[idField] ? { ...row, ...payload } : row
           )
         : [];
       return {
@@ -40,7 +39,7 @@ export function WSOperation(
       };
     },
     Delete: () => {
-      const newRows = rows.filter((row) => row[idField] !== payload[idField]);
+      const newRows = rows.filter((row) => row[idField] !== message[dataSourceName]);
       return { rows: newRows, totalCount: TotalCount(message.ope, totalCount) };
     },
 

@@ -7,18 +7,15 @@ import {
   websocketBaseURI,
 } from "../../../request";
 import WSSchemaAction from "../../Schemas/WSSchema/WSSchemaAction.json";
-import { disconnectWS, getWSInstance } from "./WSManager";
+import {  disconnectWS, getWSInstance } from "./WSManager";
 import { WSOperation } from "./WSOperation";
 import { selectSelectedNode } from "../../reducers/LocationReducer";
 import store from "../../store/reduxStore"; // ⬅️ your Redux store
 
 export async function ConnectToWS(setWSsetMessage, setWS_Connected, row = {}) {
-  const selectedNode = selectSelectedNode(store.getState());
-  const selectedLocation = store.getState().location.selectedLocation;
+  
   const token = await GetToken();
-  const languageRow = await AsyncStorage.getItem("languageRow");
-  const languageRowObj =
-    typeof languageRow === "string" ? JSON.parse(languageRow) : languageRow;
+
   if (!token) {
     console.warn("🛑 No token found, skipping WebSocket connection");
     return;
@@ -28,9 +25,6 @@ export async function ConnectToWS(setWSsetMessage, setWS_Connected, row = {}) {
     {
       ...row,
       token: token,
-      ...languageRowObj,
-      ...selectedNode,
-      ...selectedLocation,
     },
     websocketBaseURI + "/" + projectProxyRoute
   );
@@ -48,9 +42,9 @@ export async function ConnectToWS(setWSsetMessage, setWS_Connected, row = {}) {
     }
   };
 
-  getWSInstance(buildUrl, handleMessage, WSSchemaAction.routeAdderss); // ✅ callback is set here
+  getWSInstance(buildUrl, handleMessage); // ✅ callback is set here
   setWS_Connected(true);
   return () => {
-    disconnectWS();
+    disconnectWS(buildUrl);
   };
 }

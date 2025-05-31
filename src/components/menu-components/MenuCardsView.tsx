@@ -6,11 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ScrollView } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { Text, VStack } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import { getAllMenuItems } from "../../reducers/MenuItemReducer";
+import { ScrollView, View } from "react-native";
+
 import { initialState } from "../Pagination/initialState";
 import reducer from "../Pagination/reducer";
 import MenuCardView from "./MenuCardView";
@@ -23,33 +20,30 @@ import { Chase } from "react-native-animated-spinkit";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
 import { SetReoute } from "../../../request";
-import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
 import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSchemaActions.json";
-import { ConnectToWS } from "../../utils/WS/ConnectToWS";
-import { WSOperation } from "../../utils/WS/WSOperation";
 import { createRowCache } from "../Pagination/createRowCache";
 import { getRemoteRows } from "../Pagination/getRemoteRows";
-import { updateRows } from "../Pagination/updateRows";
-import SuggestCard from "../cards/SuggestCard";
-import { handleWSMessage } from "../../utils/WS/handleWSMessage";
-import { selectSelectedNode } from "../../reducers/LocationReducer";
+import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
+import { ActivityIndicator } from "react-native";
+import { prepareLoad } from "../../utils/operation/loadHelpers";
+import { useSelector } from "react-redux";
+import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
+import { ConnectToWS } from "../../utils/WS/ConnectToWS";
+import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
+import { getField } from "../../utils/operation/getField";
+import { getItemPackage } from "./getItemPackage";
 const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ row, isRefreshed }: any) => {
-  const products = useSelector((state) => state.menuItem.menuItem);
-  const cart = useSelector((state) => state.cart.cart);
-  const customerCartInfo = useSelector((state) => state.cart.customerCartInfo);
-  const { localization } = useContext(LocalizationContext);
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [reRequest, setReRequest] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [_WSsetMessage, setWSsetMessage] = useState("{}");
   const [WS_Connected, setWS_Connected] = useState(false);
-  const activeTab = useSelector((state) => state.menuItem.currentCategory);
   const previousRowRef = useRef({});
+  const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
   // const selectedNode = selectSelectedNode(store.getState());
   // Add this ref:
   const previousControllerRef = useRef(null);
@@ -86,20 +80,124 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
   useEffect(() => {
     const controller = new AbortController();
 
-    LoadData(
+    prepareLoad({
       state,
       dataSourceAPI,
       getAction,
       cache,
-      updateRows(reducerDispatch, cache, state),
       reducerDispatch,
-      previousControllerRef,
-      reRequest
-    );
+    });
     setReRequest(false);
     previousControllerRef.current = controller;
     // Call LoadData with the controller
   });
+  // 🌐 Setup WebSocket connection on mount or WS_Connected change
+  useEffect(() => {
+    if (WS_Connected) return;
+
+    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
+
+    ConnectToWS(setWSsetMessage, setWS_Connected)
+      .then(() => console.log("🔌 WebSocket setup done"))
+      .catch((e) => console.error("❌ WebSocket setup error", e));
+  }, [WS_Connected]);
+
+  // 🧠 Reducer callback to update rows
+  const callbackReducerUpdate = async (ws_updatedRows) => {
+    await reducerDispatch({
+      type: "WS_OPE_ROW",
+      payload: {
+        rows: ws_updatedRows.rows,
+        totalCount: ws_updatedRows.totalCount,
+      },
+    });
+  };
+
+  // 📨 React to WebSocket messages only when valid
+  useEffect(() => {
+    if (!rows) return;
+    if (!_WSsetMessage) return;
+    const _handleWSMessage = new WSMessageHandler({
+      _WSsetMessage,
+      fieldsType,
+      rows,
+      totalCount,
+      callbackReducerUpdate,
+    });
+    _handleWSMessage.process();
+  }, [_WSsetMessage]);
+
+  ////cart
+  const [cartState, cartReducerDispatch] = useReducer(
+    reducer,
+    initialState(10, CartSchema.idField)
+  );
+  const {
+    rows: cartRows,
+    totalCount: cartTotalCount,
+    loading: cartLoading,
+  } = cartState;
+  const [cart_WS_Connected, setCartWS_Connected] = useState(false);
+
+  const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
+
+  const cartFieldsType = {
+    imageView: getField(parameters, "menuItemImage"),
+    text: getField(parameters, "menuItemName"),
+    description: getField(parameters, "menuItemDescription"),
+    price: getField(parameters, "price"),
+    rate: getField(parameters, "rate"),
+    likes: getField(parameters, "likes"),
+    dislikes: getField(parameters, "dislikes"),
+    orders: getField(parameters, "orders"),
+    reviews: getField(parameters, "reviews"),
+    isAvailable: getField(parameters, "isAvailable"),
+    menuCategoryID: getField(parameters, "menuCategoryID"),
+    idField: CartSchema.idField,
+    dataSourceName: CartSchema.dataSourceName,
+    cardAction: getField(parameters, "cardAction"),
+    discount: getField(parameters, "discount"),
+    priceAfterDiscount: getField(parameters, "priceAfterDiscount"),
+    note: getField(parameters, "note"),
+    proxyRoute: CartSchema.projectProxyRoute,
+  };
+
+  // 🌐 WebSocket connect effect
+  useEffect(() => {
+    if (cart_WS_Connected) return;
+
+    SetReoute(CartSchema.projectProxyRoute);
+
+    ConnectToWS(setWSsetMessage, setCartWS_Connected)
+      .then(() => console.log("🔌 Cart WebSocket connected"))
+      .catch((e) => console.error("❌ Cart WebSocket error", e));
+  }, [cart_WS_Connected]);
+
+  // ✅ Callback to update reducer
+  const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
+    await cartReducerDispatch({
+      type: "WS_OPE_ROW",
+      payload: {
+        rows: cart_ws_updatedRows.rows,
+        totalCount: cart_ws_updatedRows.totalCount,
+      },
+    });
+  };
+
+  // 📨 WebSocket message handler
+  useEffect(() => {
+    if (!cartState.rows) return;
+    if (!_WSsetMessage) return;
+
+    const handlerCartWSMessage = new WSMessageHandler({
+      _WSsetMessage, // match param name
+      fieldsType: cartFieldsType,
+      rows: cartRows,
+      totalCount: cartTotalCount,
+      callbackReducerUpdate: cartCallbackReducerUpdate,
+    });
+    handlerCartWSMessage.process();
+  }, [_WSsetMessage, cartState.rows]);
 
   useEffect(() => {
     if (!row) return;
@@ -151,88 +249,40 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
         ),
     });
   }, [selectedItems, navigation]);
-  const fieldsType = useSelector((state) => state.menuItem.fieldsType);
-  useEffect(() => {
-    if (WS_Connected) return;
-    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
-    ConnectToWS(setWSsetMessage, setWS_Connected)
-      .then(() => console.log("🔌 WebSocket setup done"))
-      .catch((e) => console.error("❌ WebSocket setup error", e));
-  }, [WS_Connected]);
-  const callbackReducerUpdate = async (ws_updatedRows) => {
-    await reducerDispatch({
-      type: "WS_OPE_ROW",
-      payload: {
-        rows: ws_updatedRows.rows,
-        totalCount: ws_updatedRows.totalCount,
-      },
-    });
-  };
-  useEffect(() => {
-    if (rows.length > 0) {
-      handleWSMessage({
-        _WSsetMessage,
-        fieldsType,
-        rows,
-        totalCount,
-        callbackReducerUpdate,
-      });
-    }
-  }, [_WSsetMessage]); // Add other dependencies if needed (rows, totalCount, etc.)
-  // const staticRows = [
-  //   {
-  //     nodeMenuItemID: "2",
-  //     menuItemName: "test",
-  //     menuItemDescription: "test",
-  //     rate: 3.5,
-  //     numberOfLikes: 10,
-  //     numberOfDislikes: 10,
-  //     numberOfOrders: 10,
-  //     numberOfReviews: 10,
-  //     itemImage: image,
-  //     price: "70",
-  //     isAvailable: true,
-  //     indexOflike: 1,
-  //   },
-  // ];
 
-  //[token, isOnline, languageID,nodeID]
-  // useEffect(() => {
-  //   setWSsetMessage("{}");
-  // }, [isRefreshed]);
   return (
-    <ScrollView showsVerticalScrollIndicator={false} onScroll={handleScroll}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      onScroll={handleScroll}
+      contentContainerStyle={{ paddingBottom: 20 }}
+    >
       {rows?.map((item: any, index: number) => (
-        <React.Fragment key={item[NodeMenuItemsSchema.idField]}>
+        <View key={`${item[NodeMenuItemsSchema.idField]}-${index}`}>
           <MenuCardView
-            itemPackage={item}
+            itemPackage={getItemPackage(
+              item,
+              cartState.rows,
+              NodeMenuItemsSchema
+            )}
             schemaActions={CartSchemaActions}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
           />
 
-          {/* Insert component after every 2 items */}
+          {/* Insert suggestion every 2 items */}
           {(index + 1) % 2 === 0 && (
-            <SuggestCard
-              item={{
-                canReturn: false,
-                indexOflike: 0,
-                isActive: true,
-                isAvailable: true,
-                itemImage:
-                  "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d84.jpg?v5/18/2025 12:09:21 PM?v5/18/2025 12:09:21 PM",
-                keywords: "string,test",
-                menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-                menuCategoryName: "Foods",
-
-                price: 50,
-              }}
-              key={`custom-${index}`}
-            />
+            <View style={{ marginVertical: 10 }}>
+              <SuggestCardContainer suggestContainerType={0} />
+            </View>
           )}
-        </React.Fragment>
+        </View>
       ))}
-      {loading && <LoadingScreen LoadingComponent={<Chase size={40} />} />}
+
+      {loading && (
+        <View style={{ padding: 20 }}>
+          <ActivityIndicator size="small" color="black" />
+        </View>
+      )}
     </ScrollView>
   );
 };

@@ -1,11 +1,10 @@
-import React, { useContext, useState } from "react";
-import { Image, Dimensions, View, TouchableOpacity } from "react-native";
-import { Box, Text, VStack, HStack, Button } from "../../../components/ui";
-import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
-import { LocalizationContext } from "../../../context/LocalizationContext";
+import React, { useState } from "react";
+import { Dimensions, Image, TouchableOpacity, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { Box, HStack, Text } from "../../../components/ui";
 import CardInteraction from "./CardInteraction";
+import { useSelector } from "react-redux";
 
 const { width } = Dimensions.get("window");
 
@@ -20,7 +19,7 @@ const testImages = [
 export default function MenuCardDeities({ item, fieldsType, schemaActions }) {
   const [selectedImage, setSelectedImage] = useState(testImages[0]);
 
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const discountPercentage = item.discount
     ? parseFloat(item.discount.replace("%", ""))
     : 0;

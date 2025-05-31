@@ -26,6 +26,7 @@ export function GetCard(
     menuCategoryID: getField(parameters, "menuCategoryID"),
     discount: getField(parameters, "discount"),
     priceAfterDiscount: getField(parameters, "priceAfterDiscount"),
+    indexOfInteraction: getField(parameters, "indexOfInteraction"),
     idField: schema.idField,
     dataSourceName: schema.dataSourceName,
     cardAction: getField(parameters, "cardAction"),

@@ -7,7 +7,7 @@ export default function StarsIcons({ value }) {
   const fullStars = Math.floor(value);
   const hasHalfStar = value % 1 >= 0.25 && value % 1 < 0.75;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  console.log(fullStars, hasHalfStar, emptyStars, value);
+
 
   return (
     <View style={styles.starRow}>

@@ -1,15 +1,9 @@
 import { AntDesign } from "@expo/vector-icons";
-import {
-  default as React,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import { default as React, useEffect, useReducer, useState } from "react";
 import { Text, View } from "react-native";
+import { Chase } from "react-native-animated-spinkit";
 import { useDispatch, useSelector } from "react-redux";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
 import {
   Select,
   SelectBackdrop,
@@ -22,21 +16,19 @@ import {
   SelectPortal,
   SelectTrigger,
 } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 import { SetReoute } from "../../../request";
-import NearestBranchesSchema from "../../Schemas/AddressLocation/NearestBranches.json";
-import NearestBranchesActions from "../../Schemas/AddressLocation/NearestBranchesActions.json";
-import { createRowCache } from "../Pagination/createRowCache";
-import { getRemoteRows } from "../Pagination/getRemoteRows";
-import { initialState } from "../Pagination/initialState";
-import reducer from "../Pagination/reducer";
-import { updateRows } from "../Pagination/updateRows";
-import { Chase } from "react-native-animated-spinkit";
 import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
 import {
   selectSelectedNode,
   updateSelectedNode,
 } from "../../reducers/LocationReducer";
+import NearestBranchesSchema from "../../Schemas/AddressLocation/NearestBranches.json";
+import NearestBranchesActions from "../../Schemas/AddressLocation/NearestBranchesActions.json";
+import { prepareLoad } from "../../utils/operation/loadHelpers";
+import { createRowCache } from "../Pagination/createRowCache";
+import { getRemoteRows } from "../Pagination/getRemoteRows";
+import { initialState } from "../Pagination/initialState";
+import reducer from "../Pagination/reducer";
 const VIRTUAL_PAGE_SIZE = 4;
 export default function NearestBranches() {
   const selectedLocation = useSelector(
@@ -52,7 +44,7 @@ export default function NearestBranches() {
     NearestBranchesSchema.dashboardFormSchemaParameters.find(
       (pram) => pram.parameterType == "displayLookup"
     );
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const [state, reducerDispatch] = useReducer(
     reducer,
     initialState(10, NearestBranchesSchema.idField)
@@ -75,16 +67,14 @@ export default function NearestBranches() {
 
   const { rows, skip, totalCount, loading } = state;
   useEffect(() => {
-    LoadData(
+    prepareLoad({
       state,
       dataSourceAPI,
       getAction,
       cache,
-      updateRows(reducerDispatch, cache, state),
-      reducerDispatch
-    );
-    // Call LoadData with the controller
-  });
+      reducerDispatch,
+    });
+  }, []);
 
   const handleScroll = (event) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;

@@ -80,6 +80,20 @@
       "indexNumber": 6
     },
     {
+      "dashboardFormSchemaParameterID": "b0612629-2e26-4b77-85ae-6f26da29c6d6",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": false,
+      "parameterType": "indexOfInteraction",
+      "parameterField": "indexOflike",
+      "parameterTitel": "Number Of Dislikes",
+      "parameterLookupTitel": "Number Of Dislikes",
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 6
+    },
+    {
       "dashboardFormSchemaParameterID": "9820f286-00ec-4361-8329-ec85c7ba7316",
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
       "isEnable": false,

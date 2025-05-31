@@ -13,7 +13,7 @@ export function loadLibrary(src, type, id, data) {
     }
     document.body.appendChild(scriptEle);
     scriptEle.addEventListener('load', () => {
-      console.log(src + ' loaded');
+
       resolve(true);
     });
     scriptEle.addEventListener('error', ev => {
