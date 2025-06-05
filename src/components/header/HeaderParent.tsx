@@ -19,7 +19,7 @@ export default function HeaderParent() {
   const cart = useSelector((state) => state.cart.cart);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   return (
-    <View className="w-full" >
+    <View className="w-full">
       <View className="flex-row items-center justify-between py-2">
         {os === "web" && (
           <View className="block md:hidden">
@@ -79,7 +79,6 @@ export default function HeaderParent() {
       {os === "web" && mobileNavOpen && (
         <CategoryNavMobile setCatNavMobile={setMobileNavOpen} />
       )}
-     
     </View>
   );
 }

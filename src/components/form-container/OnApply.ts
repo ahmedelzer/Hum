@@ -9,9 +9,9 @@ export const onApply = async (
   isNew: boolean,
   action: {},
   proxyRoute = "",
-  schemaParameters = false,constants={}
+  schemaParameters = false,
+  constants = {}
 ) => {
- 
   let row = schemaParameters
     ? SharedLists(editedRow, schemaParameters, "parameterField")
     : null;
@@ -24,9 +24,9 @@ export const onApply = async (
       };
   proxyRoute && SetReoute(proxyRoute);
   const dataSourceAPI = (query) => {
-          return buildApiUrl(query, constants);
-        }; 
-        console.log("dataSourceAPI",dataSourceAPI(action))
+    return buildApiUrl(query, constants);
+  };
+
   const res = await APIHandling(
     dataSourceAPI(action),
     action.dashboardFormActionMethodType,

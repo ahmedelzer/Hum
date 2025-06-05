@@ -34,6 +34,10 @@ import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import { getField } from "../../utils/operation/getField";
 import { getItemPackage } from "./getItemPackage";
+import SkeletonWrapper from "../../utils/component/SkeletonLoading";
+import SkeletonLayout from "../cards/SkeletonLayout";
+import StarRatingInput from "../../utils/component/StarRatingInput";
+import { Text } from "react-native";
 const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ row, isRefreshed }: any) => {
@@ -249,6 +253,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
         ),
     });
   }, [selectedItems, navigation]);
+  const [rating, setRating] = useState(0);
 
   return (
     <ScrollView
@@ -279,11 +284,41 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
       ))}
 
       {loading && (
-        <View style={{ padding: 20 }}>
-          <ActivityIndicator size="small" color="black" />
-        </View>
+        // <View style={{ padding: 20 }}>
+        //   <ActivityIndicator size="small" color="black" />
+        // </View>
+        <MenuItemSkeltonLoading loading={loading} />
       )}
+
+      <View style={{ padding: 20 }}>
+        <Text style={{ fontSize: 18, marginBottom: 10 }}>Rate our app:</Text>
+        <StarRatingInput rating={rating} onChange={setRating} />
+        <Text style={{ marginTop: 10 }}>Your Rating: {rating}</Text>
+      </View>
     </ScrollView>
+  );
+};
+const MenuItemSkeltonLoading = ({ loading }) => {
+  // const Layout=()=>{
+  //   return <View>
+  //     <SkeletonLayout height={120} width="120" />
+  //   </View>
+  // }
+  return (
+    <SkeletonWrapper
+      isLoading={loading}
+      SkeletonComponent={SkeletonLayout}
+      skeletonProps={{
+        itemCount: 3,
+        width: "100%",
+        height: 200,
+        borderRadius: 10,
+        spacing: 10,
+        layout: "vertical",
+      }}
+    >
+      <View></View>
+    </SkeletonWrapper>
   );
 };
 

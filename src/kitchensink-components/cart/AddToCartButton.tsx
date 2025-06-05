@@ -6,23 +6,57 @@ import { useAuth } from "../../../context/auth";
 import { AddItemToCart } from "./AddItemToCart";
 import { useCartItemHandler } from "./useCartItemHandler";
 
-const AddToCartSecondaryButton = ({ item, fieldsType }) => {
-  const { quantity, updateCart } = useCartItemHandler(item, fieldsType);
+const AddToCartSecondaryButton = ({ itemPackage, fieldsType,schemaActions }) => {
+ // const { quantity, updateCart } = useCartItemHandler(itemPackage, fieldsType);
+const [item, setItem] = useState(itemPackage);
+ const [loading, setLoading] = useState(false);
+const updateCart = useCallback(
+    
+    async (quantityChange) => {
+      
+      if (!itemPackage || !fieldsType?.cardAction) return;
 
+      setLoading(true);
+      try {
+        const newQuantity = (itemPackage?.[fieldsType.cardAction] ?? 0) + quantityChange;
+        if (newQuantity < 0) {
+          setLoading(false);
+          return; // Prevent negative quantity
+        }
+
+        await AddItemToCart(
+          { ...item, [fieldsType.cardAction]: newQuantity },
+          setLoading,
+          fieldsType,
+          schemaActions,
+          newQuantity
+        );
+      } catch (error) {
+        console.error("Error updating cart:", error);
+        setLoading(false);
+      }
+    },
+    [itemPackage, fieldsType, schemaActions]
+  );
   return (
     <View className="flex-row items-center mt-2">
       <TouchableOpacity
         onPress={() => updateCart(1)}
         className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
       >
-        <Feather name="plus" size={20} className="!text-body" />
+        <Feather name="plus" size={25} className="!text-body" />
       </TouchableOpacity>
-      <Text className="mx-4 text-lg text-surface">{quantity}</Text>
+      <Text
+            key={`${item?.[fieldsType.idField]}-${fieldsType.cardAction}-${itemPackage?.[fieldsType.cardAction] ?? 0}`}
+            className="mx-4 text-lg text-surface"
+          >
+            {itemPackage?.[fieldsType.cardAction] ?? 0}
+          </Text>
       <TouchableOpacity
         onPress={() => updateCart(-1)}
         className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
       >
-        <Feather name="minus" size={20} className="!text-body" />
+        <Feather name="minus" size={25} className="!text-body" />
       </TouchableOpacity>
     </View>
   );
@@ -35,7 +69,7 @@ const AddToCartPrimaryButton = ({ itemPackage = {}, fieldsType = {}, isSuggest =
   const [item, setItem] = useState(itemPackage);
 
   // Update local item state whenever itemPackage changes (e.g. from WS update)
-console.log("quatity",itemPackage?.[fieldsType.cardAction]);
+
 
   // Current quantity based on cardAction field
   //const quantity = itemPackage?.[fieldsType.cardAction] ?? 0;
@@ -48,7 +82,7 @@ console.log("quatity",itemPackage?.[fieldsType.cardAction]);
 
       setLoading(true);
       try {
-        const newQuantity = itemPackage?.[fieldsType.cardAction] ?? 0 + quantityChange;
+        const newQuantity = (itemPackage?.[fieldsType.cardAction] ?? 0) + quantityChange;
         if (newQuantity < 0) {
           setLoading(false);
           return; // Prevent negative quantity

@@ -11,6 +11,7 @@ import FilterReducer from "../reducers/FilterReducer";
 import MenuItemReducer from "../reducers/MenuItemReducer";
 import LocationReducer from "../reducers/LocationReducer";
 import wsReducer from "../reducers/WS_Reducer";
+import PaymentReducer from "../reducers/PaymentReducer";
 import localizationReducer from "../reducers/localizationReducer"; // ✅ import this
 
 const rootReducer = combineReducers({
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   location: LocationReducer,
   ws: wsReducer,
   localization: localizationReducer,
+  payment: PaymentReducer,
 });
 
 const persistConfig = {
@@ -34,6 +36,7 @@ const persistConfig = {
     "location",
     "ws",
     "localization",
+    "payment",
   ],
 };
 

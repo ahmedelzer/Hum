@@ -5,6 +5,8 @@ import LanguageComponent from "../language/LanguageSelector";
 import { VideoPlayer } from "expo-video";
 import AddCard from "../cards/AddCard";
 import { useSelector } from "react-redux";
+import SkeletonWrapper from "../../utils/component/SkeletonLoading";
+import SkeletonLayout from "../cards/SkeletonLayout";
 
 export default function StepBody({ stepNum }) {
   const localization = useSelector((state) => state.localization.localization);
@@ -34,7 +36,7 @@ export default function StepBody({ stepNum }) {
             {localization.Hum_screens.splash.language}
           </Text>
           <View className="w-full h-20 py-2 mb-2">
-            {/* <LanguageComponent />//!here must Warning: ReferenceError: Property 'useSelector' doesn't exist solve  */}
+            <LanguageComponent />
           </View>
         </View>
       );

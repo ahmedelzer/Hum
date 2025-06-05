@@ -39,91 +39,90 @@ const HomeCarousel = () => {
   //   }
   // }, []);
 
-return (
-  <ScrollView style={{ flex: 1, backgroundColor: theme.body }}>
-    <View style={{ flex: 1, paddingBottom: 20 }}>
-
-      {/* Header Section */}
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: theme.body }}>
       <View
         style={{
-          backgroundColor: theme.card,
-          padding: 16,
+          // backgroundColor: theme.card,
+          // padding: 16,
+          marginTop: 0,
           borderBottomWidth: 1,
           borderBottomColor: theme.border,
         }}
       >
         <AddressLocationCollapsible />
       </View>
+      <View style={{ flex: 1, paddingBottom: 20 }}>
+        {/* Header Section */}
 
-      {/* Carousel Section */}
-      <View style={{ paddingHorizontal: 12, marginTop: 12 }}>
-        <Carousel
-          width={width - 24} // Account for horizontal padding
-          height={200}
-          data={data}
-          scrollAnimationDuration={500}
-          defaultIndex={index}
-          autoPlay={false}
-          onSnapToItem={(newIndex) => setIndex(newIndex)}
-          renderItem={({ item }) => <AddCard source={item.src} />}
-        />
+        {/* Carousel Section */}
+        <View style={{ paddingHorizontal: 12, marginTop: 12 }}>
+          <Carousel
+            width={width - 24} // Account for horizontal padding
+            height={200}
+            data={data}
+            scrollAnimationDuration={500}
+            defaultIndex={index}
+            autoPlay={false}
+            onSnapToItem={(newIndex) => setIndex(newIndex)}
+            renderItem={({ item }) => <AddCard source={item.src} />}
+          />
+        </View>
+
+        {/* Dots Indicator */}
+        <View style={{ marginTop: 20, alignItems: "center" }}>
+          <AnimatedDotsCarousel
+            length={data.length}
+            currentIndex={index}
+            scrollableDotsConfig={{
+              setIndex,
+              onNewIndex: (newIndex) => {
+                scrollViewRef?.current?.scrollTo?.({
+                  x: newIndex * width,
+                  animated: false,
+                });
+              },
+              containerBackgroundColor: theme.card,
+              container: {
+                alignItems: "center",
+                borderRadius: 15,
+                height: 30,
+                justifyContent: "center",
+                paddingHorizontal: 15,
+              },
+            }}
+            maxIndicators={4}
+            interpolateOpacityAndColor={true}
+            activeIndicatorConfig={{
+              color: theme.text,
+              margin: 3,
+              opacity: 1,
+              size: 8,
+            }}
+            inactiveIndicatorConfig={{
+              color: theme.text,
+              margin: 3,
+              opacity: 0.5,
+              size: 8,
+            }}
+            decreasingDots={[
+              {
+                config: { color: theme.text, margin: 3, opacity: 0.5, size: 6 },
+                quantity: 1,
+              },
+              {
+                config: { color: theme.text, margin: 3, opacity: 0.5, size: 4 },
+                quantity: 1,
+              },
+            ]}
+          />
+        </View>
+
+        {/* Suggest Cards Section */}
+        <SuggestCardContainer />
       </View>
-
-      {/* Dots Indicator */}
-      <View style={{ marginTop: 20, alignItems: "center" }}>
-        <AnimatedDotsCarousel
-          length={data.length}
-          currentIndex={index}
-          scrollableDotsConfig={{
-            setIndex,
-            onNewIndex: (newIndex) => {
-              scrollViewRef?.current?.scrollTo?.({
-                x: newIndex * width,
-                animated: false,
-              });
-            },
-            containerBackgroundColor: theme.card,
-            container: {
-              alignItems: "center",
-              borderRadius: 15,
-              height: 30,
-              justifyContent: "center",
-              paddingHorizontal: 15,
-            },
-          }}
-          maxIndicators={4}
-          interpolateOpacityAndColor={true}
-          activeIndicatorConfig={{
-            color: theme.text,
-            margin: 3,
-            opacity: 1,
-            size: 8,
-          }}
-          inactiveIndicatorConfig={{
-            color: theme.text,
-            margin: 3,
-            opacity: 0.5,
-            size: 8,
-          }}
-          decreasingDots={[
-            {
-              config: { color: theme.text, margin: 3, opacity: 0.5, size: 6 },
-              quantity: 1,
-            },
-            {
-              config: { color: theme.text, margin: 3, opacity: 0.5, size: 4 },
-              quantity: 1,
-            },
-          ]}
-        />
-      </View>
-
-      {/* Suggest Cards Section */}
-      <SuggestCardContainer />
-    </View>
-  </ScrollView>
-);
-
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({

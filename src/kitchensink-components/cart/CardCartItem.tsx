@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import { I18nManager, Text, TouchableOpacity, View } from "react-native";
 import { moderateScale, scale } from "react-native-size-matters";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { LocalizationContext } from "../../../context/LocalizationContext";
 import { AddToCartSecondaryButton } from "./AddToCartButton";
 import { FontAwesome } from "@expo/vector-icons";
@@ -14,36 +14,41 @@ import { handleSubmitWithCallback } from "../../utils/operation/handleSubmitWith
 import CardPriceDiscount from "../../utils/component/CardPriceDiscount";
 import PopupModal from "../../utils/component/PopupModal";
 import { theme } from "../../Theme";
+import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
+import FieldAction from "../../utils/operation/FieldAction";
+import DeleteItem from "../../utils/operation/DeleteItem";
 // import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 export default function CardCartItem({ fieldsType, schemaActions, item }) {
-  const localization = useSelector((state) => state.localization.localization);
+  const { localization } = useContext(LocalizationContext);
   const dispatch = useDispatch();
   const [disable, setDisable] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const onSubmitFun = async (value) => {
+  const delAction =
+    schemaActions &&
+    schemaActions.find(
+      (action) => action.dashboardFormActionMethodType === "Delete"
+    );
+  const onSubmitFun = async (customerCartItemID, value, fieldName) => {
     const putAction =
       schemaActions &&
       schemaActions.find(
-        (action) => action.dashboardFormActionMethodType === "Put"
+        (action) => action.dashboardFormActionMethodType === `${fieldName}:Put`
       );
-    await handleSubmitWithCallback({
-      data: {
-        [fieldsType.note]: value,
-        [fieldsType.idField]: item[fieldsType.idField],
-      },
-      setDisable,
-      action: putAction,
-      proxyRoute: fieldsType.proxyRoute,
-      setReq: () => {},
-      onSuccess: () => {},
-    });
+
+    await FieldAction(
+      customerCartItemID,
+      value,
+      putAction,
+      fieldsType.proxyRoute
+    );
+    setModalOpen(false);
   };
   const totalItemPrice =
     item[fieldsType.priceAfterDiscount] * item[fieldsType.cardAction];
   const [isSwiped, setIsSwiped] = useState(false);
   return (
     <View
-      className="rounded-xl overflow-hidden"
+      className="rounded-xl overflow-hidden !bg-dark_card"
       style={{ backgroundColor: theme.error }}
     >
       <Swipeable
@@ -52,24 +57,28 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
         renderRightActions={
           !I18nManager.isRTL
             ? (progress, dragX) =>
-                RenderDeleteAction(
-                  progress,
-                  dragX,
-                  item,
-                  fieldsType,
-                  schemaActions
+                RenderDeleteAction(progress, dragX, () =>
+                  DeleteItem(
+                    item[fieldsType.idField],
+                    null,
+                    true,
+                    delAction,
+                    fieldsType.proxyRoute
+                  )
                 )
             : null
         }
         renderLeftActions={
           I18nManager.isRTL
             ? (progress, dragX) =>
-                RenderDeleteAction(
-                  progress,
-                  dragX,
-                  item,
-                  fieldsType,
-                  schemaActions
+                RenderDeleteAction(progress, dragX, () =>
+                  DeleteItem(
+                    item[fieldsType.idField],
+                    null,
+                    true,
+                    delAction,
+                    fieldsType.proxyRoute
+                  )
                 )
             : null
         }
@@ -101,20 +110,20 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
                     {item[fieldsType.text]}
                   </Text>
                 )}
-                {item[fieldsType.priceAfterDiscount] && (
+                {/* {item[fieldsType.priceAfterDiscount] && (
                   <View className="items-center flex flex-row mt-2">
                     <Text className="text-xl font-semibold text-body">
                       {localization.menu.currency} {totalItemPrice.toFixed(2)}
                     </Text>
                   </View>
-                )}
+                )} */}
               </View>
 
-              {item[fieldsType.description] && (
+              {
                 <Text className="text-sm text-primary-custom">
-                  {getPaddedText(item[fieldsType.description], 2)}
+                  {getPaddedText(item[fieldsType.description] ?? "", 3)}
                 </Text>
-              )}
+              }
               <View className="flex flex-row justify-center items-center w-full">
                 <CardPriceDiscount fieldsType={fieldsType} item={item} />
               </View>
@@ -122,8 +131,9 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
               {item[fieldsType.cardAction] && (
                 <View className="flex flex-row justify-between w-full">
                   <AddToCartSecondaryButton
-                    item={item}
+                    itemPackage={item}
                     fieldsType={fieldsType}
+                    schemaActions={CartSchemaActions}
                   />
                 </View>
               )}
@@ -137,18 +147,24 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
               >
                 <FontAwesome
                   name="edit"
-                  size={18}
+                  size={25}
                   className="!text-body ms-2"
                 />
               </TouchableOpacity>
             </View>
+          </View>
+          {/* 👉 Note row at the end */}
+          <View className="bg-note px-3 !bg-dark_card">
+            <Text className="text-text !bg-body text-lg rounded-md mb-2">
+              Note
+            </Text>
           </View>
 
           <PopupModal
             haveFooter={false}
             isOpen={modalOpen}
             onSubmit={async () => {
-              await onSubmitFun("");
+              await onSubmitFun("", fieldsType.note);
             }}
             onClose={() => setModalOpen(false)}
             headerTitle="set notes"
@@ -159,6 +175,8 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
                 placeholder={localization.Hum_screens.cart.saveOrderPlaceholder}
                 submitButtonText={localization.Hum_screens.cart.submitButton}
                 onSubmitFun={onSubmitFun}
+                fieldName={fieldsType.note}
+                iD={item[fieldsType.idField]}
               />
             </View>
           </PopupModal>
