@@ -1,6 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React from "react";
 import { TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import {
@@ -11,7 +11,6 @@ import {
   Text,
   VStack,
 } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 import { GetMediaUrl } from "../../utils/operation/GetMediaUrl";
 
 const FaovertMenuItems = () => {

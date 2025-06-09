@@ -1,5 +1,12 @@
-1-make note cart - notes interface-add function-set in redex
-2-make delete cart item - delete interface-delete function
-3-clean the app from all un useable packages
-4-make layout run in rtl but still in formContainer
+//fished tasks
+1-fish languages in every file to reducer
+2-rate input with animations
+3-cradit and points on header in the profile
+4-orders grid in orders collapse in the profile
 5-
+
+//need to be fished tasks
+1-make on click on any row of orders open popup and display cart and refined
+2-merge the code
+3-solve WS errors of runtime 
+4-points in menu items 

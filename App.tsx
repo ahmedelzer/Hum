@@ -10,7 +10,6 @@ import "./global.css";
 // import AppNavigation from "./navigation/AppNavigation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
-import { LocalizationProvider } from "./context/LocalizationContext";
 // import  {PreparingApp} from "./context/PreparingApp";
 import { PersistGate } from "redux-persist/integration/react";
 import { AuthProvider } from "./context/auth";
@@ -41,21 +40,19 @@ export default function App() {
         >
           <QueryClientProvider client={queryClient}>
             <GluestackUIProvider>
-              <LocalizationProvider>
-                {/* <PreparingApp> */}
-                <AuthProvider>
-                  <SafeAreaView
-                    style={{
-                      flex: 1,
-                      // backgroundColor: "#000",
-                    }}
-                  >
-                    {/* <UserProviderLayer></UserProviderLayer> */}
-                    <RootStack />
-                  </SafeAreaView>
-                </AuthProvider>
-                {/* </PreparingApp> */}
-              </LocalizationProvider>
+              {/* <PreparingApp> */}
+              <AuthProvider>
+                <SafeAreaView
+                  style={{
+                    flex: 1,
+                    // backgroundColor: "#000",
+                  }}
+                >
+                  {/* <UserProviderLayer></UserProviderLayer> */}
+                  <RootStack />
+                </SafeAreaView>
+              </AuthProvider>
+              {/* </PreparingApp> */}
             </GluestackUIProvider>
           </QueryClientProvider>
         </PersistGate>

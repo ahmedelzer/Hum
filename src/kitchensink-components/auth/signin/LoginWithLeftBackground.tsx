@@ -8,29 +8,26 @@ import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import FormContainer from "@/src/components/form-container/FormContainer";
 import { onApply } from "@/src/components/form-container/OnApply";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import { jwtDecode } from "jwt-decode";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import {
   Checkbox,
   CheckboxIcon,
   CheckboxIndicator,
   CheckboxLabel,
-  CheckIcon,
 } from "../../../../components/ui";
 import { useAuth } from "../../../../context/auth";
-import { LocalizationContext } from "../../../../context/LocalizationContext";
 import { SetReoute } from "../../../../request";
 import loginFormSchema from "../../../Schemas/LoginSchema/LoginFormSchema.json";
 import schemaActions from "../../../Schemas/LoginSchema/LoginFormSchemaActions.json";
 import { saveSecureValue } from "../../../store/zustandStore";
 import LoadingButton from "../../../utils/component/LoadingButton";
-import RNRestart from "react-native-restart";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { useSelector } from "react-redux";
 const ACTION_SCHEMA = [
   {
     dashboardFormSchemaActionID: "46ac8869-4745-41c8-8839-d02dfe9999f0",

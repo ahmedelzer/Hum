@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 import { AntDesign } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { TouchableOpacity } from "react-native";
 const categoryNavMobileStyles = {
   container: "w-full h-full bg-card p-8",
   closeButtonWrapper: "flex justify-end mb-8 cursor-pointer",

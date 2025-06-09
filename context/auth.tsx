@@ -22,8 +22,8 @@ function AuthProvider(props) {
     (async function () {
       const result = await retrieveSecureValue("token");
       const remember = await retrieveSecureValue("rememberMe");
-      // const onboarded = await checkOnboarding();
-      // setHasOnboarded(onboarded);
+      const onboarded = await checkOnboarding();
+      setHasOnboarded(onboarded);
       if (remember !== "true") {
         // either "false" or missing → wipe out the token
         await deleteKey("token");

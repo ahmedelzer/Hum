@@ -1,11 +1,12 @@
-import React, { useContext, useState } from "react";
-import { ScrollView } from "react-native";
 import {
   Feather,
+  FontAwesome,
   FontAwesome6,
   MaterialIcons,
-  Ionicons,
 } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { ScrollView } from "react-native";
+import { useSelector } from "react-redux";
 import {
   Avatar,
   AvatarFallbackText,
@@ -20,15 +21,15 @@ import {
   Text,
   VStack,
 } from "../../components/ui";
+import { useAuth } from "../../context/auth";
 import LanguageSelector from "../components/language/LanguageSelector";
 import {
   CollapsibleNavigation,
   CollapsibleSection,
 } from "../utils/component/Collapsible";
 import LogoutAlertDialog from "./LogoutAlertDialog";
-import { useAuth } from "../../context/auth";
-import { LocalizationContext } from "../../context/LocalizationContext";
-import { useSelector } from "react-redux";
+import { theme } from "../Theme";
+import OrderCollapse from "../utils/component/OrderCollapse";
 
 const MobileProfilePage = () => {
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] = useState(false);
@@ -96,7 +97,7 @@ const MobileProfilePage = () => {
               expandedSection={expandedSection}
               toggleSection={toggleSection}
             >
-              <Text>View and track your past orders.</Text>
+              <OrderCollapse />
             </CollapsibleSection>
             <Divider className="my-2" />
             <CollapsibleSection
@@ -142,13 +143,12 @@ const MobileProfilePage = () => {
     </ScrollView>
   );
 };
-
 const ProfileCard = () => {
   const { userGust, user } = useAuth();
 
   return (
     <HStack className="justify-between items-center">
-      <HStack space="md">
+      <HStack space="md" className="items-center">
         <Avatar className="bg-body">
           <AvatarFallbackText>{user.Username}</AvatarFallbackText>
           <AvatarImage
@@ -158,12 +158,28 @@ const ProfileCard = () => {
           />
         </Avatar>
         <VStack>
-          <Text className="text-text">{user.Username}</Text>
-          <Link>
-            <LinkText className="text-primary-custom no-underline">
-              Show Profile
-            </LinkText>
-          </Link>
+          <Text className="text-text text-lg">{user.Username}</Text>
+          <VStack>
+            <HStack space="xs" className="items-center">
+              <FontAwesome
+                name="credit-card"
+                size={14}
+                color={theme.accentHover}
+              />
+              <Text className="text-primary-custom text-sm">
+                Credit: $150.00
+              </Text>
+            </HStack>
+            <HStack space="xs" className="items-center">
+              <FontAwesome
+                name="star"
+                size={14}
+                className="!text-yellow-400"
+                // color="#facc15"
+              />
+              <Text className="text-primary-custom text-sm">Points: 3200</Text>
+            </HStack>
+          </VStack>
         </VStack>
       </HStack>
       <LanguageSelector key={1} />

@@ -1,55 +1,33 @@
 import { useNavigation } from "@react-navigation/native";
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useState,
-} from "react";
-import {
-  I18nManager,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useEffect, useReducer, useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import SuggestCard from "../../components/cards/SuggestCard";
-import GoBackHeader from "../../components/header/GoBackHeader";
-import CardCartItem from "./CardCartItem";
-import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import { GetProjectUrl, SetReoute } from "../../../request";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import CustomerCartInfo from "./CustomerCartInfo";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
-import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
+import { createRowCache } from "../../components/Pagination/createRowCache";
+import { initialState } from "../../components/Pagination/initialState";
+import reducer from "../../components/Pagination/reducer";
+import GoBackHeader from "../../components/header/GoBackHeader";
 import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import InputWithAction from "../../utils/component/InputWithAction";
-import { getField } from "../../utils/operation/getField";
 import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
-import reducer from "../../components/Pagination/reducer";
-import { initialState } from "../../components/Pagination/initialState";
-import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
-import { updateRows } from "../../components/Pagination/updateRows";
-import OldCartButton from "./OldCartButton";
-import useWebSocketHandler from "../../utils/WS/useWebSocketHandler";
+import { getField } from "../../utils/operation/getField";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
-import { createRowCache } from "../../components/Pagination/createRowCache";
-import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import CardCartItem from "./CardCartItem";
 import InvoiceSummary from "./InvoiceSummary";
+import OldCartButton from "./OldCartButton";
 import PaymentMethods from "./PaymentMethods";
 import PaymentOptions from "./PaymentOptions";
-import { CollapsibleSection } from "../../utils/component/Collapsible";
 
 const CartPage = () => {
   const [reRequest, setReRequest] = useState(false);
   const [_WSsetMessage, setWSsetMessage] = useState("{}");
   const [WS_Connected, setWS_Connected] = useState(false);
   const navigation = useNavigation();
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
+
   // Get schema parameters
   ////cart
   const [cartState, cartReducerDispatch] = useReducer(

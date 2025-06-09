@@ -1,15 +1,13 @@
-import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { Icon } from "../../../components/ui";
 import { AntDesign, Feather } from "@expo/vector-icons";
-import GoBackHeader from "../../components/header/GoBackHeader";
+import React, { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import { LocalizationContext } from "../../../context/LocalizationContext";
+import GoBackHeader from "../../components/header/GoBackHeader";
 import BranchesByLocationMap from "../../components/maps/BranchesByLocationMap";
 //!localization
 export default function CheckoutScreen() {
   const [selectedPayment, setSelectedPayment] = useState("visa");
-  const { localization } = useContext(LocalizationContext);
+  const localization = useSelector((state) => state.localization.localization);
   const total = useSelector((state) => state.cart.totalAmount);
   const branches = [
     {

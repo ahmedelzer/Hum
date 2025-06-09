@@ -1,8 +1,7 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import React, { useContext, useState } from "react";
-import AddLocation from "../components/addressLocation/AddLocation";
 import { Feather } from "@expo/vector-icons";
-import { LocalizationContext } from "../../context/LocalizationContext";
+import React, { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import AddLocation from "../components/addressLocation/AddLocation";
 
 export default function MarketPlace() {
   const [marketPlaces, setMarketPlaces] = useState([

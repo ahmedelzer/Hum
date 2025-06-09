@@ -1,5 +1,4 @@
 import { Image } from "@/components/ui";
-import { Button, ButtonText } from "@/components/ui/button";
 import {
   Checkbox,
   CheckboxIcon,
@@ -8,27 +7,25 @@ import {
 } from "@/components/ui/checkbox";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
-import { ArrowLeftIcon, CheckIcon, Icon } from "@/components/ui/icon";
+import { ArrowLeftIcon, Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
+import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Keyboard, TouchableOpacity } from "react-native";
-import * as Yup from "yup";
-import { LocalizationContext } from "../../../../context/LocalizationContext";
+import { useSelector } from "react-redux";
 import FormContainer from "../../../components/form-container/FormContainer";
 import { onApply } from "../../../components/form-container/OnApply";
 import SighupSchema from "../../../Schemas/LoginSchema/SighupSchema.json";
+import VerifySchemaAction from "../../../Schemas/LoginSchema/VerifySchemaAction.json";
 import PersonalInfo from "../../../Schemas/PersonalInfo.json";
-import { AuthLayout } from "../layout";
 import LoadingButton from "../../../utils/component/LoadingButton";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
-import { AntDesign } from "@expo/vector-icons";
-import VerifySchemaAction from "../../../Schemas/LoginSchema/VerifySchemaAction.json";
-import { useSelector } from "react-redux";
+import { AuthLayout } from "../layout";
 
 // const signUpSchema = Yup.object().shape({
 //   email: Yup.string().email("Invalid email").required("Email is required"),

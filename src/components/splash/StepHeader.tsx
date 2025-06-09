@@ -1,10 +1,9 @@
 // components/StepHeader.js
-import React, { useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import StepIndicator from "react-native-step-indicator";
-import { theme } from "../../Theme";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 import { useSelector } from "react-redux";
+import { theme } from "../../Theme";
 
 const labels = ["Welcome", "Language", "Intro"];
 

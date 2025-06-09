@@ -95,9 +95,7 @@
 
 // export default GroupedItemsCard;
 //!groupItems
-import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import React, { useState, useContext, useEffect } from "react";
-import { View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { scale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -107,15 +105,13 @@ import {
   Card,
   HStack,
   Image,
-  Text,
-  VStack,
-  Checkbox,
   Select,
   SelectItem,
+  Text,
+  VStack,
 } from "../../../components/ui";
 
 import { useNavigation } from "@react-navigation/native";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 
 const GroupedItemsCard = ({ items }) => {
   const dispatch = useDispatch();

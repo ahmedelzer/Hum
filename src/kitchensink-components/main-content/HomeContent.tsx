@@ -1,11 +1,9 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useContext } from "react";
+import React from "react";
 import { Image } from "react-native";
-import { Card, HStack, Icon, Text, VStack } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
-import AddressLocationCollapsible from "../../utils/component/AddressLocationCollapsible";
 import { useSelector } from "react-redux";
+import { Card, HStack, Icon, Text, VStack } from "../../../components/ui";
+import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
 
 const shortcuts = [
   {

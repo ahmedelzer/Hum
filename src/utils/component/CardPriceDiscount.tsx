@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View } from "react-native";
-import { Text } from "../../../components/ui";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import { theme } from "../../Theme";
 import { useSelector } from "react-redux";
+import { Text } from "../../../components/ui";
+import { theme } from "../../Theme";
 export default function CardPriceDiscount({
   item,
   fieldsType,

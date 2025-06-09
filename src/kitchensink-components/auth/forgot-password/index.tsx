@@ -1,4 +1,3 @@
-import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { ArrowLeftIcon, Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
@@ -6,22 +5,19 @@ import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Keyboard } from "react-native";
+import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import { LocalizationContext } from "../../../../context/LocalizationContext";
 import FormContainer from "../../../components/form-container/FormContainer";
 import ForgetSchema from "../../../Schemas/ForgetSchema/ForgetSchema.json";
-import LoginFormSchema from "../../../Schemas/LoginSchema/LoginFormSchema.json";
 import ForgetSchemaActions from "../../../Schemas/ForgetSchema/ForgetSchemaActions.json";
-import { AuthLayout } from "../layout";
-import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
-import GoBackHeader from "../../../components/header/GoBackHeader";
-import { handleSubmitWithCallback } from "../../../utils/operation/handleSubmitWithCallback";
-import LoadingButton from "../../../utils/component/LoadingButton";
 import VerifySchema from "../../../Schemas/ForgetSchema/VerifySchema.json";
-import { useSelector } from "react-redux";
+import LoadingButton from "../../../utils/component/LoadingButton";
+import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
+import { handleSubmitWithCallback } from "../../../utils/operation/handleSubmitWithCallback";
+import { AuthLayout } from "../layout";
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),

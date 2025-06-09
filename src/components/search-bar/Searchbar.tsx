@@ -1,12 +1,8 @@
 import { Box, Input, InputField, InputSlot } from "@/components/ui";
-import React, { useContext, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { LocalizationContext } from "../../../context/LocalizationContext";
-import { getAllMenuItems } from "../../reducers/MenuItemReducer";
-import { tabsData } from "../menu-components/tabsData";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import React from "react";
+import { useSelector } from "react-redux";
 import searchBarSchema from "../../Schemas/MenuSchema/searchBarSchema.json";
-import { Icon, InputIcon, SearchIcon } from "../../../components/ui";
 //!localization
 const Searchbar = ({ schema, row, setRow }) => {
   const localization = useSelector((state) => state.localization.localization);

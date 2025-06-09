@@ -86,7 +86,7 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
             </View>
             <CardPriceDiscount fieldsType={fieldsType} item={item} />
 
-            {fieldsType.cardAction && (
+            {fieldsType.cardAction && fieldsType.isAvailable && (
               <AddToCartPrimaryButton
                 itemPackage={item}
                 fieldsType={fieldsType}

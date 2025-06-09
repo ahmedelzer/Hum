@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Slider } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Slider, StyleSheet, Text, View } from "react-native";
 import MapView, {
-  Marker,
   Callout,
-  PROVIDER_GOOGLE,
   Circle,
+  Marker,
+  PROVIDER_GOOGLE,
   UrlTile,
 } from "react-native-maps";
-import { LocalizationContext } from "../../../context/LocalizationContext";
 import { useSelector } from "react-redux";
 
 const LocationMap = ({

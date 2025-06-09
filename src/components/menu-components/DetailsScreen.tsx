@@ -1,12 +1,10 @@
-import React, { useContext } from "react";
-import { SafeAreaView, ScrollView } from "react-native";
-import GoBackHeader from "../header/GoBackHeader";
-import ResponsiveContainer from "../../kitchensink-components/auth/layout/ResponsiveContainer";
-import MenuCardDeities from "../cards/MenuCardDeities";
-import { LocalizationContext } from "../../../context/LocalizationContext";
+import React from "react";
 import { View } from "react-native";
-import FaovertCardIcon from "../cards/FaovertCardIcon";
 import { useSelector } from "react-redux";
+import ResponsiveContainer from "../../kitchensink-components/auth/layout/ResponsiveContainer";
+import FaovertCardIcon from "../cards/FaovertCardIcon";
+import MenuCardDeities from "../cards/MenuCardDeities";
+import GoBackHeader from "../header/GoBackHeader";
 
 const DetailsScreen = ({ route }) => {
   const localization = useSelector((state) => state.localization.localization);

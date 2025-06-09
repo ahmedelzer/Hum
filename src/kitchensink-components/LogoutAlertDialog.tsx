@@ -1,24 +1,23 @@
-import React, { useContext } from "react";
+import React from "react";
+import { DevSettings } from "react-native";
+import { useSelector } from "react-redux";
 import {
-  Text,
-  Heading,
-  Icon,
-  Button,
-  CloseIcon,
-  ButtonText,
   AlertDialog,
   AlertDialogBackdrop,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogCloseButton,
   AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
   AlertDialogFooter,
+  AlertDialogHeader,
+  Button,
+  ButtonText,
+  CloseIcon,
+  Heading,
+  Icon,
+  Text,
 } from "../../components/ui";
-import { deleteKey } from "../store/zustandStore";
-import { DevSettings } from "react-native";
-import { LocalizationContext } from "../../context/LocalizationContext";
 import { persistor } from "../store/reduxStore";
-import { useSelector } from "react-redux";
+import { deleteKey } from "../store/zustandStore";
 
 const LogoutAlertDialog = ({
   openLogoutAlertDialog,

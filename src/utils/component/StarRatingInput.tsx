@@ -1,55 +1,85 @@
-// components/StarRatingInput.js
 import React, { useState } from "react";
-import { View, TouchableOpacity, StyleSheet, PanResponder } from "react-native";
-import { FontAwesome } from "@expo/vector-icons"; // or 'react-native-vector-icons/FontAwesome'
+import { View, StyleSheet, Dimensions } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import { PanGestureHandler } from "react-native-gesture-handler";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  useAnimatedGestureHandler,
+  withSpring,
+} from "react-native-reanimated";
+import { runOnJS } from "react-native-reanimated";
+const { width } = Dimensions.get("window");
+const STAR_COUNT = 5;
+const STAR_SIZE = 40;
+const TOTAL_WIDTH = STAR_COUNT * (STAR_SIZE + 10);
 
-const StarRatingInput = ({ rating = 0, onChange }) => {
-  const [hoverRating, setHoverRating] = useState(rating);
+const AnimatedStarRatingInput = ({ rating = 0, onChange }) => {
+  const [currentRating, setCurrentRating] = useState(rating);
+  const animatedValues = Array(STAR_COUNT)
+    .fill(0)
+    .map(() => useSharedValue(1));
 
-  const starSize = 30;
+  const handleRate = (index) => {
+    setCurrentRating(index + 1);
+    onChange && onChange(index + 1);
+    animateStars(index);
+  };
 
-  // Handle dragging (overlay)
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: (_, gestureState) => {
-      const starIndex = Math.floor(
-        (gestureState.moveX - gestureState.x0) / starSize
-      );
-      if (starIndex >= 0 && starIndex < 5) {
-        setHoverRating(starIndex + 1);
-        onChange && onChange(starIndex + 1);
+  const animateStars = (index) => {
+    animatedValues.forEach((value, i) => {
+      value.value = withSpring(i <= index ? 1.3 : 1);
+      setTimeout(() => {
+        value.value = withSpring(1);
+      }, 300);
+    });
+  };
+
+  const gestureHandler = useAnimatedGestureHandler({
+    onActive: (event) => {
+      const x = event.x;
+      const index = Math.floor(x / (STAR_SIZE + 10));
+      if (index >= 0 && index < STAR_COUNT) {
+        runOnJS(handleRate)(index);
       }
     },
   });
 
   return (
-    <View style={styles.container} {...panResponder.panHandlers}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <TouchableOpacity
-          key={i}
-          activeOpacity={0.7}
-          onPress={() => {
-            setHoverRating(i);
-            onChange && onChange(i);
-          }}
-        >
-          <FontAwesome
-            name={i <= hoverRating ? "star" : "star-o"}
-            size={starSize}
-            color={i <= hoverRating ? "#FFD700" : "#CCCCCC"}
-            style={{ marginHorizontal: 5 }}
-          />
-        </TouchableOpacity>
-      ))}
-    </View>
+    <PanGestureHandler onGestureEvent={gestureHandler}>
+      <Animated.View style={styles.starRow}>
+        {[...Array(STAR_COUNT)].map((_, i) => {
+          const animatedStyle = useAnimatedStyle(() => ({
+            transform: [{ scale: animatedValues[i].value }],
+          }));
+
+          return (
+            <Animated.View key={i} style={[animatedStyle, styles.star]}>
+              <FontAwesome
+                name={i < currentRating ? "star" : "star-o"}
+                size={STAR_SIZE}
+                color={i < currentRating ? "#FFD700" : "#DDD"}
+                onPress={() => handleRate(i)}
+              />
+            </Animated.View>
+          );
+        })}
+      </Animated.View>
+    </PanGestureHandler>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  starRow: {
     flexDirection: "row",
-    paddingVertical: 10,
+    justifyContent: "center",
+    width: TOTAL_WIDTH,
+    alignSelf: "center",
+    paddingVertical: 20,
+  },
+  star: {
+    marginHorizontal: 5,
   },
 });
 
-export default StarRatingInput;
+export default AnimatedStarRatingInput;

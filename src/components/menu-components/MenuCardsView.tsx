@@ -38,6 +38,7 @@ import SkeletonWrapper from "../../utils/component/SkeletonLoading";
 import SkeletonLayout from "../cards/SkeletonLayout";
 import StarRatingInput from "../../utils/component/StarRatingInput";
 import { Text } from "react-native";
+import AnimatedStarRatingInput from "../../utils/component/StarRatingInput";
 const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ row, isRefreshed }: any) => {
@@ -290,10 +291,9 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
         <MenuItemSkeltonLoading loading={loading} />
       )}
 
-      <View style={{ padding: 20 }}>
-        <Text style={{ fontSize: 18, marginBottom: 10 }}>Rate our app:</Text>
-        <StarRatingInput rating={rating} onChange={setRating} />
-        <Text style={{ marginTop: 10 }}>Your Rating: {rating}</Text>
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <AnimatedStarRatingInput rating={rating} onChange={setRating} />
+        <Text style={{ textAlign: "center" }}>Rating: {rating}</Text>
       </View>
     </ScrollView>
   );

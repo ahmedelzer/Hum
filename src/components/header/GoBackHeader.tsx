@@ -1,8 +1,7 @@
-import { View, Text, TouchableOpacity, I18nManager } from "react-native";
-import React, { useContext } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { LocalizationContext } from "../../../context/LocalizationContext";
+import React from "react";
+import { I18nManager, Text, TouchableOpacity, View } from "react-native";
 
 export default function GoBackHeader({
   title,
