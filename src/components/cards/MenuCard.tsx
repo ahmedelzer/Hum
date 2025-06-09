@@ -15,7 +15,7 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
     <View>
       <View className={`relative flex flex-row`}>
         <View className="w-1/2 justify-center items-end px-1">
-          <ImageCardActions fieldsType={fieldsType} item={item}>
+          {/* <ImageCardActions fieldsType={fieldsType} item={item}>
             <View
               pointerEvents="box-none"
               key={`${fieldsType.imageView}-${item[fieldsType.imageView]}`}
@@ -31,10 +31,10 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
             >
               <CardInteraction fieldsType={fieldsType} item={item} />
             </View>
-          </ImageCardActions>
+          </ImageCardActions> */}
 
           {/* Rating + Orders Row */}
-          <View
+          {/* <View
             className="flex-row justify-between items-center mt-1"
             style={{ width: "100%", paddingHorizontal: scale(10) }}
           >
@@ -52,7 +52,7 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
               size={18}
               style={{ marginHorizontal: scale(1), color: theme.accent }}
             />
-          </View>
+          </View> */}
         </View>
 
         <View className="w-1/2 px-1">
@@ -84,7 +84,7 @@ export const MenuCard = ({ item, fieldsType, schemaActions }) => {
                 </Text>
               )}
             </View>
-            <CardPriceDiscount fieldsType={fieldsType} item={item} />
+            {/* <CardPriceDiscount fieldsType={fieldsType} item={item} /> */}
 
             {fieldsType.cardAction && fieldsType.isAvailable && (
               <AddToCartPrimaryButton

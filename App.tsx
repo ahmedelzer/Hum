@@ -16,6 +16,8 @@ import { AuthProvider } from "./context/auth";
 import RootStack from "./src/navigators/RootStack";
 import { persistor, store } from "./src/store/reduxStore";
 import { theme } from "./src/Theme";
+import UserProviderLayer from "./context/UserProviderLayer";
+import { PreparingApp } from "./context/PreparingApp";
 // import UserProviderLayer from "./context/UserProviderLayer";
 
 const queryClient = new QueryClient();
@@ -40,19 +42,18 @@ export default function App() {
         >
           <QueryClientProvider client={queryClient}>
             <GluestackUIProvider>
-              {/* <PreparingApp> */}
-              <AuthProvider>
-                <SafeAreaView
-                  style={{
-                    flex: 1,
-                    // backgroundColor: "#000",
-                  }}
-                >
-                  {/* <UserProviderLayer></UserProviderLayer> */}
-                  <RootStack />
-                </SafeAreaView>
-              </AuthProvider>
-              {/* </PreparingApp> */}
+              <PreparingApp>
+                <AuthProvider>
+                  <SafeAreaView style={{ flex: 1 }}>
+                    <UserProviderLayer
+
+                    // selectedLocation={selectedLocation}
+                    //  selectedNode={selectedNode}
+                    />
+                    <RootStack />
+                  </SafeAreaView>
+                </AuthProvider>
+              </PreparingApp>
             </GluestackUIProvider>
           </QueryClientProvider>
         </PersistGate>

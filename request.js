@@ -42,16 +42,14 @@ export async function SetHeaders() {
   const languageRow = await AsyncStorage.getItem("languageRow");
   const languageRowObj =
     typeof languageRow === "string" ? JSON.parse(languageRow) : languageRow;
-  const savedLanguageName = await AsyncStorage.getItem("languageName");
+  const languageValue = String(languageRowObj?.[langField] ?? "Eng_US");
   const headers = {
-    languageName: encodeURIComponent(languageRowObj[langField]) || "",
+    languageName: encodeURIComponent(languageValue),
     "Content-Type": "application/json",
     token: await GetToken(),
-    ...languageRowObj,
-    // "Access-Control-Allow-Credentials": "true",
-    // "Access-Control-Allow-Origin": "*",
-    // languageID: savedLanguageID || "",
-    // languageID: AsyncStorage.getItem("languageID") || "",
+    ...(languageRowObj && Object.keys(languageRowObj).length > 0
+      ? languageRowObj
+      : {}),
   };
 
   // Remove any undefined or null properties

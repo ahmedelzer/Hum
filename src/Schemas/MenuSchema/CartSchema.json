@@ -1,7 +1,7 @@
 {
   "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
   "schemaType": "Service",
-  "idField": "cartItemID",
+  "idField": "customerCartItemID",
   "dashboardFormSchemaInfoDTOView": {
     "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
     "schemaHeader": "Menu Item",
@@ -14,9 +14,9 @@
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
       "isEnable": true,
       "parameterType": "cartItemID",
-      "parameterField": "cartItemID",
-      "parameterTitel": "cartItemID",
-      "parameterLookupTitel": "cartItemID",
+      "parameterField": "customerCartItemID",
+      "parameterTitel": "customerCartItemID",
+      "parameterLookupTitel": "customerCartItemID",
       "isIDField": true,
       "lookupID": null,
       "lookupReturnField": null,

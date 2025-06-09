@@ -3,7 +3,13 @@ import { WSOperation } from "./WSOperation";
 
 // WSMessageHandler.js
 export class WSMessageHandler {
-  constructor({ _WSsetMessage, fieldsType, rows, totalCount, callbackReducerUpdate }) {
+  constructor({
+    _WSsetMessage,
+    fieldsType,
+    rows,
+    totalCount,
+    callbackReducerUpdate,
+  }) {
     this._WSsetMessage = _WSsetMessage;
     this.fieldsType = fieldsType;
     this.rows = rows;
@@ -11,7 +17,7 @@ export class WSMessageHandler {
     this.callbackReducerUpdate = callbackReducerUpdate;
   }
 
-  async process() {
+  process() {
     if (!this._WSsetMessage) return;
 
     console.log("📩 WS message received, processing...");
@@ -33,11 +39,10 @@ export class WSMessageHandler {
       //console.log("✅ ws_updatedRows", ws_updatedRows);
 
       if (ws_updatedRows?.rows?.length > 0) {
-        await this.callbackReducerUpdate(ws_updatedRows);
+        this.callbackReducerUpdate(ws_updatedRows);
       }
     } catch (e) {
       console.error("❌ WS message processing failed", e);
     }
   }
 }
-

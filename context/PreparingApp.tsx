@@ -14,7 +14,6 @@ import reducer from "../src/components/Pagination/reducer";
 import { updateSelectedLocation, updateSelectedNode } from "../src/reducers/LocationReducer";
 import { WSMessageHandler } from "../src/utils/WS/handleWSMessage";
 import { ConnectToWS } from "../src/utils/WS/ConnectToWS";
-import { GetCard } from "../src/utils/operation/GetCard";
 
 // Define the shape of the WebSocket context
 interface WSContextType {
@@ -32,8 +31,6 @@ export const WSContext = createContext<WSContextType>({
 
 
 export const PreparingApp: React.FC<{ children: ReactNode }> = ({ children }) => {
-  
-  
   const dispatch = useDispatch();
 
   // Address Location state with reducer

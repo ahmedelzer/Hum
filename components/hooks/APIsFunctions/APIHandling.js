@@ -1,10 +1,9 @@
-import { GetProjectUrl, SetHeaders } from "../../../request";
-export default async function APIHandling(url, methodType, sendBody, query) {
+import {  SetHeaders } from "../../../request";
+export default async function APIHandling(url, methodType, sendBody) {
+
   var myHeaders = new Headers();
-  let urlRoute = GetProjectUrl() + "/" + url;
-  if (methodType == "Get") {
-    urlRoute = query;
-  }
+
+
   for (const [key, value] of Object.entries(await SetHeaders())) {
     myHeaders.append(key, value);
   }
@@ -19,11 +18,9 @@ export default async function APIHandling(url, methodType, sendBody, query) {
     redirect: "follow",
   };
   if (methodType !== "Get") requestOptions = { ...requestOptions, body: raw };
-  console.log("====================================");
-  console.log(requestOptions, urlRoute);
-  console.log("====================================");
   try {
-    const response = await fetch(urlRoute, requestOptions);
+
+    const response = await fetch(url, requestOptions);
     // Handle 204 No Content
     if (response.status === 204) {
       return {
@@ -35,6 +32,7 @@ export default async function APIHandling(url, methodType, sendBody, query) {
 
     // Check if the API call was successful based on the HTTP status code
     if (response.ok) {
+      
       const successResponse = {
         success: true,
         data: result,

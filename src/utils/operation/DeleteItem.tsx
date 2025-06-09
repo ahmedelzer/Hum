@@ -1,5 +1,6 @@
 import APIHandling from "../../../components/hooks/APIsFunctions/APIHandling";
-import { SetReoute } from "../../../request";
+import { GetProjectUrl, SetReoute } from "../../../request";
+
 
 export default async function DeleteItem(
   id,
@@ -10,13 +11,15 @@ export default async function DeleteItem(
   action,
   proxyRoute
 ) {
+  
   if (deleteWithApi) {
     SetReoute(proxyRoute);
     const deleteRequest = await APIHandling(
-      action.routeAdderss + "/" + id,
+      `${GetProjectUrl()}/${action.routeAdderss}/${id}`,
       action.dashboardFormActionMethodType,
       ""
     );
+    console.log("deleteRequest:",deleteRequest);
     if (deleteRequest.data && deleteRequest.success) {
       DeleteItemCallback();
     }

@@ -34,18 +34,14 @@ import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import { getField } from "../../utils/operation/getField";
 import { getItemPackage } from "./getItemPackage";
-import SkeletonWrapper from "../../utils/component/SkeletonLoading";
-import SkeletonLayout from "../cards/SkeletonLayout";
-import StarRatingInput from "../../utils/component/StarRatingInput";
-import { Text } from "react-native";
-import AnimatedStarRatingInput from "../../utils/component/StarRatingInput";
 const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ row, isRefreshed }: any) => {
   const navigation = useNavigation();
   const [reRequest, setReRequest] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [_WSsetMessage, setWSsetMessage] = useState("{}");
+  const [_WSMessageMenuItems, setWSMessageMenuItems] = useState("{}");
+  const [_WSMessageCart, setWSMessageCart] = useState("{}");
   const [WS_Connected, setWS_Connected] = useState(false);
   const previousRowRef = useRef({});
   const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
@@ -102,7 +98,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
 
     SetReoute(NodeMenuItemsSchema.projectProxyRoute);
 
-    ConnectToWS(setWSsetMessage, setWS_Connected)
+    ConnectToWS(setWSMessageMenuItems, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));
   }, [WS_Connected]);
@@ -121,21 +117,22 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
   // 📨 React to WebSocket messages only when valid
   useEffect(() => {
     if (!rows) return;
-    if (!_WSsetMessage) return;
+    if (!_WSMessageMenuItems) return;
     const _handleWSMessage = new WSMessageHandler({
-      _WSsetMessage,
+      _WSsetMessage: _WSMessageMenuItems,
       fieldsType,
       rows,
       totalCount,
       callbackReducerUpdate,
     });
     _handleWSMessage.process();
-  }, [_WSsetMessage]);
+    setWSMessageMenuItems(null);
+  }, [_WSMessageMenuItems]);
 
   ////cart
   const [cartState, cartReducerDispatch] = useReducer(
     reducer,
-    initialState(10, CartSchema.idField)
+    initialState(4000, CartSchema.idField)
   );
   const {
     rows: cartRows,
@@ -173,7 +170,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
 
     SetReoute(CartSchema.projectProxyRoute);
 
-    ConnectToWS(setWSsetMessage, setCartWS_Connected)
+    ConnectToWS(setWSMessageCart, setCartWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => console.error("❌ Cart WebSocket error", e));
   }, [cart_WS_Connected]);
@@ -192,18 +189,54 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
   // 📨 WebSocket message handler
   useEffect(() => {
     if (!cartState.rows) return;
-    if (!_WSsetMessage) return;
+    if (!_WSMessageCart) return;
 
     const handlerCartWSMessage = new WSMessageHandler({
-      _WSsetMessage, // match param name
+      _WSsetMessage: _WSMessageCart, // match param name
       fieldsType: cartFieldsType,
       rows: cartRows,
       totalCount: cartTotalCount,
       callbackReducerUpdate: cartCallbackReducerUpdate,
     });
     handlerCartWSMessage.process();
-  }, [_WSsetMessage, cartState.rows]);
+    setWSMessageCart(null);
+  }, [_WSMessageCart, cartState.rows]);
+  const cartDataSourceAPI = (query, skip, take) => {
+    SetReoute(CartSchema.projectProxyRoute);
+    return buildApiUrl(query, {
+      pageIndex: skip + 1,
+      pageSize: take,
+      // ...row,
+    });
+  };
+  const getCustomerCartAction =
+    CartSchemaActions &&
+    CartSchemaActions.find(
+      (action) => action.dashboardFormActionMethodType === "Get"
+    );
+  const reduxSelectedLocation = useSelector(
+    (state: any) => state.location?.selectedLocation
+  );
+  const reduxSelectedNode = useSelector(
+    (state: any) => state.location?.selectedNode
+  );
 
+  const [selectedLocation, setSelectedLocation] = useState(
+    reduxSelectedLocation || null
+  );
+  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
+
+  useEffect(() => {
+    SetReoute(CartSchema.projectProxyRoute);
+    prepareLoad({
+      state: cartState,
+      dataSourceAPI: cartDataSourceAPI,
+      getAction: getCustomerCartAction,
+      cache: createRowCache(4000),
+      reducerDispatch: cartReducerDispatch,
+    });
+    //console.log("cart.rows",cartState);
+  }, [selectedLocation, selectedNode]);
   useEffect(() => {
     if (!row) return;
 
@@ -254,7 +287,6 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
         ),
     });
   }, [selectedItems, navigation]);
-  const [rating, setRating] = useState(0);
 
   return (
     <ScrollView
@@ -285,40 +317,11 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
       ))}
 
       {loading && (
-        // <View style={{ padding: 20 }}>
-        //   <ActivityIndicator size="small" color="black" />
-        // </View>
-        <MenuItemSkeltonLoading loading={loading} />
+        <View style={{ padding: 20 }}>
+          <ActivityIndicator size="small" color="black" />
+        </View>
       )}
-
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <AnimatedStarRatingInput rating={rating} onChange={setRating} />
-        <Text style={{ textAlign: "center" }}>Rating: {rating}</Text>
-      </View>
     </ScrollView>
-  );
-};
-const MenuItemSkeltonLoading = ({ loading }) => {
-  // const Layout=()=>{
-  //   return <View>
-  //     <SkeletonLayout height={120} width="120" />
-  //   </View>
-  // }
-  return (
-    <SkeletonWrapper
-      isLoading={loading}
-      SkeletonComponent={SkeletonLayout}
-      skeletonProps={{
-        itemCount: 3,
-        width: "100%",
-        height: 200,
-        borderRadius: 10,
-        spacing: 10,
-        layout: "vertical",
-      }}
-    >
-      <View></View>
-    </SkeletonWrapper>
   );
 };
 

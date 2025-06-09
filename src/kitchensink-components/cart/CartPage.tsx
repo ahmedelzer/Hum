@@ -1,23 +1,45 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useReducer, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useState,
+} from "react";
+import {
+  I18nManager,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
-import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+// import { LocalizationContext } from "../../../context/LocalizationContext";
+import SuggestCard from "../../components/cards/SuggestCard";
+import GoBackHeader from "../../components/header/GoBackHeader";
+import CardCartItem from "./CardCartItem";
+import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 import { GetProjectUrl, SetReoute } from "../../../request";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import CustomerCartInfo from "./CustomerCartInfo";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
-import { createRowCache } from "../../components/Pagination/createRowCache";
-import { initialState } from "../../components/Pagination/initialState";
-import reducer from "../../components/Pagination/reducer";
-import GoBackHeader from "../../components/header/GoBackHeader";
+import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
 import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import InputWithAction from "../../utils/component/InputWithAction";
-import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
 import { getField } from "../../utils/operation/getField";
-import { prepareLoad } from "../../utils/operation/loadHelpers";
-import CardCartItem from "./CardCartItem";
-import InvoiceSummary from "./InvoiceSummary";
+import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
+import reducer from "../../components/Pagination/reducer";
+import { initialState } from "../../components/Pagination/initialState";
+import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
+import { updateRows } from "../../components/Pagination/updateRows";
 import OldCartButton from "./OldCartButton";
+import useWebSocketHandler from "../../utils/WS/useWebSocketHandler";
+import { prepareLoad } from "../../utils/operation/loadHelpers";
+import { createRowCache } from "../../components/Pagination/createRowCache";
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import InvoiceSummary from "./InvoiceSummary";
 import PaymentMethods from "./PaymentMethods";
 import PaymentOptions from "./PaymentOptions";
 
@@ -87,19 +109,19 @@ const CartPage = () => {
   };
 
   // 📨 WebSocket message handler
-  // useEffect(() => {
-  //   if (!cartState.rows ) return;
-  //   if (!_WSsetMessage) return;
+  useEffect(() => {
+    if (!cartState.rows) return;
+    if (!_WSsetMessage) return;
 
-  // const handlerCartWSMessage = new WSMessageHandler({
-  //     _WSsetMessage, // match param name
-  //     fieldsType: cartFieldsType,
-  //     rows: cartRows,
-  //     totalCount: cartTotalCount,
-  //     callbackReducerUpdate: cartCallbackReducerUpdate,
-  //   });
-  //  handlerCartWSMessage.process();
-  // }, [_WSsetMessage, cartState.rows]);
+    const handlerCartWSMessage = new WSMessageHandler({
+      _WSsetMessage, // match param name
+      fieldsType: cartFieldsType,
+      rows: cartRows,
+      totalCount: cartTotalCount,
+      callbackReducerUpdate: cartCallbackReducerUpdate,
+    });
+    handlerCartWSMessage.process();
+  }, [_WSsetMessage, cartState.rows]);
 
   const cartDataSourceAPI = (query, skip, take) => {
     SetReoute(CartSchema.projectProxyRoute);
@@ -193,46 +215,7 @@ const CartPage = () => {
   //     </View>
   //   </TouchableOpacity>
   // );
-  const initRows = [
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-  ];
+
   return (
     <View className="flex-1 bg-body">
       {/* Header */}
@@ -250,8 +233,8 @@ const CartPage = () => {
       {/* Scrollable Content */}
       <ScrollView className="flex-1 py-2">
         {/* Cart Items */}
-        {initRows.length > 0 ? (
-          initRows.map((item) => (
+        {cartState.rows.length > 0 ? (
+          cartState.rows.map((item) => (
             <View className="mb-1" key={item[cartFieldsType.idField]}>
               <CardCartItem
                 schemaActions={CartSchemaActions}
@@ -275,6 +258,8 @@ const CartPage = () => {
           </Text>
         </View>
         <SuggestCardContainer suggestContainerType={0} />
+
+        {/* Special Request */}
 
         {/* Voucher */}
         <View className="mt-4">
