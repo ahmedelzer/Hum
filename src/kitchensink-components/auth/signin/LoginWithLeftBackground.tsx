@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { jwtDecode } from "jwt-decode";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, TouchableOpacity } from "react-native";
+import { Keyboard, Platform, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import {
   Checkbox,
@@ -25,7 +25,7 @@ import { useAuth } from "../../../../context/auth";
 import { SetReoute } from "../../../../request";
 import loginFormSchema from "../../../Schemas/LoginSchema/LoginFormSchema.json";
 import schemaActions from "../../../Schemas/LoginSchema/LoginFormSchemaActions.json";
-import { saveSecureValue } from "../../../store/zustandStore";
+import { saveSecureValue } from "../../../store/secureStore";
 import LoadingButton from "../../../utils/component/LoadingButton";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 const ACTION_SCHEMA = [
@@ -90,20 +90,28 @@ export const LoginWithLeftBackground = () => {
       postAction,
       loginFormSchema.projectProxyRoute
     );
-
     if (apply && apply.success === true) {
       try {
         const decodedToken = jwtDecode(apply.data.token);
+        const expiresInSeconds = decodedToken.exp;
+        const expirationDate = new Date(expiresInSeconds * 1000);
         const user = {
           avatarUrl:
             "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
           ...decodedToken,
         };
         // if (rememberme) {//!must set rememberme in saveSecureValue and when open app agin if not rememberme will be dle token
-        await saveSecureValue("token", apply.data.token);
+        await saveSecureValue(
+          "token",
+          apply.data.token
+          // expirationDate.toUTCString()
+        );
         await saveSecureValue("rememberMe", rememberme ? "true" : "false");
         // }
-        setUser(user);
+        // setUser(user);
+        if (Platform.OS === "web") {
+          window.location.reload(); // Web reload
+        }
 
         // RNRestart.Restart();
         // DevSettings.reload();

@@ -41,7 +41,7 @@ export default function App() {
           persistor={persistor}
         >
           <QueryClientProvider client={queryClient}>
-            <GluestackUIProvider>
+            <GluestackUIProvider mode="light">
               <PreparingApp>
                 <AuthProvider>
                   <SafeAreaView style={{ flex: 1 }}>

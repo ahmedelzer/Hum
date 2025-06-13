@@ -1,5 +1,5 @@
 import React from "react";
-import { DevSettings } from "react-native";
+import { DevSettings, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import {
   AlertDialog,
@@ -17,12 +17,15 @@ import {
   Text,
 } from "../../components/ui";
 import { persistor } from "../store/reduxStore";
-import { deleteKey } from "../store/zustandStore";
+import { deleteKey } from "../store/secureStore";
+import { useNavigation } from "@react-navigation/native";
 
 const LogoutAlertDialog = ({
   openLogoutAlertDialog,
   setOpenLogoutAlertDialog,
 }: any) => {
+  const navigation = useNavigation();
+
   const localization = useSelector((state) => state.localization.localization);
 
   const handleClose = () => {
@@ -30,8 +33,14 @@ const LogoutAlertDialog = ({
   };
   const handleLogout = async () => {
     await deleteKey("token");
+    await deleteKey("rememberMe");
     persistor.purge();
-    DevSettings.reload();
+    if (Platform.OS === "web") {
+      // navigation.navigate("Home");
+      window.location.reload(); // Web reload
+    } else {
+      DevSettings.reload();
+    }
   };
 
   return (

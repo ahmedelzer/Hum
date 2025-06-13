@@ -5,8 +5,8 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { deleteKey, retrieveSecureValue } from "../src/store/zustandStore";
-import { DevSettings } from "react-native";
+import { deleteKey, retrieveSecureValue } from "../src/store/secureStore";
+import { DevSettings, Platform } from "react-native";
 import { useDeviceInfo } from "../src/utils/component/useDeviceInfo";
 import { jwtDecode } from "jwt-decode";
 import { checkOnboarding } from "../src/utils/operation/checkOnboarding";
@@ -16,7 +16,7 @@ function AuthProvider(props) {
   const [notifications, setNotifications] = useState([]);
   const [hasOnboarded, setHasOnboarded] = useState<null | boolean>(false);
   const { os } = useDeviceInfo();
-  const [userGust, setUserGust] = useState(os == "web" ? true : false); //TODO:make sure type of  user
+  const [userGust, setUserGust] = useState(false); //TODO:make sure type of  user
 
   useEffect(() => {
     (async function () {
@@ -24,7 +24,7 @@ function AuthProvider(props) {
       const remember = await retrieveSecureValue("rememberMe");
       const onboarded = await checkOnboarding();
       setHasOnboarded(onboarded);
-      if (remember !== "true") {
+      if (remember !== "true" && Platform.OS !== "web") {
         // either "false" or missing → wipe out the token
         await deleteKey("token");
         await deleteKey("rememberMe");
@@ -37,6 +37,8 @@ function AuthProvider(props) {
             ...decodedToken,
           };
           setUser(user);
+        } else if (Platform.OS === "web") {
+          setUserGust(true);
         }
       }
       setLoading(false);

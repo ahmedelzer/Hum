@@ -2,6 +2,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { TouchableOpacity } from "react-native";
+import LanguageSelector from "../language/LanguageSelector";
 const categoryNavMobileStyles = {
   container: "w-full h-full bg-card p-8",
   closeButtonWrapper: "flex justify-end mb-8 cursor-pointer",
@@ -48,7 +49,7 @@ const CategoryNavMobile = ({ setCatNavMobile }) => {
         ))}
         <div>
           <label className="uppercase mb-1 !font-primary">Language</label>
-          {/* <LanguageSelector /> */}
+          <LanguageSelector />
         </div>
       </div>
     </div>

@@ -34,6 +34,7 @@ import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import { getField } from "../../utils/operation/getField";
 import { getItemPackage } from "./getItemPackage";
+import { SetResponsiveContainer } from "../../utils/component/SetResponsiveContainer";
 const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ row, isRefreshed }: any) => {
@@ -283,7 +284,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
             setSelectedItems={setSelectedItems}
           />
         ) : (
-          <HeaderParent />
+          SetResponsiveContainer(<HeaderParent />, false)
         ),
     });
   }, [selectedItems, navigation]);

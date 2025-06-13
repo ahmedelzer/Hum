@@ -1,17 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import MapView, {
-  Callout,
-  Marker,
-  PROVIDER_GOOGLE,
-  UrlTile,
-} from "react-native-maps";
-import { StyleSheet, Text, View } from "react-native";
-import { CollapsibleSection } from "../../../utils/component/Collapsible";
 import { Entypo } from "@expo/vector-icons";
-import { Input, InputField } from "../../../../components/ui";
+import React, { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
-import LocationMap from "../../maps/LocationMap";
+import { Platform, View } from "react-native";
 import { useSelector } from "react-redux";
+import { CollapsibleSection } from "../../../utils/component/Collapsible";
+import LocationMap from "../../maps/LocationMap";
+import LocationMapWeb from "../../maps/LocationMap.web";
 const INITIAL_REGION = {
   latitude: 37.33,
   longitude: -122,
@@ -43,13 +37,23 @@ export default function LocationParameter({ ...props }) {
         toggleSection={toggleSection}
         setheader={true}
       >
-        <LocationMap
-          location={location}
-          onLocationChange={handleLocationChange}
-          clickable={true}
-          fields={props.formSchemaParameters}
-          haveRadius={props.type === "areaMapLongitudePoint"}
-        />
+        {Platform.OS == "web" ? (
+          <LocationMapWeb
+            location={location}
+            onLocationChange={handleLocationChange}
+            clickable={true}
+            fields={props.formSchemaParameters}
+            haveRadius={props.type === "areaMapLongitudePoint"}
+          />
+        ) : (
+          <LocationMap
+            location={location}
+            onLocationChange={handleLocationChange}
+            clickable={true}
+            fields={props.formSchemaParameters}
+            haveRadius={props.type === "areaMapLongitudePoint"}
+          />
+        )}
       </CollapsibleSection>
       {props.formSchemaParameters
         .filter(

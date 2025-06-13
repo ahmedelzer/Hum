@@ -1,8 +1,6 @@
-import {  SetHeaders } from "../../../request";
+import { SetHeaders } from "../../../request";
 export default async function APIHandling(url, methodType, sendBody) {
-
   var myHeaders = new Headers();
-
 
   for (const [key, value] of Object.entries(await SetHeaders())) {
     myHeaders.append(key, value);
@@ -19,7 +17,6 @@ export default async function APIHandling(url, methodType, sendBody) {
   };
   if (methodType !== "Get") requestOptions = { ...requestOptions, body: raw };
   try {
-
     const response = await fetch(url, requestOptions);
     // Handle 204 No Content
     if (response.status === 204) {
@@ -32,7 +29,6 @@ export default async function APIHandling(url, methodType, sendBody) {
 
     // Check if the API call was successful based on the HTTP status code
     if (response.ok) {
-      
       const successResponse = {
         success: true,
         data: result,

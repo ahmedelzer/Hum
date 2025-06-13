@@ -1,36 +1,25 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { I18nManager, View } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { I18nManager, Platform, View } from "react-native";
 import RNRestart from "react-native-restart";
 
-import {
-  Select,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectDragIndicatorWrapper,
-  SelectInput,
-  SelectItem,
-  SelectPortal,
-  SelectTrigger,
-} from "../../../components/ui";
-
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 import UseFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
-import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import staticLocalization from "../../../context/staticLocalization.json";
 import { GetProjectUrl, SetReoute } from "../../../request";
 
-import schemaLanguages from "../../Schemas/LanguageSchema/LanguageSchema.json";
-import LanguageSchemaActions from "../../Schemas/LanguageSchema/LanguageSchemaActions.json";
-import LocalizationSchemaActions from "../../Schemas/Localization/LocalizationSchemaActions.json";
 import {
   setLanguageRow,
   setLocalization,
 } from "../../reducers/localizationReducer";
+import schemaLanguages from "../../Schemas/LanguageSchema/LanguageSchema.json";
+import LanguageSchemaActions from "../../Schemas/LanguageSchema/LanguageSchemaActions.json";
+import LocalizationSchemaActions from "../../Schemas/Localization/LocalizationSchemaActions.json";
+import SelectComponent from "../../utils/component/SelectComponent";
 import { DeepMerge } from "./DeepMerge";
 const LanguageSelector = () => {
   const dispatch = useDispatch();
@@ -84,8 +73,12 @@ const LanguageSelector = () => {
     if (language) {
       if (language[direction] !== I18nManager.isRTL) {
         AsyncStorage.setItem("isRTL", language[direction].toString());
-        I18nManager.forceRTL(language[direction]);
-        RNRestart.Restart();
+        if (Platform.OS === "web") {
+          window.document.dir = language[direction] ? "rtl" : "ltr";
+        } else {
+          I18nManager.forceRTL(language[direction]);
+          RNRestart.Restart();
+        }
       }
     }
   }
@@ -117,44 +110,24 @@ const LanguageSelector = () => {
       );
     }
   }, [localization]);
-
   return (
     <View className="mx-2">
-      <Select
-        value={languageRow[languageName]}
-        onValueChange={changeLanguage}
-        className="flex-1"
-      >
-        <SelectTrigger
-          variant="unstyled"
-          size="sm"
-          className="flex-1 flex-row items-center justify-between h-11 px-3 bg-transparent border border-border rounded-md"
-        >
-          <SelectInput
-            placeholder="Select option"
-            value={languageRow[languageName]}
-            className="text-base text-text"
-          />
+      <SelectComponent
+        idField={schemaLanguages.idField}
+        labelField={languageName}
+        mapData={data?.dataSource}
+        onValueChange={(shortName) => {
+          const lang = data?.dataSource?.find(
+            (item) => item[languageName] === shortName
+          );
+          changeLanguage(lang);
+        }}
+        selectedValue={languageRow[languageName]}
+        valueField={languageName}
+        IconComponent={
           <FontAwesome name="edit" size={18} className="text-text ms-2" />
-        </SelectTrigger>
-
-        <SelectPortal>
-          <SelectBackdrop />
-          <SelectContent>
-            <SelectDragIndicatorWrapper>
-              <SelectDragIndicator />
-            </SelectDragIndicatorWrapper>
-
-            {data?.dataSource?.map((language) => (
-              <SelectItem
-                key={language[schemaLanguages.idField]}
-                label={language[languageName]}
-                value={language}
-              />
-            ))}
-          </SelectContent>
-        </SelectPortal>
-      </Select>
+        }
+      />
     </View>
   );
 };

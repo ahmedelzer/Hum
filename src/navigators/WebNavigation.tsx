@@ -102,30 +102,60 @@ const MargeStackWithTabs = (item) => {
     </Stack.Navigator>
   );
 };
-
 const WebNavigator = () => {
   return (
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-      }}
-      screenLayout={({ children }) => (
-        <Suspense
-          fallback={<LoadingScreen LoadingComponent={<Chase size={40} />} />}
-        >
-          {children}
-        </Suspense>
-      )}
-    >
-      {/* Generate screens dynamically from dummyArr */}
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/* Dynamically render content-based routes */}
       {dummyArr.map((item) => (
         <Stack.Screen
-          key={item.dashboardItemID}
+          key={item.routePath}
           name={item.routePath}
-          component={() => MargeStackWithTabs(item)}
+          options={{
+            headerShown: item.routePath !== "Profile",
+            headerTitle: () =>
+              item.routePath !== "Profile"
+                ? SetResponsiveContainer(<HeaderParent />, false)
+                : undefined,
+          }}
+          component={(props) => (
+            <RenderItemsView
+              {...props}
+              dashboardItemId={item.dashboardItemID}
+              routePath={item.routePath}
+            />
+          )}
         />
       ))}
+
+      {/* Static route screens */}
+      <Stack.Screen
+        name="Cart"
+        component={(props) =>
+          SetResponsiveContainer(<CartPage {...props} />, true)
+        }
+      />
+      <Stack.Screen
+        name="MenuFilter"
+        component={(props) =>
+          SetResponsiveContainer(<MenuFilter {...props} />, true)
+        }
+      />
+      <Stack.Screen name="DetailsProductScreen" component={DetailsScreen} />
+      <Stack.Screen
+        name="CheckoutScreen"
+        component={(props) =>
+          SetResponsiveContainer(<CheckoutScreen {...props} />, true)
+        }
+      />
+      <Stack.Screen
+        name="NotificationScreen"
+        component={(props) =>
+          SetResponsiveContainer(<NotificationScreen {...props} />, true)
+        }
+      />
+      <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen name="ForgetPassword" component={ForgotPassword} />
     </Stack.Navigator>
   );
 };

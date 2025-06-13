@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { I18nManager } from "react-native";
+import { I18nManager, Platform } from "react-native";
 import staticLocalization from "../../context/staticLocalization.json";
 
 // Async thunk to initialize localization state from storage
@@ -12,10 +12,12 @@ export const initializeLocalization = createAsyncThunk(
       const savedLocalization = await AsyncStorage.getItem("localization");
       const savedLanguageRow = await AsyncStorage.getItem("languageRow");
       const savedLanguageID = await AsyncStorage.getItem("languageID");
-
       // Apply RTL setting if needed
       if (savedDirection !== null) {
         const direction = savedDirection === "true";
+        if (Platform.OS === "web") {
+          window.document.dir = direction ? "rtl" : "ltr";
+        }
         if (I18nManager.isRTL !== direction) {
           I18nManager.forceRTL(direction);
         }

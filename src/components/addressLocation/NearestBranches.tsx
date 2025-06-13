@@ -1,29 +1,15 @@
-import { AntDesign } from "@expo/vector-icons";
 import { default as React, useEffect, useReducer, useState } from "react";
-import { Text, View } from "react-native";
-import { Chase } from "react-native-animated-spinkit";
+import { View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import {
-  Select,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectDragIndicatorWrapper,
-  SelectIcon,
-  SelectInput,
-  SelectItem,
-  SelectPortal,
-  SelectTrigger,
-} from "../../../components/ui";
 import { SetReoute } from "../../../request";
-import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
 import {
   selectSelectedNode,
   updateSelectedNode,
 } from "../../reducers/LocationReducer";
 import NearestBranchesSchema from "../../Schemas/AddressLocation/NearestBranches.json";
 import NearestBranchesActions from "../../Schemas/AddressLocation/NearestBranchesActions.json";
+import SelectComponent from "../../utils/component/SelectComponent";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
 import { createRowCache } from "../Pagination/createRowCache";
 import { getRemoteRows } from "../Pagination/getRemoteRows";
@@ -93,49 +79,17 @@ export default function NearestBranches() {
   }, [loading, selectedTab]);
   return (
     <View className="flex flex-row items-center mt-3">
-      <Select
-        value={selectedLocation[displayLookupParam.lookupDisplayField]} // only the id is passed around
+      <SelectComponent
+        idField={idField}
+        labelField={displayLookupParam.lookupDisplayField}
+        mapData={rows}
         onValueChange={(selected) => {
           dispatch(updateSelectedNode(selected)); // store full object
         }}
-        className="flex-1 mx-2"
-      >
-        <SelectTrigger
-          variant="outline"
-          size="sm"
-          className="flex-1 justify-between h-11"
-        >
-          <SelectInput
-            value={node?.[displayLookupParam.lookupDisplayField] ?? ""}
-            placeholder="Select option"
-            className="text-base text-text"
-          />
-          <SelectIcon as={AntDesign} name="down" className="mr-3 text-text" />
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectBackdrop />
-          <SelectContent>
-            <SelectDragIndicatorWrapper>
-              <SelectDragIndicator />
-            </SelectDragIndicatorWrapper>
-            {loading && (
-              <LoadingScreen LoadingComponent={<Chase size={40} />} />
-            )}
-            {rows?.length === 0 && !loading && (
-              <Text className="text-center justify-center items-center flex-1 mt-4">
-                {localization.Hum_screens.menu.noItems}
-              </Text>
-            )}
-            {rows.map((location) => (
-              <SelectItem
-                label={location[displayLookupParam.lookupDisplayField]}
-                value={location}
-                key={location[idField]}
-              />
-            ))}
-          </SelectContent>
-        </SelectPortal>
-      </Select>
+        selectedValue={node?.[displayLookupParam.lookupDisplayField]}
+        valueField=""
+        loading={loading}
+      />
     </View>
   );
 }

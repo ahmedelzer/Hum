@@ -26,14 +26,16 @@ export function TabsHeader() {
               routes: [{ name: tab.name }], // This prevents back navigation
             });
           }}
-          className={`flex flex-row items-center px-4 py-2 rounded-lg transition-all ${
-            activeTab === tab.name ? "bg-accent text-body" : "bg-transparent"
+          className={`flex flex-row items-center px-4 py-2 rounded-lg transition-all duration-1000 ${
+            activeTab === tab.name
+              ? "bg-accent text-body"
+              : "bg-transparent text-muted hover:bg-accent hover:text-body"
           }`}
         >
           <MaterialIcons
             name={tab.icon}
             size={22}
-            className={`mr-2 ${
+            className={`me-2 ${
               activeTab === tab.name ? "text-body" : "text-primary-custom"
             }`}
           />

@@ -3,20 +3,9 @@
 4-clear logs and un useable files
 5-on delete operation remove item if in items but in cart hint the customer is out of stock
 6-clean the files unnecessary code  
-/////
-8-run WS in different datascource
-12-run profile 
-18-resend
-19-RTL direction and fit it with languages
-
+//web tasks
+1-make map work 
+2-
 //suggests
 in login 
 can users in web show the content like a gust in mobile
-
-//////
-some features
-1-make skeleton loading
-
-/////
-addition questions
-1-are the schema of menu is the same of the cart in price and the

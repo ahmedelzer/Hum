@@ -1,7 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LanguageSchema from "./src/Schemas/LanguageSchema/LanguageSchema.json";
-import { retrieveSecureValue } from "./src/store/zustandStore";
+import { retrieveSecureValue } from "./src/store/secureStore";
 import { getField } from "./src/utils/operation/getField";
 export const baseURL = "https://maingatewayapi.ihs-solutions.com:8000";
 export const defaultProjectProxyRoute =
@@ -48,7 +48,12 @@ export async function SetHeaders() {
     "Content-Type": "application/json",
     token: await GetToken(),
     ...(languageRowObj && Object.keys(languageRowObj).length > 0
-      ? languageRowObj
+      ? Object.fromEntries(
+          Object.entries(languageRowObj).map(([k, v]) => [
+            k,
+            String(encodeURIComponent(v)),
+          ])
+        )
       : {}),
   };
 

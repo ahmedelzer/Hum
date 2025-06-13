@@ -1,26 +1,13 @@
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Text, TouchableOpacity, View } from "react-native";
-import { Chase } from "react-native-animated-spinkit";
+import { TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Select,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectDragIndicatorWrapper,
-  SelectIcon,
-  SelectInput,
-  SelectItem,
-  SelectPortal,
-  SelectTrigger,
-} from "../../../components/ui";
 import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
 import AddressLocationAction from "../../Schemas/AddressLocation/AddressLocationAction.json";
-import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
 import { updateSelectedLocation } from "../../reducers/LocationReducer";
 import PopupModal from "../../utils/component/PopupModal";
+import SelectComponent from "../../utils/component/SelectComponent";
 import { handleSubmitWithCallback } from "../../utils/operation/handleSubmitWithCallback";
 
 export default function AddLocation({
@@ -92,58 +79,26 @@ export default function AddLocation({
         errors={reqError || errors}
         disable={disable}
       />
-      <View className="flex flex-row items-center space-x-3">
+      <View className="flex flex-row items-center">
         <TouchableOpacity
-          className="p-2 w-fit rounded-lg bg-accent items-center justify-center"
+          className="p-2 w-fit rounded-lg bg-accent items-center justify-center me-2"
           onPress={() => setIsModalVisible(true)}
         >
           <Entypo name="plus" size={20} className="!text-body" />
         </TouchableOpacity>
-        <Select
-          value={selectedLocation[displayLookupParam.lookupDisplayField]} // only the id is passed around
+        <SelectComponent
+          idField={idField}
+          labelField={displayLookupParam.lookupDisplayField}
+          mapData={rows}
           onValueChange={(selected) => {
             dispatch(updateSelectedLocation(selected)); // store full object
           }}
-          className="flex-1 mx-2"
-        >
-          <SelectTrigger
-            variant="outline"
-            size="sm"
-            className="flex-1 justify-between h-11"
-          >
-            <SelectInput
-              placeholder="Select option"
-              value={
-                selectedLocation?.[displayLookupParam.lookupDisplayField] ?? ""
-              }
-              className="text-base text-text"
-            />
-            <SelectIcon as={AntDesign} name="down" className="mr-3 text-text" />
-          </SelectTrigger>
-          <SelectPortal>
-            <SelectBackdrop />
-            <SelectContent>
-              <SelectDragIndicatorWrapper>
-                <SelectDragIndicator />
-              </SelectDragIndicatorWrapper>
-              {loading && (
-                <LoadingScreen LoadingComponent={<Chase size={40} />} />
-              )}
-              {rows?.length === 0 && !loading && (
-                <Text className="text-center justify-center items-center flex-1 mt-4">
-                  {localization.Hum_screens.menu.noItems}
-                </Text>
-              )}
-              {rows.map((location) => (
-                <SelectItem
-                  label={location[displayLookupParam.lookupDisplayField]}
-                  value={location}
-                  key={location[idField]}
-                />
-              ))}
-            </SelectContent>
-          </SelectPortal>
-        </Select>
+          selectedValue={
+            selectedLocation[displayLookupParam.lookupDisplayField]
+          }
+          valueField=""
+          loading={loading}
+        />
       </View>
     </View>
   );

@@ -1,7 +1,13 @@
-import React, { createContext, useState, ReactNode, useEffect, useReducer } from "react";
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useReducer,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SetReoute } from "../request";
-import NodeMenuItemsSchema from "../src/Schemas/MenuSchema/NodeMenuItemsSchema.json"
+import NodeMenuItemsSchema from "../src/Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import { prepareLoad } from "../src/utils/operation/loadHelpers";
 import AddressLocationAction from "../src/Schemas/AddressLocation/AddressLocationAction.json";
 import AddressLocationSchema from "../src/Schemas/AddressLocation/AddressLocation.json";
@@ -11,9 +17,13 @@ import { initialState } from "../src/components/Pagination/initialState";
 import { buildApiUrl } from "../components/hooks/APIsFunctions/BuildApiUrl";
 import { createRowCache } from "../src/components/Pagination/createRowCache";
 import reducer from "../src/components/Pagination/reducer";
-import { updateSelectedLocation, updateSelectedNode } from "../src/reducers/LocationReducer";
+import {
+  updateSelectedLocation,
+  updateSelectedNode,
+} from "../src/reducers/LocationReducer";
 import { WSMessageHandler } from "../src/utils/WS/handleWSMessage";
 import { ConnectToWS } from "../src/utils/WS/ConnectToWS";
+import { initializeLocalization } from "../src/reducers/localizationReducer";
 
 // Define the shape of the WebSocket context
 interface WSContextType {
@@ -29,8 +39,9 @@ export const WSContext = createContext<WSContextType>({
 
 // WebSocket Context Provider
 
-
-export const PreparingApp: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const PreparingApp: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const dispatch = useDispatch();
 
   // Address Location state with reducer
@@ -47,11 +58,19 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({ children }) =>
   const rows = useSelector((state: any) => state.menuItem.rows);
   const totalCount = useSelector((state: any) => state.menuItem.totalCount);
   const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
-  const reduxSelectedLocation = useSelector((state: any) => state.location?.selectedLocation);
-  const reduxSelectedNode = useSelector((state: any) => state.location?.selectedNode);
+  const reduxSelectedLocation = useSelector(
+    (state: any) => state.location?.selectedLocation
+  );
+  const reduxSelectedNode = useSelector(
+    (state: any) => state.location?.selectedNode
+  );
 
   // Address location API
-  const addressLocationDataSourceAPI = (query: any, skip: number, take: number) => {
+  const addressLocationDataSourceAPI = (
+    query: any,
+    skip: number,
+    take: number
+  ) => {
     SetReoute(AddressLocationSchema.projectProxyRoute); // Make sure SetReoute is defined
     return buildApiUrl(query, {
       pageIndex: skip + 1,
@@ -61,11 +80,13 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addressLocationCache = createRowCache(VIRTUAL_PAGE_SIZE);
   const addressLocationGetAction = AddressLocationAction?.find(
-    (action) => action.dashboardFormActionMethodType === 'Get'
+    (action) => action.dashboardFormActionMethodType === "Get"
   );
 
   // Local state for selected location
-  const [selectedLocation, setSelectedLocation] = useState(reduxSelectedLocation || null);
+  const [selectedLocation, setSelectedLocation] = useState(
+    reduxSelectedLocation || null
+  );
 
   // Load Address Location on getAction ready
   useEffect(() => {
@@ -90,7 +111,7 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({ children }) =>
     reducer,
     initialState(10, NearestBranchesSchema.idField)
   );
-const [nodeMenuItemState, nodeMenuItemReducerDispatch] = useReducer(
+  const [nodeMenuItemState, nodeMenuItemReducerDispatch] = useReducer(
     reducer,
     initialState(10, NodeMenuItemsSchema.idField)
   );
@@ -105,42 +126,42 @@ const [nodeMenuItemState, nodeMenuItemReducerDispatch] = useReducer(
 
   const nodeCache = createRowCache(VIRTUAL_PAGE_SIZE);
   const nodeGetAction = NearestBranchesActions?.find(
-    (action) => action.dashboardFormActionMethodType === 'Get'
+    (action) => action.dashboardFormActionMethodType === "Get"
   );
 
   // Local state for selected node
   const [selectedNode, setSelectedNode] = useState(reduxSelectedNode);
 
   // Load Nearest Branches when location is selected and nodeGetAction is ready
- useEffect(() => {
-  if (!selectedLocation || !nodeGetAction) return;
+  useEffect(() => {
+    if (!selectedLocation || !nodeGetAction) return;
 
-  prepareLoad({
-    state: nodeState,
-    dataSourceAPI: nodeDataSourceAPI,
-    getAction: nodeGetAction,
-    cache: nodeCache,
-    reducerDispatch: nodeReducerDispatch,
-  });
+    prepareLoad({
+      state: nodeState,
+      dataSourceAPI: nodeDataSourceAPI,
+      getAction: nodeGetAction,
+      cache: nodeCache,
+      reducerDispatch: nodeReducerDispatch,
+    });
 
-  if (nodeState.rows.length > 0) {
-    const firstNode = nodeState.rows[0];
-    dispatch(updateSelectedNode(firstNode));
-    setSelectedNode(firstNode);
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [selectedLocation, nodeGetAction]);
+    if (nodeState.rows.length > 0) {
+      const firstNode = nodeState.rows[0];
+      dispatch(updateSelectedNode(firstNode));
+      setSelectedNode(firstNode);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLocation, nodeGetAction]);
 
-// 🔌 WebSocket handler effect on selectedNode change
-useEffect(() => {
-  if (!selectedNode || WS_Connected) return;
+  // 🔌 WebSocket handler effect on selectedNode change
+  useEffect(() => {
+    if (!selectedNode || WS_Connected) return;
 
-  SetReoute(NodeMenuItemsSchema.projectProxyRoute);
+    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
 
-  ConnectToWS(setWSsetMessage, setWS_Connected)
-    .then(() => console.log("🔌 WebSocket setup done"))
-    .catch((e) => console.error("❌ WebSocket setup error", e));
-}, [selectedNode, WS_Connected]);
+    ConnectToWS(setWSsetMessage, setWS_Connected)
+      .then(() => console.log("🔌 WebSocket setup done"))
+      .catch((e) => console.error("❌ WebSocket setup error", e));
+  }, [selectedNode, WS_Connected]);
   const callbackReducerUpdate = async (ws_updatedRows) => {
     await nodeMenuItemReducerDispatch({
       type: "WS_OPE_ROW",
@@ -150,10 +171,10 @@ useEffect(() => {
       },
     });
   };
-  
+
   useEffect(() => {
     if (nodeMenuItemState.rows.length > 0) {
-      const _handleWSMessage =new WSMessageHandler({
+      const _handleWSMessage = new WSMessageHandler({
         _WSsetMessage,
         fieldsType,
         rows,
@@ -163,14 +184,17 @@ useEffect(() => {
       _handleWSMessage.process();
     }
   }, [_WSsetMessage]);
+  useEffect(() => {
+    dispatch(initializeLocalization());
+  }, []);
 
-    // If useWebSocketHandler returns cleanup function (unsubscribe), call it on unmount
+  // If useWebSocketHandler returns cleanup function (unsubscribe), call it on unmount
 
   return (
-    <WSContext.Provider value={{ notifications: [], setNotifications: () => {} }}>
+    <WSContext.Provider
+      value={{ notifications: [], setNotifications: () => {} }}
+    >
       {children}
     </WSContext.Provider>
   );
 };
-
-

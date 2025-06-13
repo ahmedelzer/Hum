@@ -41,17 +41,6 @@ const HomeCarousel = () => {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.body }}>
-      <View
-        style={{
-          // backgroundColor: theme.card,
-          // padding: 16,
-          marginTop: 0,
-          borderBottomWidth: 1,
-          borderBottomColor: theme.border,
-        }}
-      >
-        <AddressLocationCollapsible />
-      </View>
       <View style={{ flex: 1, paddingBottom: 20 }}>
         {/* Header Section */}
 

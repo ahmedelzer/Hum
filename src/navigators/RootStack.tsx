@@ -29,25 +29,28 @@ export type RootStackParamList = {
 ``;
 //todo: make with pixel rexio padding or margin top with  platforms
 const linking = {
-  prefixes: ["http://localhost:19006", "https://your-app.web.app"],
+  prefixes: ["http://localhost:3000", "https://your-app.web.app"],
   config: {
     screens: {
       Home: "",
-      Profile: "profile/:userId",
-      Settings: "settings",
+      Profile: "profile/:userId", // ensure `userId` is passed
+      Cart: "cart",
+      MenuView: "menu",
+      SignIn: "signin",
+      SignUp: "signup",
+      ForgetPassword: "forget-password",
+      NotificationScreen: "notifications",
+      CheckoutScreen: "checkout",
+      DetailsProductScreen: "product/:id", // if using dynamic products
     },
   },
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
 const RootStack: FC = (props: any) => {
-  const { user, hasOnboarded, loading } = useAuth();
-  const { os } = useDeviceInfo();
-
   return (
     <NavigationContainer linking={linking}>
       {RequiredScreens()}
-      {/* <WebNavigation /> */}
       {/* <OutsideStack /> */}
       {/* todo make here anther component for web  */}
       {/* {os === "web" ? <WebNavigation /> : <BottomBarTabs />} */}
