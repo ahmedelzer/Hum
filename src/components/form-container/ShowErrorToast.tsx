@@ -1,42 +1,40 @@
-import React, { useState } from "react";
+// utils/useErrorToast.ts
 import {
-  Button,
-  ButtonText,
   Toast,
   ToastDescription,
   ToastTitle,
   useToast,
 } from "../../../components/ui";
+import { useRef } from "react";
 
-export function ShowErrorToast(title, description) {
+export function useErrorToast() {
   const toast = useToast();
-  const [toastId, setToastId] = useState(0);
-  const handleToast = () => {
-    if (!toast.isActive(toastId)) {
-      showNewToast();
-    }
-  };
-  const showNewToast = () => {
-    const newId = Math.random();
-    setToastId(newId);
+  const lastMessageRef = useRef<string | null>(null);
+
+  const showErrorToast = (
+    title: string,
+    description: string,
+    action = "error",
+    variant = "solid"
+  ) => {
+    // Prevent duplicate message
+    if (lastMessageRef.current === description) return;
+
+    lastMessageRef.current = description;
+
+    const toastId = Math.random().toString();
     toast.show({
-      id: newId,
+      id: toastId,
       placement: "top",
       duration: 3000,
-      render: ({ id }) => {
-        const uniqueToastId = "toast-" + id;
-        return (
-          <Toast nativeID={uniqueToastId} action="error" variant="solid">
-            <ToastTitle>{title}</ToastTitle>
-            <ToastDescription>{description}</ToastDescription>
-          </Toast>
-        );
-      },
+      render: ({ id }) => (
+        <Toast nativeID={`toast-${id}`} action={action} variant={variant}>
+          <ToastTitle>{title}</ToastTitle>
+          <ToastDescription>{description}</ToastDescription>
+        </Toast>
+      ),
     });
   };
-  return (
-    <Button onPress={handleToast}>
-      <ButtonText>Press Me</ButtonText>
-    </Button>
-  );
+
+  return { showErrorToast };
 }

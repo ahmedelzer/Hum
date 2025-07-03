@@ -3,7 +3,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
 import { useSelector } from "react-redux";
 import searchBarSchema from "../../Schemas/MenuSchema/searchBarSchema.json";
-//!localization
+
 const Searchbar = ({ schema, row, setRow }) => {
   const localization = useSelector((state) => state.localization.localization);
   const firstPram = searchBarSchema.dashboardFormSchemaParameters[0];

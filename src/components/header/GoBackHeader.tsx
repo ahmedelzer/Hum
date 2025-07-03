@@ -1,7 +1,14 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { I18nManager, Text, TouchableOpacity, View } from "react-native";
+import {
+  I18nManager,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { isRTL } from "../../utils/operation/isRTL";
 
 export default function GoBackHeader({
   title,
@@ -12,7 +19,18 @@ export default function GoBackHeader({
   const navigation = useNavigation();
   const goBack = () => {
     if (!specialAction) {
-      navigation.goBack();
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      } else {
+        if (Platform.OS === "web") {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          });
+        } else {
+          navigation.navigate("Home");
+        }
+      }
     } else {
       specialAction();
     }
@@ -25,7 +43,7 @@ export default function GoBackHeader({
     >
       <TouchableOpacity onPress={goBack} className="p-2">
         <AntDesign
-          name={I18nManager.isRTL ? "arrowright" : "arrowleft"}
+          name={isRTL() ? "arrowright" : "arrowleft"}
           size={24}
           color="black"
         />
@@ -35,9 +53,7 @@ export default function GoBackHeader({
         {subTitle && <Text className="text-sm text-text">{subTitle}</Text>}
       </View>
       <View
-        className={
-          "absolute top-1 " + `${I18nManager.isRTL ? "right-5" : "right-5"}`
-        }
+        className={"absolute top-1 " + `${isRTL() ? "!left-5" : "!right-5"}`}
       >
         {rightComponent ? rightComponent : <View style={{ width: 24 }} />}
       </View>

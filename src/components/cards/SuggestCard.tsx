@@ -33,6 +33,7 @@ export default function SuggestCard({
           fieldsType={fieldsType}
           item={item}
           style={imageStyle} // ⬅️ leave this fixed
+          className="!size-40"
         />
 
         {item[fieldsType.text] && (

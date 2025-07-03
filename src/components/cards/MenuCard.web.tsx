@@ -1,126 +1,139 @@
-import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { default as React } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { moderateScale, scale } from "react-native-size-matters";
-import { useDispatch, useSelector } from "react-redux";
-import { Box, Button, ButtonText, HStack, Image } from "../../../components/ui";
+import { Text, View } from "react-native";
+import { scale } from "react-native-size-matters";
+import { Box, VStack } from "../../../components/ui";
 import { AddToCartPrimaryButton } from "../../kitchensink-components/cart/AddToCartButton";
-import { updateFavoriteItems } from "../../reducers/MenuItemReducer";
+import { theme } from "../../Theme";
+import CardPriceDiscount from "../../utils/component/CardPriceDiscount";
+import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
+import StarsIcons from "../../utils/component/StarsIcons";
+import { getPaddedText } from "../../utils/operation/getPaddedText";
+import { isRTL } from "../../utils/operation/isRTL";
+import CardInteraction from "./CardInteraction";
+import ImageCardActions from "./ImageCardActions";
+import { useAuth } from "../../../context/auth";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { formatCount } from "../../utils/operation/formatCount";
 
-export const MenuCardWeb = ({ item, discountedPrice, fieldsType }) => {
-  const localization = useSelector((state) => state.localization.localization);
-  const favoriteItems = useSelector((state) => state.menuItem.favoriteItems);
-  const isFavorite = favoriteItems.some((favItem) => favItem.id === item.id);
-  const dispatch = useDispatch();
-
-  function handleFavoritePress() {
-    if (isFavorite) {
-      dispatch(updateFavoriteItems({ items: [item], ope: "delete" }));
-    } else {
-      dispatch(updateFavoriteItems({ items: [item], ope: "add" }));
-    }
-  }
+export const MenuCardWeb = ({ item, fieldsType, schemaActions }) => {
+  const { userGust } = useAuth();
   return (
-    <div className="relative flex flex-col md:flex-row overflow-hidden">
-      {/* Discount Tag */}
-      {item.discount && (
-        <div className="absolute top-2 left-2 bg-red-500 text-body text-xs font-bold px-2 py-1 rounded-tr-lg rounded-bl-lg z-50">
-          {item.discount} OFF
-        </div>
-      )}
-      <TouchableOpacity
-        className="absolute top-2 right-2 py-1 z-50"
-        onPress={handleFavoritePress}
-      >
-        {/* Favorite Icon */}
-        <FontAwesome
-          name={isFavorite ? "heart" : "heart-o"}
-          size={24}
-          color={isFavorite ? "red" : "gray"}
-          className="cursor-pointer"
-        />
-      </TouchableOpacity>
-
-      {/* Image Section */}
-      <View className="md:w-1/2 flex justify-center items-center">
-        <Box className="rounded-2xl overflow-hidden md:size-40 w-full h-56">
-          <Image
-            resizeMode="cover"
-            className="w-full h-full"
-            source={item.image}
-            alt="food"
-          />
-        </Box>
-        <HStack space="lg" className="items-center mt-2">
-          <Button variant="link">
-            <ButtonText
-              className="font-medium text-typography-900"
-              style={{ fontSize: moderateScale(12) }}
+    <View className="size-full flex">
+      <div className="relative grid grid-cols-2 overflow-hidden w-full">
+        {/* Image Section */}
+        <View className="w-full flex pe-4">
+          <Box className="rounded-2xl flex justify-center overflow-hidden w-full">
+            <ImageCardActions
+              fieldsType={fieldsType}
+              item={item}
+              style={{ width: 150, height: 150 }}
+              className="!size-[80%] md:!size-40"
             >
-              10
-            </ButtonText>
-            <Feather
-              name="user"
-              size={16}
-              color="green"
-              style={{ marginHorizontal: scale(1) }}
+              <View
+                pointerEvents="box-none"
+                key={`${fieldsType.imageView}-${item[fieldsType.imageView]}`}
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "rgba(0,0,0,0.25)",
+                  zIndex: 100,
+                  // zIndex: 0,
+                }}
+              >
+                <CardInteraction fieldsType={fieldsType} item={item} />
+              </View>
+            </ImageCardActions>
+          </Box>
+          <View
+            className="flex-row justify-between items-center mt-1 "
+            style={{ width: "100%", paddingHorizontal: scale(10) }}
+          >
+            {item[fieldsType.rate] && (
+              <View
+                className="flex-row items-center px-2"
+                key={`${item[fieldsType.idField]}-${fieldsType.rate}-${item[fieldsType.rate]}`}
+              >
+                <StarsIcons value={parseFloat(item[fieldsType.rate])} />
+              </View>
+            )}
+            <GetIconMenuItem
+              count={formatCount(item[fieldsType.orders])}
+              iconName={"orders"}
+              size={18}
+              style={{ marginHorizontal: scale(1), color: theme.accent }}
             />
-          </Button>
+          </View>
+        </View>
 
-          <Button variant="link">
-            <ButtonText
-              className="font-medium text-typography-900"
-              style={{ fontSize: moderateScale(12) }}
+        {/* Content Section */}
+        <div className="w-full flex flex-col justify-between">
+          <VStack>
+            <View
+              className={isRTL() ? "items-start" : "items-start" + " min-h-28"}
             >
-              5
-            </ButtonText>
-            <FontAwesome
-              name="star"
-              size={16}
-              color="gold"
-              style={{ marginHorizontal: scale(1) }}
-            />
-          </Button>
-
-          <Button variant="link">
-            <ButtonText
-              className="font-medium text-typography-900"
-              style={{ fontSize: moderateScale(12) }}
-            >
-              8
-            </ButtonText>
-            <MaterialIcons
-              name="settings"
-              size={16}
-              color="purple"
-              style={{ marginHorizontal: scale(1) }}
-            />
-          </Button>
-        </HStack>
-      </View>
-
-      {/* Content Section */}
-      <div className="w-full md:w-1/2 px-4 flex flex-col justify-between">
-        <div>
-          {/* Name & Description */}
-          <h3 className="text-xl font-bold text-accent">{item.name}</h3>
-          <p className="text-primary-custom text-sm mt-1">{item.description}</p>
-        </div>
-
-        {/* Pricing & Add to Cart */}
-        <div className="mt-3 flex flex-col items-end">
-          {item.discount && (
-            <p className="text-lg font-bold text-red-500 line-through">
-              {localization.menu.currency} {item.price.toFixed(2)}
-            </p>
-          )}
-          <p className="text-xl font-bold">
-            {localization.menu.currency} {discountedPrice.toFixed(2)}
-          </p>
-
-          <AddToCartPrimaryButton item={item} />
+              {item[fieldsType.text] && (
+                <Text
+                  bold
+                  size="lg"
+                  key={`${item[fieldsType.idField]}-${fieldsType.text}-${item[fieldsType.text]}`}
+                  // key={`${item[fieldsType.text]}-${randomID}`}
+                  className="!text-accent font-bold text-xl"
+                >
+                  {item[fieldsType.text]}
+                </Text>
+              )}
+              {item[fieldsType.description] && (
+                <Text
+                  className="text-primary-custom text-lg"
+                  numberOfLines={6}
+                  key={`${item[fieldsType.idField]}-${fieldsType.description}-${item[fieldsType.description]}`}
+                  //key={`${item[fieldsType.description]}-${randomID}`}
+                >
+                  {getPaddedText(`${item[fieldsType.description]}`)}
+                </Text>
+              )}
+            </View>
+            <CardPriceDiscount fieldsType={fieldsType} item={item} />
+          </VStack>
         </div>
       </div>
-    </div>
+      <View className="flex flex-row justify-between items-center w-full">
+        <View></View>
+        <View className="w-1/2">
+          {fieldsType.cardAction && fieldsType.isAvailable && !userGust && (
+            <AddToCartPrimaryButton
+              itemPackage={item}
+              fieldsType={fieldsType}
+              schemaActions={schemaActions}
+            />
+          )}
+        </View>
+      </View>
+      {/* {item[fieldsType.rewardPoints] && ( */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          zIndex: 10,
+        }}
+        className="start-0"
+      >
+        <View className="relative w-6 h-6 justify-center items-center">
+          <MaterialCommunityIcons
+            name="gift-outline"
+            size={24}
+            color={theme.accent}
+          />
+          <View className="absolute -top-1 -end-2 bg-green-600 rounded-full px-1">
+            <Text className="text-xs text-white font-bold">
+              {item[fieldsType.rewardPoints]}10
+            </Text>
+          </View>
+        </View>
+      </View>
+      {/* )} */}
+    </View>
   );
 };

@@ -15,6 +15,7 @@ import DeleteItem from "../../utils/operation/DeleteItem";
 import FieldAction from "../../utils/operation/FieldAction";
 import { getPaddedText } from "../../utils/operation/getPaddedText";
 import { AddToCartSecondaryButton } from "./AddToCartButton";
+import { addToCart } from "../../reducers/CartReducer";
 // import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 export default function CardCartItem({ fieldsType, schemaActions, item }) {
   const localization = useSelector((state) => state.localization.localization);
@@ -33,6 +34,7 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
       schemaActions.find(
         (action) => action.dashboardFormActionMethodType === `${fieldName}:Put`
       );
+    console.log(putAction);
 
     await FieldAction(
       customerCartItemID,
@@ -59,7 +61,20 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
                 RenderDeleteAction(progress, dragX, () =>
                   DeleteItem(
                     item[fieldsType.idField],
-                    null,
+                    () => {
+                      console.log("begin");
+
+                      dispatch(
+                        addToCart({
+                          item: {
+                            ...item,
+                            // [fieldsType.cardAction]: -1,
+                            addQuantity: -1,
+                          },
+                          fieldsType: fieldsType,
+                        })
+                      );
+                    },
                     true,
                     delAction,
                     fieldsType.proxyRoute
@@ -73,7 +88,16 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
                 RenderDeleteAction(progress, dragX, () =>
                   DeleteItem(
                     item[fieldsType.idField],
-                    null,
+                    () =>
+                      dispatch(
+                        addToCart({
+                          item: {
+                            ...item,
+                            [fieldsType.cardAction]: -1,
+                          },
+                          fieldsType: fieldsType,
+                        })
+                      ),
                     true,
                     delAction,
                     fieldsType.proxyRoute

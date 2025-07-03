@@ -1,95 +1,63 @@
 import { Image } from "@/components/ui";
-import {
-  Checkbox,
-  CheckboxIcon,
-  CheckboxIndicator,
-  CheckboxLabel,
-} from "@/components/ui/checkbox";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { ArrowLeftIcon, Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
-import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Keyboard, TouchableOpacity } from "react-native";
+import { Keyboard, Linking, Platform, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import FormContainer from "../../../components/form-container/FormContainer";
 import { onApply } from "../../../components/form-container/OnApply";
 import SighupSchema from "../../../Schemas/LoginSchema/SighupSchema.json";
 import VerifySchemaAction from "../../../Schemas/LoginSchema/VerifySchemaAction.json";
 import PersonalInfo from "../../../Schemas/PersonalInfo.json";
+import { CollapsibleSection } from "../../../utils/component/Collapsible";
 import LoadingButton from "../../../utils/component/LoadingButton";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 import { AuthLayout } from "../layout";
-
-// const signUpSchema = Yup.object().shape({
-//   email: Yup.string().email("Invalid email").required("Email is required"),
-//   password: Yup.string()
-//     .min(6, "Must be at least 8 characters in length")
-//     .matches(new RegExp(".*[A-Z].*"), "One uppercase character")
-//     .matches(new RegExp(".*[a-z].*"), "One lowercase character")
-//     .matches(new RegExp(".*\\d.*"), "One number")
-//     .matches(
-//       new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
-//       "One special character"
-//     ),
-//   confirmpassword: Yup.string()
-//     .oneOf([Yup.ref("password"), null], "Passwords must match")
-//     .required("Confirm Password is required"),
-//   rememberme: Yup.boolean().optional(),
-// });
-
+import { getField } from "../../../utils/operation/getField";
+import { useErrorToast } from "../../../components/form-container/ShowErrorToast";
+import {
+  Checkbox,
+  CheckboxIcon,
+  CheckboxIndicator,
+  CheckboxLabel,
+} from "../../../../components/ui";
 const SignUpWithLeftBackground = () => {
+  const { showErrorToast } = useErrorToast();
   const localization = useSelector((state) => state.localization.localization);
   const { os } = useDeviceInfo();
-
-  const toast = useToast();
-  const [showPassword, setShowPassword] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
   const [disable, setDisable] = useState(false);
   const [result, setResult] = useState(null);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const DValues = {
-    birthdate: `2025-04-09T06:18:00.000Z`,
-    email: "testUser123@gmail.com",
-    firstName: "test",
-    gender: "1",
-    lastName: "2",
-    messageType: "0",
-    password: "123456",
-    confirmPassword: "123456",
-    phoneNumber: "01029607040",
-    username: "testUser100",
-  };
+  const DValues = {};
   const navigation = useNavigation();
 
-  const handleState = () => {
-    setShowPassword((showState) => !showState);
-  };
-
-  const handleConfirmPwState = () => {
-    setShowConfirmPassword((showState) => !showState);
-  };
-
-  const handleKeyPress = (handleSubmit: any) => {
-    Keyboard.dismiss();
-    handleSubmit();
-  };
   const {
     control,
     handleSubmit,
     formState: { defaultValues = DValues, errors },
-    setError,
+    watch,
     clearErrors,
   } = useForm({
     defaultValues: DValues,
   });
-
   const onSubmit = async (data: any) => {
+    if (!isAccepted) {
+      console.log("show toast");
+
+      showErrorToast(
+        localization.sighUp.privacyToast.title,
+        localization.sighUp.privacyToast.des
+      );
+      return;
+    }
+
     // Destructure to remove confirmPassword from the sent data
     const { confirmPassword, ...sanitizedData } = data;
     setDisable(true);
@@ -104,8 +72,15 @@ const SignUpWithLeftBackground = () => {
       setResult(request);
 
       if (request && request.success === true) {
+        const passwordField = getField(
+          PersonalInfo.dashboardFormSchemaParameters,
+          "confirmPassword"
+        );
+        const { [passwordField]: removedPassword, ...dataWithoutPassword } =
+          data;
+
         navigation.navigate("Verify", {
-          ...data,
+          ...dataWithoutPassword,
           ...request.data,
           VerifySchemaAction: VerifySchemaAction,
         });
@@ -118,18 +93,41 @@ const SignUpWithLeftBackground = () => {
       setDisable(false);
     }
   };
+  const allParams = PersonalInfo.dashboardFormSchemaParameters || [];
+
+  const loginInfoSchema = {
+    ...PersonalInfo,
+    dashboardFormSchemaParameters: allParams.slice(0, 2),
+  };
+
+  const personalInfoSchema = {
+    ...PersonalInfo,
+    dashboardFormSchemaParameters: allParams.slice(2),
+  };
+  // showErrorToast("Login Failed", "Username or password is incorrect.");
 
   return (
     <VStack
       className={`max-w-[440px] w-full mt-2 ${
-        os == "web" && "m-auto bg-card shadow-lg !h-fit px-6 py-3 rounded-lg"
+        os == "web" && "m-auto bg-body shadow-lg !h-fit px-6 py-3 rounded-lg"
       }`}
       space="md"
     >
       <VStack className="md:items-center" space="md">
         <Pressable
           onPress={() => {
-            navigation.goBack();
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else {
+              if (Platform.OS === "web") {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "SignIn" }],
+                });
+              } else {
+                navigation.navigate("SignIn");
+              }
+            }
           }}
         >
           <Icon
@@ -163,17 +161,48 @@ const SignUpWithLeftBackground = () => {
       </VStack>
       <VStack className="w-full">
         <VStack space="xl" className="w-full">
-          <FormContainer
-            tableSchema={PersonalInfo}
-            row={DValues}
-            control={control}
-            errorResult={result || errors}
-            clearErrors={clearErrors}
-          />
+          <CollapsibleSection
+            title={
+              personalInfoSchema.dashboardFormSchemaInfoDTOView.schemaHeader
+            }
+            icon={null}
+            setheader={true}
+            defaultExpandedSection={true}
+          >
+            <FormContainer
+              tableSchema={loginInfoSchema}
+              row={DValues}
+              control={control}
+              errorResult={result || errors}
+              clearErrors={clearErrors}
+            />
+          </CollapsibleSection>
+
+          <CollapsibleSection
+            title={
+              personalInfoSchema.dashboardFormSchemaInfoDTOView.addingHeader
+            }
+            icon={null}
+            setheader={true}
+            defaultExpandedSection={true}
+          >
+            <FormContainer
+              tableSchema={personalInfoSchema}
+              row={DValues}
+              control={control}
+              errorResult={result || errors}
+              clearErrors={clearErrors}
+            />
+          </CollapsibleSection>
           <Checkbox
             size="sm"
             value="accept Privacy"
             aria-label="accept Privacy"
+            isChecked={isAccepted} // Controlled checked state
+            onChange={(checked) => setIsAccepted(checked === true)}
+            // value={isAccepted}
+            // onChange={setIsAccepted}
+            // onCheckedChange={setIsAccepted}
           >
             <CheckboxIndicator>
               <CheckboxIcon
@@ -181,9 +210,23 @@ const SignUpWithLeftBackground = () => {
                   <AntDesign name="check" size={20} className="text-body" />
                 )}
               />
-              {/* <CheckboxIcon as={CheckIcon} /> */}
             </CheckboxIndicator>
-            <CheckboxLabel>{localization.sighUp.acceptPrivacy}</CheckboxLabel>
+
+            <CheckboxLabel className="flex-row flex-wrap items-center">
+              {localization.sighUp.acceptPrivacy.split("{link}")[0]}
+              <Pressable
+                className="text-blue-600 underline"
+                onPress={() => {
+                  const url = localization.sighUp.privacyUrl; // Replace with your actual URL
+                  Linking.openURL(url).catch((err) =>
+                    console.error("Failed to open URL:", err)
+                  );
+                }}
+              >
+                {localization.sighUp.acceptPrivacyLinkText || "Privacy Policy"}
+              </Pressable>
+              {localization.sighUp.acceptPrivacy.split("{link}")[1]}
+            </CheckboxLabel>
           </Checkbox>
         </VStack>
         <VStack className="w-full my-7" space="lg">

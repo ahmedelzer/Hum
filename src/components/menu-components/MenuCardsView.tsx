@@ -35,6 +35,7 @@ import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import { getField } from "../../utils/operation/getField";
 import { getItemPackage } from "./getItemPackage";
 import { SetResponsiveContainer } from "../../utils/component/SetResponsiveContainer";
+import { VStack } from "../../../components/ui";
 const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ row, isRefreshed }: any) => {
@@ -288,34 +289,115 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
         ),
     });
   }, [selectedItems, navigation]);
-
+  const initRow = [
+    {
+      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
+      sku: "",
+      price: 550.0,
+      discount: 0.0,
+      taxTypeID: "00000000-0000-0000-0000-000000000000",
+      taxAmount: 0,
+      size: 0,
+      preparingTimeAmountPerMinute: 0,
+      isActive: true,
+      isAvailable: true,
+      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
+      node_Name: "MainNode",
+      nodeAddress: null,
+      priceAfterDiscount: 550.0,
+      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
+      rate: 5.0,
+      numberOfOrders: 0,
+      numberOfReviews: 0,
+      numberOfLikes: 0,
+      numberOfDislikes: 0,
+      itemImage:
+        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v6/23/2025 12:30:39 PM?v6/23/2025 12:30:39 PM",
+      menuCategoryName: "Foods",
+      indexOflike: 0,
+      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
+      menuItemName: "Sandwich chicken ",
+      menuItemDescription: "rtr",
+      canReturn: true,
+      keywords: "wee,apples12",
+      weightKg: 0,
+      lengthCm: 0,
+      widthCm: 0,
+      heightCm: 0,
+      packageDegree: 0,
+      volume: 0,
+    },
+    {
+      nodeMenuItemID: "5583d18b-7bff-4d91-aef8-2390a80972ae",
+      sku: "",
+      price: 20000.0,
+      discount: 10.0,
+      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      taxAmount: 0,
+      size: 0,
+      preparingTimeAmountPerMinute: 1,
+      isActive: true,
+      isAvailable: true,
+      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
+      node_Name: "MainNode",
+      nodeAddress: null,
+      priceAfterDiscount: 18000.0,
+      menuItemID: "00f6d641-84db-4937-9143-10667ac33442",
+      rate: 5.0,
+      numberOfOrders: 0,
+      numberOfReviews: 0,
+      numberOfLikes: 0,
+      numberOfDislikes: 0,
+      itemImage:
+        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d84.jpg?v6/23/2025 12:30:39 PM?v6/23/2025 12:30:39 PM",
+      menuCategoryName: "Foods",
+      indexOflike: 0,
+      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
+      menuItemName: "test",
+      menuItemDescription: "string",
+      canReturn: false,
+      keywords: "string,test",
+      weightKg: 0,
+      lengthCm: 0,
+      widthCm: 0,
+      heightCm: 0,
+      packageDegree: 0,
+      volume: 0,
+    },
+  ];
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       onScroll={handleScroll}
       contentContainerStyle={{ paddingBottom: 20 }}
     >
-      {rows?.map((item: any, index: number) => (
-        <View key={`${item[NodeMenuItemsSchema.idField]}-${index}`}>
-          <MenuCardView
-            itemPackage={getItemPackage(
-              item,
-              cartState.rows,
-              NodeMenuItemsSchema
-            )}
-            schemaActions={CartSchemaActions}
-            setSelectedItems={setSelectedItems}
-            selectedItems={selectedItems}
-          />
+      <VStack className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
+        {/*!for web*/}
+        {rows?.map((item: any, index: number) => (
+          <View
+            key={`${item[NodeMenuItemsSchema.idField]}-${index}`}
+            className="h-full"
+          >
+            <MenuCardView
+              itemPackage={getItemPackage(
+                item,
+                cartState.rows,
+                NodeMenuItemsSchema
+              )}
+              schemaActions={CartSchemaActions}
+              setSelectedItems={setSelectedItems}
+              selectedItems={selectedItems}
+            />
 
-          {/* Insert suggestion every 2 items */}
-          {(index + 1) % 2 === 0 && (
-            <View style={{ marginVertical: 10 }}>
-              <SuggestCardContainer suggestContainerType={0} />
-            </View>
-          )}
-        </View>
-      ))}
+            {/* Insert suggestion every 2 items */}
+            {(index + 1) % 2 === 0 && (
+              <View style={{ marginVertical: 10 }}>
+                <SuggestCardContainer suggestContainerType={0} />
+              </View>
+            )}
+          </View>
+        ))}
+      </VStack>
 
       {loading && (
         <View style={{ padding: 20 }}>

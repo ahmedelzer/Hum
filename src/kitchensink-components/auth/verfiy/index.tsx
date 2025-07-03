@@ -7,31 +7,48 @@ import ResendSchemaAction from "../../../Schemas/LoginSchema/ResendSchemaAction.
 import VerifySchemaPrams from "../../../Schemas/LoginSchema/VerifySchema.json";
 import GoBackHeader from "../../../components/header/GoBackHeader";
 import { handleSubmitWithCallback } from "../../../utils/operation/handleSubmitWithCallback";
+import { theme } from "../../../Theme";
+import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
+import { VStack } from "../../../../components/ui";
+import { AuthLayout } from "../layout";
+import { getField } from "../../../utils/operation/getField";
+import PersonalInfo from "../../../Schemas/PersonalInfo.json";
+import { useSelector } from "react-redux";
+import { useErrorToast } from "../../../components/form-container/ShowErrorToast";
 
 const VerifyScreen = ({ route }) => {
   const [otpCode, setOtpCode] = useState("");
   const [disable, setDisable] = useState(false);
   const [result, setResult] = useState(null);
+  const localization = useSelector((state) => state.localization.localization);
   const navigation = useNavigation();
-  const { email, VerifySchemaAction } = route.params || {}; // if passed from previous screen
-  
+  const { showErrorToast } = useErrorToast();
+  const phoneNumberField = getField(
+    PersonalInfo.dashboardFormSchemaParameters,
+    "phoneNumber"
+  );
+  const { [phoneNumberField]: phoneNumber, VerifySchemaAction } =
+    route.params || {}; // if passed from previous screen
+  const { os } = useDeviceInfo();
+
   const handleOTPSubmit = async () => {
-    
+    console.log("begin");
+    console.log(otpCode);
+
     if (otpCode.length === 6) {
-      
       //setDisable(true);
       const getAction =
-  VerifySchemaAction &&
-  VerifySchemaAction.find(
-    (action) => action.dashboardFormActionMethodType === "Get"
-  );
-    
-      const constants ={
-          ...{ [VerifySchemaPrams.idField]: otpCode },
-          ...route.params,
-        };
+        VerifySchemaAction &&
+        VerifySchemaAction.find(
+          (action) => action.dashboardFormActionMethodType === "Get"
+        );
+
+      const constants = {
+        ...{ [VerifySchemaPrams.idField]: otpCode },
+        ...route.params,
+      };
       setDisable(true);
-      
+
       try {
         const request = await onApply(
           {},
@@ -55,7 +72,10 @@ const VerifyScreen = ({ route }) => {
         setDisable(false);
       }
     } else {
-      Alert.alert("Invalid OTP", "Please enter the full 6-digit code.");
+      showErrorToast(
+        localization.verify.otpToast.title,
+        localization.verify.otpToast.des
+      );
     }
   };
   const handleResend = async () => {
@@ -82,40 +102,55 @@ const VerifyScreen = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <GoBackHeader
-        subTitle={""}
-        title={""}
-        specialAction={() => {
-          navigation.goBack();
-        }}
-      />
-      <Text style={styles.title}>Verify Your Account</Text>
-      <Text style={styles.subtitle}>
-        Please enter the 4-digit code sent to {email || "your email"}
-      </Text>
+    <AuthLayout>
+      <VStack
+        className={`max-w-[440px] w-full mt-2 ${
+          os == "web" && "m-auto bg-body shadow-lg !h-fit px-6 py-3 rounded-lg"
+        }`}
+        space="md"
+      >
+        <View style={styles.container}>
+          <GoBackHeader
+            subTitle={""}
+            title={""}
+            specialAction={() => {
+              navigation.goBack();
+            }}
+          />
+          <Text style={styles.title}>{localization.verify.headTitle}</Text>
+          <Text style={styles.subtitle}>
+            {localization.verify.headDescription} {phoneNumber}
+          </Text>
 
-      <OTPTextInput
-        inputCount={6}
-        handleTextChange={(val) => setOtpCode(val)}
-        tintColor="#6200ee"
-        offTintColor="#ccc"
-      />
-      <Text
-        style={styles.title}
-        onPress={async () => {await handleResend();}}
-        className="text-[#6200ee] mt-2"
-      >
-        Resend
-      </Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={async () => { await handleOTPSubmit(); }}
-        disabled={disable}
-      >
-        <Text style={styles.buttonText}>Verify</Text>
-      </TouchableOpacity>
-    </View>
+          <OTPTextInput
+            inputCount={6}
+            handleTextChange={(val) => setOtpCode(val)}
+            tintColor="#6200ee"
+            offTintColor="#ccc"
+          />
+          <Text
+            style={styles.title}
+            onPress={async () => {
+              await handleResend();
+            }}
+            className="text-[#6200ee] mt-2"
+          >
+            {localization.verify.resend}
+          </Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={async () => {
+              await handleOTPSubmit();
+            }}
+            disabled={disable}
+          >
+            <Text style={styles.buttonText}>
+              {localization.verify.VerifyButton}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </VStack>
+    </AuthLayout>
   );
 };
 
@@ -126,7 +161,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: theme.body,
   },
   title: {
     fontSize: 24,

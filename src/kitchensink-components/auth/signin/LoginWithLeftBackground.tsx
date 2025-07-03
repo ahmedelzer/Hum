@@ -4,7 +4,6 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { LinkText } from "@/components/ui/link";
 import { Text } from "@/components/ui/text";
-import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import FormContainer from "@/src/components/form-container/FormContainer";
 import { onApply } from "@/src/components/form-container/OnApply";
@@ -28,6 +27,7 @@ import schemaActions from "../../../Schemas/LoginSchema/LoginFormSchemaActions.j
 import { saveSecureValue } from "../../../store/secureStore";
 import LoadingButton from "../../../utils/component/LoadingButton";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
+import { getField } from "../../../utils/operation/getField";
 const ACTION_SCHEMA = [
   {
     dashboardFormSchemaActionID: "46ac8869-4745-41c8-8839-d02dfe9999f0",
@@ -46,6 +46,11 @@ export const LoginWithLeftBackground = () => {
   const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
+  const passwordField = getField(
+    loginFormSchema.dashboardFormSchemaParameters,
+    "password"
+  );
+
   const DValues = {
     password: "123456",
     username: "testAhmed12",
@@ -58,7 +63,6 @@ export const LoginWithLeftBackground = () => {
     );
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
-  const toast = useToast();
   const handleState = () => {
     setShowPassword((showState) => !showState);
   };
@@ -72,7 +76,8 @@ export const LoginWithLeftBackground = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: DValues });
-
+  const { [passwordField]: removedPassword, ...dataWithoutPassword } =
+    control._formValues;
   const onSubmit = async (data: any) => {
     // Destructure to remove confirmPassword from the sent data
     const { rememberme, ...sanitizedData } = data;
@@ -110,7 +115,8 @@ export const LoginWithLeftBackground = () => {
         // }
         // setUser(user);
         if (Platform.OS === "web") {
-          window.location.reload(); // Web reload
+          // window.location.reload(); // Web reload
+          window.location.href = "/";
         }
 
         // RNRestart.Restart();
@@ -126,7 +132,7 @@ export const LoginWithLeftBackground = () => {
   return (
     <VStack
       className={`max-w-[440px] w-full h-full ${
-        os == "web" && "m-auto bg-card shadow-lg !h-fit px-6 py-3 rounded-lg"
+        os == "web" && "m-auto bg-body shadow-lg !h-fit px-6 py-3 rounded-lg"
       }`}
       space="md"
     >
@@ -196,7 +202,7 @@ export const LoginWithLeftBackground = () => {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("ForgetPassword" as never, {
-                  ...control._formValues,
+                  ...dataWithoutPassword,
                 })
               }
             >

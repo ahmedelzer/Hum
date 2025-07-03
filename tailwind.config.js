@@ -228,6 +228,10 @@ module.exports = {
         "soft-4": "0px 0px 40px rgba(38, 38, 38, 0.1)",
       },
     },
+    screens: {
+      // existing ones like 'sm': '640px'
+      "max-350": { raw: "(max-width: 350px)" },
+    },
   },
   plugins: [gluestackPlugin],
 };

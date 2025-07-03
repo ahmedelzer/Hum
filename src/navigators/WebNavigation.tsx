@@ -13,6 +13,9 @@ import { ForgotPassword } from "../kitchensink-components/auth/forgot-password";
 import { SignIn } from "../kitchensink-components/auth/signin";
 import { SignUp } from "../kitchensink-components/auth/signup";
 import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
+import { useAuth } from "../../context/auth";
+import VerifyScreen from "../kitchensink-components/auth/verfiy";
+import GoBackHeader from "../components/header/GoBackHeader";
 
 const Stack = createStackNavigator();
 const MenuFilter = lazy(() => import("../components/filters/MenuFilter"));
@@ -103,6 +106,8 @@ const MargeStackWithTabs = (item) => {
   );
 };
 const WebNavigator = () => {
+  const { userGust } = useAuth();
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {/* Dynamically render content-based routes */}
@@ -111,11 +116,8 @@ const WebNavigator = () => {
           key={item.routePath}
           name={item.routePath}
           options={{
-            headerShown: item.routePath !== "Profile",
-            headerTitle: () =>
-              item.routePath !== "Profile"
-                ? SetResponsiveContainer(<HeaderParent />, false)
-                : undefined,
+            headerShown: true,
+            headerTitle: () => SetResponsiveContainer(<HeaderParent />, false),
           }}
           component={(props) => (
             <RenderItemsView
@@ -128,12 +130,14 @@ const WebNavigator = () => {
       ))}
 
       {/* Static route screens */}
-      <Stack.Screen
-        name="Cart"
-        component={(props) =>
-          SetResponsiveContainer(<CartPage {...props} />, true)
-        }
-      />
+      {!userGust && (
+        <Stack.Screen
+          name="Cart"
+          component={(props) =>
+            SetResponsiveContainer(<CartPage {...props} />, true)
+          }
+        />
+      )}
       <Stack.Screen
         name="MenuFilter"
         component={(props) =>
@@ -141,20 +145,26 @@ const WebNavigator = () => {
         }
       />
       <Stack.Screen name="DetailsProductScreen" component={DetailsScreen} />
-      <Stack.Screen
-        name="CheckoutScreen"
-        component={(props) =>
-          SetResponsiveContainer(<CheckoutScreen {...props} />, true)
-        }
-      />
-      <Stack.Screen
-        name="NotificationScreen"
-        component={(props) =>
-          SetResponsiveContainer(<NotificationScreen {...props} />, true)
-        }
-      />
+      {!userGust && (
+        <Stack.Screen
+          name="CheckoutScreen"
+          component={(props) =>
+            SetResponsiveContainer(<CheckoutScreen {...props} />, true)
+          }
+        />
+      )}
+      {!userGust && (
+        <Stack.Screen
+          name="NotificationScreen"
+          component={(props) =>
+            SetResponsiveContainer(<NotificationScreen {...props} />, true)
+          }
+        />
+      )}
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen name="Verify" component={VerifyScreen} />
+
       <Stack.Screen name="ForgetPassword" component={ForgotPassword} />
     </Stack.Navigator>
   );

@@ -2,7 +2,6 @@ import { Heading } from "@/components/ui/heading";
 import { ArrowLeftIcon, Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
-import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
@@ -29,7 +28,6 @@ const CreatePasswordScreen = ({ route }) => {
   const { os } = useDeviceInfo();
   const [reqError, setReqError] = useState(null);
   const [disable, setDisable] = useState(null);
-  const toast = useToast();
   const navigation = useNavigation();
   const { personContactID, username } = route.params || {};
   const handleKeyPress = (handleSubmit: any) => {

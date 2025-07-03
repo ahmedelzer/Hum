@@ -9,16 +9,21 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { Controller } from "react-hook-form";
+import DatepickerComponent from "./DatepickerComponent";
+import { useSelector } from "react-redux";
 
 export default function DateParameter({
   fieldName: name,
   control,
   value: defaultValue,
   enable,
-  placeholder = "Select your birthday",
+  placeholder,
   ...props
 }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const localization = useSelector((state) => state.localization.localization);
+  const languageRow = useSelector((state) => state.localization.languageRow);
+  const dateTime = localization.dateTime;
 
   const today = new Date();
   const isBirthday = props.type === "birthday";
@@ -40,9 +45,20 @@ export default function DateParameter({
   const formatValue = (val) => {
     if (!val) return placeholder;
 
-    if (isPushTime) return moment(val).format("hh:mm A");
-    if (isDateTime) return moment(val).format("MMMM D, YYYY - hh:mm A");
-    return moment(val).format("MMMM D, YYYY");
+    const date = new Date(val);
+    const hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const isPM = hours >= 12;
+    const displayHours = isPM ? hours - 12 || 12 : hours || 12;
+
+    const day = date.getDate();
+    const monthName = dateTime.dateTime.dxDateBox.months[date.getMonth()];
+    const year = date.getFullYear();
+    const time = `${displayHours}:${minutes} ${isPM ? dateTime.dateTime.dxDateBox.pm : dateTime.dateTime.dxDateBox.am}`;
+
+    if (isPushTime) return time;
+    if (isDateTime) return `${monthName} ${day}, ${year} - ${time}`;
+    return `${monthName} ${day}, ${year}`;
   };
 
   const showDatePicker = () => setDatePickerVisibility(true);
@@ -64,31 +80,50 @@ export default function DateParameter({
       control={control}
       disabled={!enable}
       name={name}
+      rules={{
+        required: true,
+      }}
       defaultValue={defaultValue}
-      render={({ field: { onChange, value } }) => (
-        <View>
-          <TouchableOpacity
-            onPress={showDatePicker}
-            style={styles.touchable}
+      render={({ field: { onChange, value } }) =>
+        Platform.OS === "web" ? (
+          <DatepickerComponent
             {...props}
-          >
-            <Text style={styles.text}>{formatValue(value)}</Text>
-          </TouchableOpacity>
-
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode={mode}
-            onConfirm={(selectedDate) => {
-              onChange(selectedDate);
-              hideDatePicker();
-            }}
-            onCancel={hideDatePicker}
-            minimumDate={minDate}
-            maximumDate={maxDate}
-            display={Platform.OS === "ios" ? "spinner" : "default"}
+            name={name}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            type={props.type}
+            minDate={minDate}
+            maxDate={maxDate}
           />
-        </View>
-      )}
+        ) : (
+          <View>
+            <TouchableOpacity
+              onPress={showDatePicker}
+              style={styles.touchable}
+              {...props}
+            >
+              <Text style={styles.text}>
+                {formatValue(value) || placeholder}
+              </Text>
+            </TouchableOpacity>
+
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode={mode}
+              locale={languageRow.shortname}
+              onConfirm={(selectedDate) => {
+                onChange(selectedDate);
+                hideDatePicker();
+              }}
+              onCancel={hideDatePicker}
+              minimumDate={minDate}
+              maximumDate={maxDate}
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+            />
+          </View>
+        )
+      }
     />
   );
 }

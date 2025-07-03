@@ -31,7 +31,10 @@ export default function CheckoutScreen() {
   return (
     <View className="flex-1 bg-body">
       {/* Header */}
-      <GoBackHeader subTitle={"McDonald's"} title={"Checkout"} />
+      <GoBackHeader
+        subTitle={localization.checkout.title}
+        title={localization.checkout.subTitle}
+      />
       <ScrollView>
         <View className="my-2 w-full h-[500]">
           {/* <BranchesByLocationMap branches={branches} /> */}

@@ -59,7 +59,12 @@
       "UrlPlaceholder": "Enter image URL",
       "defaultImage": "https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg"
     },
-    "base": { "placeholder": "Enter " }
+    "select": {
+      "placeholder": "Select option"
+    },
+    "password": { "error": "Passwords do not match" },
+    "base": { "placeholder": "Enter " },
+    "error": "is required"
   },
 
   "waringPop": {
@@ -95,6 +100,47 @@
       ],
       "am": "ص",
       "pm": "م"
+    },
+    "localize": {
+      "months": [
+        "يناير",
+        "فبراير",
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر",
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر"
+      ],
+      "days": [
+        "الأحد",
+        "الاثنين",
+        "الثلاثاء",
+        "الأربعاء",
+        "الخميس",
+        "الجمعة",
+        "السبت"
+      ],
+      "am": "ص",
+      "pm": "م"
+    },
+    "formatLong": {
+      "date": "d MMMM yyyy",
+      "time": "h:mm aa",
+      "dateTime": "d MMMM yyyy h:mm aa"
+    },
+    "options": {
+      "weekStartsOn": 6,
+      "firstWeekContainsDate": 1
+    },
+    "buttons": {
+      "apply": "تاكيد",
+      "cancel": "الغاء",
+      "today": "اليوم"
     },
     "applyButtonText": "تاكيد",
     "cancelButtonText": "الغاء",
@@ -261,7 +307,8 @@
       "stepOneTitle": "YOUR INFO"
     },
     "popup": {
-      "done": "Done"
+      "done": "Done",
+      "cancel": "Cancel"
     }
   },
   "userPanel": {
@@ -284,15 +331,32 @@
     "headDescription": "Already registered?",
     "sighUpButton": "Sign up",
     "login": "Login",
-    "acceptPrivacy": "I accept the Terms of Use & Privacy Policy"
+    "acceptPrivacy": "I agree to the {link} of the company.",
+    "acceptPrivacyLinkText": "Privacy Policy",
+    "privacyUrl": "https://yourcompany.com/privacy-policy",
+    "privacyToast": {
+      "title": "Privacy Agreement Required",
+      "des": "Please accept the privacy policy to proceed with sign up."
+    }
   },
   "forgotPassword": {
     "headTitle": "Forgot Password?",
     "headDescription": "Enter email ID associated with your account.",
     "sighUpButton": "Send Link"
   },
+  "verify": {
+    "headTitle": "Verify Your Account",
+    "headDescription": "Please enter the 4-digit code sent to ",
+    "resend": "Resend",
+    "VerifyButton": "Verify",
+    "otpToast": {
+      "title": "Invalid OTP",
+      "des": "Please enter the full 6-digit code."
+    }
+  },
   "menu": {
-    "currency": "EGP"
+    "currency": "EGP",
+    "off": "OFF"
   },
   "Hum_screens": {
     "splash": {
@@ -307,7 +371,8 @@
     },
     "home": {
       "shortcuts": "Shortcuts",
-      "faovert": "Faovert Items"
+      "faovert": "Faovert Items",
+      "MarketPlace": "Market Places"
     },
     "menu": {
       "search": { "placeholder": "Search by keywords, name, or description" },
@@ -346,6 +411,17 @@
       "checkoutButton": "Checkout"
     },
     "profile": {
+      "collapses": [
+        {
+          "type": "vouchers",
+          "title": "My Vouchers",
+          "childrenText": {
+            "notFound": "No used vouchers found.",
+            "usedOn": "Used on: ",
+            "more": "More"
+          }
+        }
+      ],
       "logOut": {
         "logOut": "Logout",
         "logOutMess": "Are you sure, you want to logout?",
@@ -356,7 +432,7 @@
   "checkout": {
     "header": {
       "title": "Checkout",
-      "subTitle": "subTitle"
+      "subTitle": "finish the order"
     },
     "paymentSummary": {
       "title": "Payment summary",

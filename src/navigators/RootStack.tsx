@@ -11,7 +11,10 @@ import BottomBarTabs from "./BottomTabBar";
 import OutsideStack from "./OutSideStack";
 import SplashNavigation from "./SplashNavigation";
 import WebNavigator from "./WebNavigation";
-
+// import Toast from "react-native-toast-message";
+import * as Linking from "expo-linking";
+import { ToastProvider } from "@gluestack-ui/toast";
+import { Toast } from "../../components/ui";
 // types
 export type RootStackParamList = {
   Home: undefined;
@@ -29,11 +32,11 @@ export type RootStackParamList = {
 ``;
 //todo: make with pixel rexio padding or margin top with  platforms
 const linking = {
-  prefixes: ["http://localhost:3000", "https://your-app.web.app"],
+  prefixes: [Linking.createURL("/"), "https://your-app.web.app"],
   config: {
     screens: {
       Home: "",
-      Profile: "profile/:userId", // ensure `userId` is passed
+      Profile: "profile", // ensure `userId` is passed
       Cart: "cart",
       MenuView: "menu",
       SignIn: "signin",
@@ -50,7 +53,12 @@ const Stack = createStackNavigator<RootStackParamList>();
 const RootStack: FC = (props: any) => {
   return (
     <NavigationContainer linking={linking}>
-      {RequiredScreens()}
+      <ToastProvider>
+        {RequiredScreens()}
+        {/* <Toast /> */}
+        {/* <Toast /> */}
+      </ToastProvider>
+      {/* <Toa */}
       {/* <OutsideStack /> */}
       {/* todo make here anther component for web  */}
       {/* {os === "web" ? <WebNavigation /> : <BottomBarTabs />} */}

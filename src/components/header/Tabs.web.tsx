@@ -16,7 +16,7 @@ export function TabsHeader() {
   ];
 
   return (
-    <View className="flex-row gap-4">
+    <View className="flex-row gap-4 duration-300 transition-all">
       {tabs.map((tab) => (
         <TouchableOpacity
           key={tab.name}
@@ -26,7 +26,7 @@ export function TabsHeader() {
               routes: [{ name: tab.name }], // This prevents back navigation
             });
           }}
-          className={`flex flex-row items-center px-4 py-2 rounded-lg transition-all duration-1000 ${
+          className={`flex flex-row items-center px-4 py-2 rounded-lg duration-300 transition-all ${
             activeTab === tab.name
               ? "bg-accent text-body"
               : "bg-transparent text-muted hover:bg-accent hover:text-body"

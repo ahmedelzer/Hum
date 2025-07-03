@@ -7,6 +7,10 @@
 
 //need to be fished tasks
 1-make on click on any row of orders open popup and display cart and refined
-2-merge the code
-3-solve WS errors of runtime 
-4-points in menu items 
+3-show why storage is deleted after reload
+4-handle code duplicated and make cartInfo run 
+5-make delete cart run and solve WS problems
+2-set project name famuous app&& logo &&icon tap 
+6-make setCorrectNumber to set numbers length or search in git repo to get
+
+//profile

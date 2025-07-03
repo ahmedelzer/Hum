@@ -1,15 +1,9 @@
 import React from "react";
-import {
-  CloseIcon,
-  HelpCircleIcon,
-  Toast,
-  ToastTitle,
-  useToast,
-} from "../../../components/ui";
 import { Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
-function DisplayError({ dataError, parameterField, setTitle }) {
-  const toast = useToast();
+function DisplayError({ dataError, parameterField, setTitle, title }) {
+  const localization = useSelector((state) => state.localization.localization);
 
   const fieldLowercase = parameterField?.toLowerCase();
   const errors = dataError?.error?.errors || {};
@@ -34,16 +28,12 @@ function DisplayError({ dataError, parameterField, setTitle }) {
   } else if (dataError[parameterField]) {
     //!must get a solution of ui validation errors by all lang
     // Handle UI validation errors
-    const errorMessage =
-      dataError[parameterField].message === ""
-        ? `${parameterField} is ${dataError[parameterField]?.type}`
-        : dataError[parameterField].message;
+    const errorMessage = title + " " + localization.inputs.error;
     return (
       <View>
         <Text className="!text-red-500 mt-1 text-sm">{errorMessage}</Text>
       </View>
     );
-    // showNewToast();
   }
 
   return null;

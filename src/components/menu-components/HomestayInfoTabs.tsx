@@ -24,6 +24,7 @@ import { createRowCache } from "../Pagination/createRowCache";
 import { getRemoteRows } from "../Pagination/getRemoteRows";
 import { updateRows } from "../Pagination/updateRows";
 import { ScrollView } from "react-native-gesture-handler";
+import { isRTL } from "../../utils/operation/isRTL";
 const VIRTUAL_PAGE_SIZE = 4;
 export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
   // Shop/GetMenuCategories?PageSize=11&PageNumber=1
@@ -56,7 +57,6 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
     );
 
   const { rows, skip, totalCount, loading } = state;
-  
 
   useEffect(() => {
     LoadData(
@@ -87,7 +87,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
           onScroll={handleScroll}
           horizontal
           showsHorizontalScrollIndicator={false}
-          inverted={I18nManager.isRTL} // <-- makes horizontal scrolling work in RTL
+          inverted={isRTL()} // <-- makes horizontal scrolling work in RTL
           contentContainerStyle={{
             flexDirection: "row", // Always row; inversion handles RTL
           }}
@@ -95,7 +95,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
           <HStack
             space="lg"
             className={`mx-0.5 xl:gap-5 2xl:gap-6 flex ${
-              I18nManager.isRTL ? "flex-row-reverse" : "flex-row"
+              isRTL() ? "flex-row-reverse" : "flex-row"
             }`}
           >
             {rows.map((tab: any) => (
@@ -123,9 +123,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                     activeTab === tab[idField]
                       ? "text-accent"
                       : "!text-dark_card"
-                  } font-medium ${
-                    I18nManager.isRTL ? "text-right" : "text-left"
-                  }`}
+                  } font-medium ${isRTL() ? "text-right" : "text-left"}`}
                 >
                   {tab[display]}
                 </Text>
@@ -149,8 +147,6 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                     dispatch(getAllMenuItems(menuItems));
                     dispatch(updateMenuItemType(""));
                   } else {
-                    
-
                     dispatch(getAllMenuItems(data));
                     dispatch(updateMenuItemType(item.name));
                   }

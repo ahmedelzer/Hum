@@ -6,7 +6,9 @@ export function CreateInputProps(param, value) {
     values: param.values,
     enable: param.isEnable,
     type: param.parameterType,
+    showTitle: param.parameterType.endsWith("WithLabel") ? false : true,
   };
+
   if (param.lookupID) {
     const additionProps = {
       lookupDisplayField: param.lookupDisplayField,

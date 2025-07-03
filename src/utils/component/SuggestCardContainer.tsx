@@ -6,77 +6,73 @@ import { scale } from "react-native-size-matters";
 import { theme } from "../../Theme";
 export function renderSuggestCards(suggestContainerType, items) {
   const chunkArray = (arr, size) => {
-    return Array.from(
-      { length: Math.ceil(arr.length / size) },
-      (_, i) => arr.slice(i * size, i * size + size)
+    return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+      arr.slice(i * size, i * size + size)
     );
   };
 
-const chunkedItems = chunkArray(items, 4); // Creates groups of 4 items each
-const BOX_high = scale(300);
-const BOX_width = scale(300);
+  const chunkedItems = chunkArray(items, 4); // Creates groups of 4 items each
+  const BOX_high = scale(300);
+  const BOX_width = scale(300);
   switch (suggestContainerType) {
     case 0:
       return (
         <>
           {items.map((item) => (
-            <SuggestCard key={ item.uniqueKey} item={item} />
+            <SuggestCard key={item.uniqueKey} item={item} />
           ))}
         </>
       );
 
     case 1:
-return (
-  <>
-  {chunkedItems.map((group, groupIndex) => (
-      <View
-        key={`group-${groupIndex}`}
-        style={{
-          width: BOX_width,
-          height: BOX_high,
-          backgroundColor: theme.body,
-          borderRadius: scale(8),
-          padding: scale(8),
-          marginRight: groupIndex < chunkedItems.length - 1 ? scale(8) : 0,
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          alignContent: 'flex-start',
-        }}
-      >
-        {group.map((item, index) => (
-          <View
-            key={index}
-            style={{
-              width: '48%',
-              height : '50%', // two columns per row with small gap
-              marginBottom: scale(8),
-            }}
-          >
-            <SuggestCard
-              item={item}
-              boxScale={BOX_high}
-              imageStyle={{
-                width: scale(110),
-                height: scale(90),
-                
+      return (
+        <>
+          {chunkedItems.map((group, groupIndex) => (
+            <View
+              key={`group-${groupIndex}`}
+              style={{
+                width: BOX_width,
+                height: BOX_high,
+                backgroundColor: theme.body,
+                borderRadius: scale(8),
+                padding: scale(8),
+                marginRight:
+                  groupIndex < chunkedItems.length - 1 ? scale(8) : 0,
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                alignContent: "flex-start",
               }}
-              showPrice={false}
-            />
-          </View>
-        ))}
-      </View>
-    ))}
-  </>
-);
-
-
+            >
+              {group.map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    width: "48%",
+                    height: "50%", // two columns per row with small gap
+                    marginBottom: scale(8),
+                  }}
+                >
+                  <SuggestCard
+                    item={item}
+                    boxScale={BOX_high}
+                    imageStyle={{
+                      width: scale(110),
+                      height: scale(90),
+                    }}
+                    showPrice={false}
+                  />
+                </View>
+              ))}
+            </View>
+          ))}
+        </>
+      );
 
     default:
       return null;
   }
 }
-
 
 export default function SuggestCardContainer({
   Schema,
@@ -351,16 +347,18 @@ export default function SuggestCardContainer({
     },
   ];
 
-
-
   return (
     <ScrollView
-  horizontal
-  className="mt-2"
-  showsHorizontalScrollIndicator={false}
-  contentContainerStyle={{ gap: 12, paddingHorizontal: 12 }}
->
-  {renderSuggestCards(suggestContainerType, items)}
-</ScrollView>
+      horizontal
+      className="mt-2"
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        gap: 12,
+        paddingHorizontal: 12,
+        alignItems: "flex-start",
+      }}
+    >
+      {renderSuggestCards(suggestContainerType, items)}
+    </ScrollView>
   );
 }

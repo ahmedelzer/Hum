@@ -30,8 +30,10 @@ export const cartSlice = createSlice({
       const itemPresent = state.cart.find(
         (cartItem) => cartItem[idField] === item[idField]
       );
+      console.log(itemPresent, state, idField, item, "0000000000");
+
       if (itemPresent) {
-        if (item.addQuantity < 0 && itemPresent[fieldsType.cardAction] === 1) {
+        if (item.addQuantity == -1 && itemPresent[fieldsType.cardAction] >= 1) {
           const removeFromCart = state.cart.filter(
             (removeItem) => removeItem[idField] !== item[idField]
           );

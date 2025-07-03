@@ -8,11 +8,8 @@ import { useSelector } from "react-redux";
 import NearestBranches from "../../components/addressLocation/NearestBranches";
 
 export default function AddressLocationCollapsible() {
-  const [expandedSection, setExpandedSection] = useState(null);
+  const localization = useSelector((state) => state.localization.localization);
 
-  const toggleSection = (section) => {
-    setExpandedSection(expandedSection === section ? null : section);
-  };
   const selectedTab = useSelector((state) => state.location.selectedTab);
   const selectedLocation = useSelector(
     (state) => state.location.selectedLocation
@@ -26,15 +23,14 @@ export default function AddressLocationCollapsible() {
         style={{ backgroundColor: theme.dark_card }}
       >
         <CollapsibleSection
-          title="Market Places"
+          title={localization.Hum_screens.home.MarketPlace}
           icon={null}
-          expandedSection={expandedSection}
-          toggleSection={toggleSection}
           setheader={true}
           iconColor={theme.body}
           textColor={theme.body}
         >
           <TabButtons loading={false} rows={["Pickup", "Address"]} />
+          //!schema or localization
           {selectedTab == 1 ? (
             <View className="flex-row items-center justify-center overflow-auto mb-3">
               <AddressLocation />

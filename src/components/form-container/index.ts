@@ -9,3 +9,4 @@ export { default as RadioParameter } from "./inputs/RadioParameter";
 export { default as InputPassword } from "./inputs/InputPassword";
 export { default as LocationParameter } from "./inputs/LocationParameter";
 export { default as RadioListParameter } from "./inputs/RadioListParameter";
+export { default as InputWithLabel } from "./inputs/InputWithLabel";

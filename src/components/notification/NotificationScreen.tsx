@@ -24,12 +24,6 @@ const notifications = [
 ];
 
 export default function NotificationScreen() {
-  const [expandedSection, setExpandedSection] = useState(null);
-
-  const toggleSection = (section) => {
-    setExpandedSection(expandedSection === section ? null : section);
-  };
-
   return (
     <ScrollView style={{ flex: 1, height: "100%" }} className="bg-body">
       {/* Header */}
@@ -39,8 +33,6 @@ export default function NotificationScreen() {
         <CollapsibleSection
           title="Recent Notifications"
           icon={() => <Feather name="bell" size={24} className="text-text" />}
-          expandedSection={expandedSection}
-          toggleSection={toggleSection}
         >
           {notifications.length > 0 ? (
             notifications.map((item) => (

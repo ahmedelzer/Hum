@@ -1,5 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Animated, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  Animated,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { scale } from "react-native-size-matters";
 import { HStack } from "../../../components/ui";
 import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
@@ -8,9 +13,11 @@ import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSc
 import { theme } from "../../Theme";
 
 export default function CardInteraction({ item, fieldsType }) {
-
-  const [active, setActive] = useState(item[fieldsType.indexOfInteraction]??0); // 1: like, -1: dislike, 0: none
- useEffect(() => {
+  const [active, setActive] = useState(
+    item[fieldsType.indexOfInteraction] ?? 0
+  ); // 1: like, -1: dislike, 0: none
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
     setActive(item[fieldsType.indexOfInteraction] ?? 0);
   }, [item[fieldsType.indexOfInteraction]]);
   // const likeAnim = useRef(
@@ -20,7 +27,7 @@ export default function CardInteraction({ item, fieldsType }) {
   //   new Animated.Value(item[fieldsType.indexOfInteraction] === -1 ? 1 : 0)
   // ).current;
 
- // Re-initialize animations when active state changes
+  // Re-initialize animations when active state changes
   const likeAnim = useRef(new Animated.Value(0)).current;
   const dislikeAnim = useRef(new Animated.Value(0)).current;
 
@@ -56,106 +63,126 @@ export default function CardInteraction({ item, fieldsType }) {
   const handlePress = async (type, field) => {
     const newIndex =
       type === "like" ? (active === 1 ? 0 : 1) : active === -1 ? 0 : -1;
-
+    // setLoading(true);
     const req = await RunsSpacialAction(
       field,
       item[fieldsType.idField],
       newIndex !== 0,
       NodeMenuItemsSchemaActions
     );
-    
+
     if (req) {
+      console.log(req, newIndex, "action");
+
       setActive(newIndex);
     }
+    setLoading(false);
   };
 
   return (
-    <HStack
-      space="lg"
-      className="items-center w-full gap-0"
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        height: scale(28),
-      }}// Simplified key
-    >
-      {/* LIKE */}
-      <TouchableOpacity
-        onPress={() => handlePress("like", fieldsType.likes)}
-        key={`${fieldsType.likes}-btn`} // Simplified key
-        activeOpacity={0.8}
-        style={{
-          flex: 1,
-          borderRadius: 8,
-          overflow: "hidden",
-        }}
-      >
-        <Animated.View
+    <View>
+      {loading ? (
+        <View
+          className="flex justify-center items-center"
           style={{
-            flex: 1,
-            backgroundColor: likeBackground,
-            justifyContent: "center",
+            flexDirection: "row",
             alignItems: "center",
-            opacity: 1, // Explicitly set
-            borderWidth: 0, // Explicitly set
+            height: scale(28),
           }}
         >
-          <GetIconMenuItem
-            key={`${item[fieldsType.idField]}-happy-${item[fieldsType.indexOfInteraction]}`} // Removed active from key
-            count={item[fieldsType.likes]}
-            iconName="happy"
-            size={18}
-            style={{ 
-              color: active == 1 ? theme.text : theme.text,
-              backgroundColor: 'transparent' // Ensure icon bg is transparent
-            }}
-          />
-        </Animated.View>
-      </TouchableOpacity>
-
-      {/* SPACER */}
-      <Animated.View
-        style={{
-          width: scale(1),
-          height: "100%",
-          backgroundColor: theme.body,
-          borderRadius: 1,
-        }}
-      />
-
-      {/* DISLIKE */}
-      <TouchableOpacity
-        onPress={() => handlePress("dislike", fieldsType.dislikes)}
-        activeOpacity={0.8}
-        key={`${fieldsType.dislikes}-btn`} // Added consistent key
-        style={{
-          flex: 1,
-          borderRadius: 8,
-          overflow: "hidden",
-        }}
-      >
-        <Animated.View
+          <ActivityIndicator size="small" color="black" />
+        </View>
+      ) : (
+        <HStack
+          space="lg"
+          className="items-center w-full gap-0"
           style={{
-            flex: 1,
-            backgroundColor: dislikeBackground,
-            justifyContent: "center",
+            flexDirection: "row",
             alignItems: "center",
-            opacity: 1, // Explicitly set
-            borderWidth: 0, // Explicitly set
-          }}
+            height: scale(28),
+          }} // Simplified key
         >
-          <GetIconMenuItem
-            key={`${item[fieldsType.idField]}-normal-${item[fieldsType.indexOfInteraction]}`} // Removed active from key
-            count={item[fieldsType.dislikes]}
-            iconName="normal"
-            size={18}
-            style={{ 
-              color: active == -1 ? theme.card : theme.text,
-              backgroundColor: 'transparent' // Ensure icon bg is transparent
+          {/* LIKE */}
+          <TouchableOpacity
+            onPress={() => handlePress("like", fieldsType.likes)}
+            key={`${fieldsType.likes}-btn`} // Simplified key
+            activeOpacity={0.8}
+            style={{
+              flex: 1,
+              borderRadius: 8,
+              overflow: "hidden",
+              height: "100%",
+            }}
+          >
+            <Animated.View
+              style={{
+                flex: 1,
+                backgroundColor: likeBackground,
+                justifyContent: "center",
+                alignItems: "center",
+                opacity: 1, // Explicitly set
+                borderWidth: 0, // Explicitly set
+              }}
+            >
+              <GetIconMenuItem
+                key={`${item[fieldsType.idField]}-happy-${item[fieldsType.indexOfInteraction]}`} // Removed active from key
+                count={item[fieldsType.likes]}
+                iconName="happy"
+                size={18}
+                style={{
+                  color: active == 1 ? theme.text : theme.text,
+                  backgroundColor: "transparent", // Ensure icon bg is transparent
+                }}
+              />
+            </Animated.View>
+          </TouchableOpacity>
+
+          {/* SPACER */}
+          <Animated.View
+            style={{
+              width: scale(1),
+              height: "100%",
+              backgroundColor: theme.body,
+              borderRadius: 1,
             }}
           />
-        </Animated.View>
-      </TouchableOpacity>
-    </HStack>
+
+          {/* DISLIKE */}
+          <TouchableOpacity
+            onPress={() => handlePress("dislike", fieldsType.dislikes)}
+            activeOpacity={0.8}
+            key={`${fieldsType.dislikes}-btn`} // Added consistent key
+            style={{
+              flex: 1,
+              borderRadius: 8,
+              overflow: "hidden",
+              height: "100%",
+            }}
+          >
+            <Animated.View
+              style={{
+                flex: 1,
+                backgroundColor: dislikeBackground,
+                justifyContent: "center",
+                alignItems: "center",
+                opacity: 1, // Explicitly set
+                borderWidth: 0, // Explicitly set
+              }}
+            >
+              <GetIconMenuItem
+                key={`${item[fieldsType.idField]}-normal-${item[fieldsType.indexOfInteraction]}`} // Removed active from key
+                count={item[fieldsType.dislikes]}
+                iconName="normal"
+                size={18}
+                style={{
+                  color: active == -1 ? theme.text : theme.text,
+                  backgroundColor: "transparent", // Ensure icon bg is transparent
+                }}
+              />
+            </Animated.View>
+          </TouchableOpacity>
+        </HStack>
+      )}
+    </View>
   );
 }

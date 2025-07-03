@@ -6,14 +6,18 @@ import {
   projectProxyRoute,
   websocketBaseURI,
 } from "../../../request";
-import WSSchemaAction from "../../Schemas/WSSchema/WSSchemaAction.json";
-import {  disconnectWS, getWSInstance } from "./WSManager";
+import defWSSchemaAction from "../../Schemas/WSSchema/WSSchemaAction.json";
+import { disconnectWS, getWSInstance } from "./WSManager";
 import { WSOperation } from "./WSOperation";
 import { selectSelectedNode } from "../../reducers/LocationReducer";
 import store from "../../store/reduxStore"; // ⬅️ your Redux store
 
-export async function ConnectToWS(setWSsetMessage, setWS_Connected, row = {}) {
-  
+export async function ConnectToWS(
+  setWSsetMessage,
+  setWS_Connected,
+  row = {},
+  wS_SchemaAction = defWSSchemaAction
+) {
   const token = await GetToken();
 
   if (!token) {
@@ -21,7 +25,7 @@ export async function ConnectToWS(setWSsetMessage, setWS_Connected, row = {}) {
     return;
   }
   const buildUrl = buildApiUrl(
-    WSSchemaAction,
+    wS_SchemaAction,
     {
       ...row,
       token: token,

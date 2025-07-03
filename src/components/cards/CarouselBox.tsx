@@ -1,31 +1,22 @@
-import { AnimatePresence, Motion } from "@legendapp/motion";
-import React, { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
-import { moderateScale, scale } from "react-native-size-matters";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
+import { moderateScale, scale } from "react-native-size-matters";
 import {
-  AvatarImage,
   Box,
   Button,
   Card,
   HStack,
-  Icon,
-  Image as GlustackImage,
-  Pressable,
+  Image,
   Text,
   VStack,
-  Image,
 } from "../../../components/ui";
-import { GetMediaUrl } from "../../utils/operation/GetMediaUrl";
-import ImageRoute from "../../utils/component/ImageRoute";
-import { Image as ReactImage } from "react-native";
 import { publicImageURL } from "../../../request";
-import FastImage from "react-native-fast-image";
-import ImageViewer from "react-native-image-zoom-viewer";
-import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
-import { theme } from "../../Theme";
-import { RunsSpacialAction } from "../../utils/operation/RunsSpacialAction";
 import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSchemaActions.json";
+import { theme } from "../../Theme";
+import GetIconMenuItem from "../../utils/component/GetIconMenuItem";
+import { GetMediaUrl } from "../../utils/operation/GetMediaUrl";
+import { RunsSpacialAction } from "../../utils/operation/RunsSpacialAction";
 
 //!locaization
 // fasimge,react-native-image-zoom-viewer

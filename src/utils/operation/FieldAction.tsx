@@ -1,8 +1,6 @@
 import APIHandling from "../../../components/hooks/APIsFunctions/APIHandling";
 import { GetProjectUrl, SetReoute } from "../../../request";
 
-
-
 export default async function FieldAction(
   id,
   // modalIsOpen,
@@ -18,6 +16,5 @@ export default async function FieldAction(
       action.dashboardFormActionMethodType.split(":")[1],
       value
     );
-   
   }
 }

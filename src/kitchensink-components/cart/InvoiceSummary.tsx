@@ -15,7 +15,11 @@ import { getField } from "../../utils/operation/getField";
 import { initialState } from "../../components/Pagination/initialState";
 import reducer from "../../components/Pagination/reducer";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
-import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
+import CartInfoSchemaAction from "../../Schemas/MenuSchema/CartInfoSchemaAction.json";
+import CustomerCartInfo from "./CustomerCartInfo";
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import useFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
+import CustomerInfoSchema from "../../Schemas/MenuSchema/CartInfoSchema.json";
 
 // Enable LayoutAnimation on Android
 if (
@@ -25,7 +29,7 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-export default function InvoiceSummary({ title, cartInfo }) {
+export default function InvoiceSummary() {
   const [expanded, setExpanded] = useState(true);
   const [reRequest, setReRequest] = useState(false);
   const [_WSsetMessage, setWSsetMessage] = useState("{}");
@@ -113,7 +117,22 @@ export default function InvoiceSummary({ title, cartInfo }) {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
   };
-
+  const cartInfoDataSourceAPI = (query) => {
+    SetReoute(CartSchema.projectProxyRoute);
+    return buildApiUrl(query);
+  };
+  const getCustomerCartAction =
+    CartInfoSchemaAction &&
+    CartInfoSchemaAction.find(
+      (action) => action.dashboardFormActionMethodType === "Get"
+    );
+  const { data: GetCustomerCartInfo } = useFetchWithoutBaseUrl(
+    cartInfoDataSourceAPI(getCustomerCartAction)
+  );
+  const totalField = getField(
+    CustomerInfoSchema?.dashboardFormSchemaParameters,
+    "totalAmount"
+  );
   return (
     <View className="mt-1 mb-6 border border-accent rounded-xl p-2">
       {/* Header area - tap to toggle */}
@@ -122,10 +141,10 @@ export default function InvoiceSummary({ title, cartInfo }) {
         activeOpacity={0.7}
         className="mt-1 mb-2 rounded-xl p-2 !bg-accent flex-row justify-between items-center"
       >
-        <Text className="text-lg font-bold text-body">{title}</Text>
+        <Text className="text-lg font-bold text-body">Order Summary</Text>
         <Text className="text-lg font-bold text-body">
-          {cartInfo?.TotalAmount
-            ? `$${cartInfo.TotalAmount.toFixed(2)}`
+          {GetCustomerCartInfo?.[totalField]
+            ? `$${GetCustomerCartInfo[totalField].toFixed(2)}`
             : "$0.00"}
         </Text>
       </TouchableOpacity>
@@ -133,33 +152,22 @@ export default function InvoiceSummary({ title, cartInfo }) {
       {/* Expandable details */}
       {expanded && (
         <View className="space-y-1 mt-2">
-          <Row label="Total Amount" value={cartInfo.TotalAmount ?? 0} />
-          <Row label="Total Tax" value={cartInfo.TotalTaxAmount ?? 0} />
-          <Row label="Total Fees" value={cartInfo.TotalFeesAmount ?? 0} />
-          <Row
-            label="Total Discount"
-            value={cartInfo.TotalDiscountAmount ?? 0}
-          />
-          <Row label="Net Amount" value={cartInfo.NetAmount ?? 0} />
-          <Row
-            label="Special Net Amount"
-            value={cartInfo.SpecialNetAmount ?? 0}
-          />
-          <Row
-            label="Shipments Needed"
-            value={cartInfo.TotalShipmentsNeeded ?? 0}
-          />
+          {GetCustomerCartInfo &&
+            CustomerInfoSchema?.dashboardFormSchemaParameters
+              .filter((i) => !i.isIDField)
+              .map((i) => (
+                <View
+                  className="flex-row mt-2 items-center justify-between"
+                  key={i.dashboardFormSchemaID}
+                >
+                  <Text className="text-md">{i.parameterTitel}</Text>
+                  <Text className="text-md">
+                    {GetCustomerCartInfo[i.parameterField]}
+                  </Text>
+                </View>
+              ))}
         </View>
       )}
-    </View>
-  );
-}
-
-function Row({ label, value = 0 }) {
-  return (
-    <View className="flex flex-row justify-between">
-      <Text className="text-base text-text">{label}</Text>
-      <Text className="text-base font-semibold text-text">{value}</Text>
     </View>
   );
 }

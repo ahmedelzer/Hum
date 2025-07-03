@@ -21,10 +21,10 @@ function AuthProvider(props) {
   useEffect(() => {
     (async function () {
       const result = await retrieveSecureValue("token");
-      const remember = await retrieveSecureValue("rememberMe");
+      // const remember = await retrieveSecureValue("rememberMe");
       const onboarded = await checkOnboarding();
       setHasOnboarded(onboarded);
-      if (remember !== "true" && Platform.OS !== "web") {
+      if ("true" !== "true" && Platform.OS !== "web") {
         // either "false" or missing → wipe out the token
         await deleteKey("token");
         await deleteKey("rememberMe");

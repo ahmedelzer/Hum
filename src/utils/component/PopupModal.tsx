@@ -12,6 +12,7 @@ import {
 } from "../../../components/ui"; // or your UI library
 import { AntDesign } from "@expo/vector-icons";
 import FormContainer from "../../components/form-container/FormContainer";
+import { useSelector } from "react-redux";
 
 const PopupModal = ({
   haveFooter = true,
@@ -26,6 +27,7 @@ const PopupModal = ({
   isFormModal = true,
   children,
 }) => {
+  const localization = useSelector((state) => state.localization.localization);
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="md">
       <ModalContent>
@@ -49,20 +51,21 @@ const PopupModal = ({
           )}
           {children && children}
         </ModalBody>
-          {haveFooter&&(<ModalFooter>
-          <Button
-            isDisabled={disable}
-            variant="outline"
-            action="secondary"
-            onPress={onClose}
-          >
-            <ButtonText>Cancel</ButtonText>
-          </Button>
-          <Button onPress={onSubmit} isDisabled={disable}>
-            <ButtonText>Save</ButtonText>
-          </Button>
-        </ModalFooter>)}
-        
+        {haveFooter && (
+          <ModalFooter>
+            <Button
+              isDisabled={disable}
+              variant="outline"
+              action="secondary"
+              onPress={onClose}
+            >
+              <ButtonText>{localization.formSteps.popup.cancel}</ButtonText>
+            </Button>
+            <Button onPress={onSubmit} isDisabled={disable}>
+              <ButtonText>{localization.formSteps.popup.done}</ButtonText>
+            </Button>
+          </ModalFooter>
+        )}
       </ModalContent>
     </Modal>
   );

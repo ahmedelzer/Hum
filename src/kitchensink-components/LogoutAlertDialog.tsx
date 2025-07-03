@@ -36,8 +36,8 @@ const LogoutAlertDialog = ({
     await deleteKey("rememberMe");
     persistor.purge();
     if (Platform.OS === "web") {
-      // navigation.navigate("Home");
-      window.location.reload(); // Web reload
+      window.location.href = "/";
+      // window.location.reload(); // Web reload
     } else {
       DevSettings.reload();
     }

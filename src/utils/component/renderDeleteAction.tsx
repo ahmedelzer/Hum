@@ -15,13 +15,7 @@ const deleteActionStyles = StyleSheet.create({
   },
 });
 
-export const RenderDeleteAction = (
-  progress,
-  dragX,
-  item,
-  fieldsType,
-  schemaActions
-) => {
+export const RenderDeleteAction = (progress, dragX, deleteItem) => {
   const trans = dragX.interpolate({
     inputRange: [0, 50, 100, 101],
     outputRange: [0, 0, 0, 1],
@@ -33,16 +27,7 @@ export const RenderDeleteAction = (
       // style={{ transform: [{ translateX: trans }] }}
       >
         <TouchableOpacity
-          onPress={async() => {
-            await AddItemToCart(
-              { ...item, addQuantity: -1, [fieldsType.cardAction]: 1 },
-              () => {},
-              null,
-              fieldsType,
-              schemaActions,
-              item[fieldsType.cardAction] - 1 || 1
-            );
-          }}
+          onPress={deleteItem}
           className={"px-2 text-body  rounded-full py-2"}
         >
           <AntDesign name="delete" size={18} className="!text-body" />

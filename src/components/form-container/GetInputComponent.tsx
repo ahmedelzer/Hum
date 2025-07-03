@@ -9,6 +9,7 @@ import {
   TextParameter,
   RadioListParameter,
   LocationParameter,
+  InputWithLabel,
 } from "./index";
 export function GetInputComponent(type) {
   switch (type) {
@@ -39,6 +40,9 @@ export function GetInputComponent(type) {
     case "areaMapLongitudePoint":
     case "mapLongitudePoint":
       return LocationParameter;
+    case "inputWithLabel":
+    case "additionalInputWithLabel":
+      return InputWithLabel;
     default:
       return TextParameter;
   }

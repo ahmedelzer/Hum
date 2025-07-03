@@ -10,6 +10,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { locationMap } from "../form-container/inputs/styles";
+import { useSelector } from "react-redux";
 // Fix for Leaflet marker icons not showing correctly
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -26,7 +27,7 @@ const LocationMap = ({
   fields,
   haveRadius,
 }) => {
-  const { localization } = useContext(LanguageContext);
+  const localization = useSelector((state) => state.localization.localization);
 
   const latitudeField = fields.find(
     (param) =>
@@ -111,7 +112,7 @@ const LocationMap = ({
           </>
         )}
       </MapContainer>
-
+      {/* 
       {radiusField && clickable && haveRadius && (
         <div className={locationMap.radiusContainer}>
           <label>
@@ -127,7 +128,7 @@ const LocationMap = ({
             />
           </label>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

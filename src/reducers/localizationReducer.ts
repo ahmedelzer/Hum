@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { I18nManager, Platform } from "react-native";
 import staticLocalization from "../../context/staticLocalization.json";
+import { DeepMerge } from "../components/language/DeepMerge";
 
 // Async thunk to initialize localization state from storage
 export const initializeLocalization = createAsyncThunk(
@@ -12,6 +13,10 @@ export const initializeLocalization = createAsyncThunk(
       const savedLocalization = await AsyncStorage.getItem("localization");
       const savedLanguageRow = await AsyncStorage.getItem("languageRow");
       const savedLanguageID = await AsyncStorage.getItem("languageID");
+      const marge = DeepMerge(
+        staticLocalization,
+        JSON.parse(savedLocalization)
+      );
       // Apply RTL setting if needed
       if (savedDirection !== null) {
         const direction = savedDirection === "true";
@@ -25,9 +30,7 @@ export const initializeLocalization = createAsyncThunk(
 
       return {
         languageRow: savedLanguageRow ? JSON.parse(savedLanguageRow) : {},
-        localization: savedLocalization
-          ? JSON.parse(savedLocalization)
-          : staticLocalization,
+        localization: marge,
         languageID: savedLanguageID || "",
       };
     } catch (err) {

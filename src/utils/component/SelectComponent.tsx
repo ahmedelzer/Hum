@@ -44,7 +44,7 @@ export default function SelectComponent({
         className={`${os === "web" ? "!py-2" : ""} flex-1 flex-row items-center h-11 justify-between px-3 bg-transparent border border-border rounded-md`}
       >
         <SelectInput
-          placeholder="Select option"
+          placeholder={localization.inputs.select.placeholder}
           value={selectedValue}
           className="text-base text-text"
         />

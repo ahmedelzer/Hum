@@ -44,11 +44,6 @@ export function buildApiUrl(
   const selectedNode = selectSelectedNode(store.getState());
   const selectedLocation = store.getState().location.selectedLocation;
   const languageRow = store.getState().localization.languageRow;
-
-  console.log("====================================");
-  console.log(selectedNode, "selectedNode");
-  console.log(languageRow, "languageRow");
-  console.log("====================================");
   const constants = {
     ...baseConstants,
     ...languageRow,

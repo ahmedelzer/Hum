@@ -38,7 +38,7 @@ export default function FieldGroup({
             // onFocus={onFocus}
             // {...props}
             placeholder={props.placeholder}
-            // style={[inputStyle, props.style]}
+            style={props.style}
           />
         </Input>
       )}

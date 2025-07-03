@@ -5,26 +5,32 @@ import { I18nManager } from "react-native";
 import { HStack, Icon, Pressable, Text, VStack } from "../../../components/ui";
 import ActionBar from "../../components/cards/ActionBar";
 import { theme } from "../../Theme";
+import { isRTL } from "../operation/isRTL";
 
 export const CollapsibleSection = ({
   title,
   icon: IconComponent,
   children,
-  expandedSection,
-  toggleSection,
   withSpecialAction = false,
   setheader = false,
   textColor = theme.text,
   iconColor = theme.text,
   bgChildrenColor = theme.body,
+  buttonClassName = "",
+  defaultExpandedSection = false,
 }) => {
-  const isOpen = expandedSection === title;
   const navigation = !setheader && useNavigation();
   const [openAction, setOpenAction] = useState(true);
+  const [expandedSection, setExpandedSection] = useState(
+    defaultExpandedSection
+  );
+  const toggleSection = () => {
+    setExpandedSection(!expandedSection);
+  };
 
   function handlePress() {
     if (!withSpecialAction) {
-      toggleSection(title);
+      toggleSection();
     } else {
       setOpenAction(!openAction);
     }
@@ -45,7 +51,11 @@ export const CollapsibleSection = ({
   //todo make argument for all colors and set init values
   return (
     <VStack space="lg">
-      <Pressable onPress={handlePress} onLongPress={handlePress}>
+      <Pressable
+        onPress={handlePress}
+        onLongPress={handlePress}
+        className={buttonClassName}
+      >
         <HStack className="justify-between items-center">
           <HStack space="md">
             {IconComponent && <Icon as={IconComponent} className="text-text" />}
@@ -53,7 +63,7 @@ export const CollapsibleSection = ({
           </HStack>
           <Icon
             as={() =>
-              isOpen ? (
+              expandedSection ? (
                 <Feather
                   name="chevron-down"
                   size={24}
@@ -61,7 +71,7 @@ export const CollapsibleSection = ({
                 />
               ) : (
                 <Feather
-                  name={I18nManager.isRTL ? "chevron-left" : "chevron-right"}
+                  name={isRTL() ? "chevron-left" : "chevron-right"}
                   size={24}
                   style={{ color: iconColor }}
                 />
@@ -70,7 +80,7 @@ export const CollapsibleSection = ({
           />
         </HStack>
       </Pressable>
-      {isOpen && (
+      {expandedSection && (
         <VStack
           style={{
             backgroundColor: bgChildrenColor,

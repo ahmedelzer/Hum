@@ -1,27 +1,22 @@
 import { Entypo } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 import { CollapsibleSection } from "../../../utils/component/Collapsible";
+import { Text } from "react-native";
 import LocationMap from "../../maps/LocationMap";
-import LocationMapWeb from "../../maps/LocationMap.web";
-const INITIAL_REGION = {
-  latitude: 37.33,
-  longitude: -122,
-  latitudeDelta: 2,
-  longitudeDelta: 2,
-};
+// Lazy import only the correct component
 export default function LocationParameter({ ...props }) {
+  // const LocationMap = React.lazy(() =>
+  //   Platform.OS === "web"
+  //     ? import("../../maps/LocationMap.web")
+  //     : import("../../maps/LocationMap")
+  // );
   let { value, enable, title, className, control, fieldName, type } = props;
   const currentLocation = useSelector(
     (state) => state.location.currentLocation
   );
-  const [expandedSection, setExpandedSection] = useState(null);
-
-  const toggleSection = (section) => {
-    setExpandedSection(expandedSection === section ? null : section);
-  };
   const [location, setLocation] = useState(
     props.value || currentLocation || {}
   );
@@ -33,11 +28,9 @@ export default function LocationParameter({ ...props }) {
       <CollapsibleSection
         title="Current Location"
         icon={() => <Entypo name="location-pin" size={24} />}
-        expandedSection={expandedSection}
-        toggleSection={toggleSection}
         setheader={true}
       >
-        {Platform.OS == "web" ? (
+        {/* {Platform.OS == "web" ? (
           <LocationMapWeb
             location={location}
             onLocationChange={handleLocationChange}
@@ -45,7 +38,16 @@ export default function LocationParameter({ ...props }) {
             fields={props.formSchemaParameters}
             haveRadius={props.type === "areaMapLongitudePoint"}
           />
-        ) : (
+        ) : ( */}
+        <LocationMap
+          location={location}
+          onLocationChange={handleLocationChange}
+          clickable={true}
+          fields={props.formSchemaParameters}
+          haveRadius={props.type === "areaMapLongitudePoint"}
+        />
+        {/* )} */}
+        {/* <Suspense fallback={<Text>Loading Map...</Text>}>
           <LocationMap
             location={location}
             onLocationChange={handleLocationChange}
@@ -53,9 +55,9 @@ export default function LocationParameter({ ...props }) {
             fields={props.formSchemaParameters}
             haveRadius={props.type === "areaMapLongitudePoint"}
           />
-        )}
+        </Suspense> */}
       </CollapsibleSection>
-      {props.formSchemaParameters
+      {/* {props.formSchemaParameters
         .filter(
           (i) =>
             i.parameterType.startsWith("areaMap") ||
@@ -76,7 +78,7 @@ export default function LocationParameter({ ...props }) {
               return null; // No need to render hidden InputField if just syncing values
             }}
           />
-        ))}
+        ))} */}
     </View>
   );
 }

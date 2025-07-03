@@ -3,14 +3,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LanguageSchema from "./src/Schemas/LanguageSchema/LanguageSchema.json";
 import { retrieveSecureValue } from "./src/store/secureStore";
 import { getField } from "./src/utils/operation/getField";
-export const baseURL = "https://maingatewayapi.ihs-solutions.com:8000";
-export const defaultProjectProxyRoute =
-  "http://maingatewayapi.ihs-solutions.com:8000/BrandingMart/api/";
-export const defaultProjectProxyRouteWithoutAPI =
-  "http://maingatewayapi.ihs-solutions.com:8000/BrandingMart/";
-export const publicImageURL = "https://ihs-solutions.com:5055/";
-export const websocketBaseURI =
-  "wss://maingatewayapi.ihs-solutions.com:8000/Chanels";
+//export const domainURL = "https://maingatewayapi.ihs-solutions.com:8000";
+export const domainURL = "41.196.0.25";
+export const baseURL = "http://" + domainURL + ":8000";
+export const defaultProjectProxyRoute = `${baseURL}/BrandingMart/api/`;
+export const defaultProjectProxyRouteWithoutAPI = `${baseURL}/BrandingMart/`;
+export const publicImageURL = "http://" + domainURL + ":5055/";
+//export const publicImageURL = "https://ihs-solutions.com:5055/";
+//export const websocketBaseURI =
+// "wss://maingatewayapi.ihs-solutions.com:8000/Chanels";
+export const websocketBaseURI = "ws://" + domainURL + ":9000";
 // export const languageName = window.localStorage.getItem("language");
 // export const languageID = window.localStorage.getItem("languageID");
 // export const projectProxyRoute =

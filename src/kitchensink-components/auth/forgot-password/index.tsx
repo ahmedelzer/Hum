@@ -2,12 +2,11 @@ import { Heading } from "@/components/ui/heading";
 import { ArrowLeftIcon, Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
-import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Keyboard } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import FormContainer from "../../../components/form-container/FormContainer";
@@ -28,7 +27,6 @@ const ForgotPasswordScreen = ({ route }) => {
   const { os } = useDeviceInfo();
   const [reqError, setReqError] = useState(null);
   const [disable, setDisable] = useState(null);
-  const toast = useToast();
   const navigation = useNavigation();
   const DValues = { messageType: "0", username: "testAhmed12" };
   const handleKeyPress = (handleSubmit: any) => {
@@ -45,7 +43,6 @@ const ForgotPasswordScreen = ({ route }) => {
 
   const onSubmit = async (data: any) => {
     const body = { ...control._formValues, ...data };
-
     const postAction =
       ForgetSchemaActions &&
       ForgetSchemaActions.find(
@@ -69,7 +66,7 @@ const ForgotPasswordScreen = ({ route }) => {
   return (
     <VStack
       className={`max-w-[440px] w-full  h-full mt-2 ${
-        os == "web" && "m-auto bg-card shadow-lg !h-fit px-6 py-3 rounded-lg"
+        os == "web" && "m-auto bg-body shadow-lg !h-fit px-6 py-3 rounded-lg"
       }`}
       space="md"
     >
@@ -77,7 +74,18 @@ const ForgotPasswordScreen = ({ route }) => {
         <Pressable
           className="flex-1"
           onPress={() => {
-            navigation.goBack();
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else {
+              if (Platform.OS === "web") {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "SignIn" }],
+                });
+              } else {
+                navigation.navigate("SignIn");
+              }
+            }
           }}
         >
           <Icon as={ArrowLeftIcon} className="text-text" size="xl" />

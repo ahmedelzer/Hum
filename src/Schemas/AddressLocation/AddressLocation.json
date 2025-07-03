@@ -2,6 +2,12 @@
   "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
   "schemaType": "AddressLocation",
   "idField": "personAddressLocationID",
+  "dashboardFormSchemaInfoDTOView": {
+    "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+    "schemaHeader": "Login Information",
+    "addingHeader": "add new Market Place",
+    "editingHeader": "Edit Cart"
+  },
   "dashboardFormSchemaParameters": [
     {
       "dashboardFormSchemaParameterID": "bbc47b3c-baba-4c80-8a8e-50d9875a15d6",

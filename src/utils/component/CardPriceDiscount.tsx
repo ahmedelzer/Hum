@@ -21,8 +21,8 @@ export default function CardPriceDiscount({
     <View
       className={
         item[fieldsType.discount]
-          ? "justify-between flex-row flex-wrap items-center mt-2 space-x-2"
-          : "justify-center flex-row flex-wrap items-center mt-2 space-x-2"
+          ? "justify-between flex-row flex-wrap items-center mt-2"
+          : "justify-center flex-row flex-wrap items-center mt-2"
       }
       // If you don't use nativewind, convert these to style object
     >

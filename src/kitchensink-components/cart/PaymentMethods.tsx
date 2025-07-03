@@ -27,6 +27,7 @@ import { useForm } from "react-hook-form";
 import { CollapsibleSection } from "../../utils/component/Collapsible";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePayment } from "../../reducers/PaymentReducer";
+import { theme } from "../../Theme";
 
 // Assume you have these components from your UI lib:
 
@@ -101,10 +102,8 @@ export default function PaymentMethods({
   selected,
   label = "Select Payment Method",
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const paymentValueIndex = useSelector(
-    (state) => state.payment.paymentValueIndex
-  );
+  const paymentValueIndex =
+    useSelector((state) => state.payment.paymentValueIndex) || "0";
   const paymentRow = useSelector((state) => state.payment.paymentRow);
   const dispatch = useDispatch();
   const animation = useRef(new Animated.Value(0)).current;
@@ -115,18 +114,14 @@ export default function PaymentMethods({
     formState: { errors },
   } = useForm();
 
-  const toggleExpanded = (section) => {
-    setExpanded(expanded === section ? null : section);
-  };
-
-  useEffect(() => {
-    Animated.timing(animation, {
-      toValue: expanded ? 1 : 0,
-      duration: 300,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: false,
-    }).start();
-  }, [expanded]);
+  // useEffect(() => {
+  //   Animated.timing(animation, {
+  //     toValue: expanded ? 1 : 0,
+  //     duration: 300,
+  //     easing: Easing.out(Easing.ease),
+  //     useNativeDriver: false,
+  //   }).start();
+  // }, [expanded]);
 
   const maxHeight = 150; // Adjust based on content size
   const heightInterpolate = animation.interpolate({
@@ -153,89 +148,89 @@ export default function PaymentMethods({
   console.log(paymentRow, paymentValueIndex, "payment");
   console.log("====================================");
   return (
-    <ScrollView showsVerticalScrollIndicator={false} className="mt-4">
-      {/* Header - toggle */}
-      <View className="p-4 bg-accent rounded-lg mb-2">
-        <CollapsibleSection
-          title="Payment Methods"
-          icon={null}
-          expandedSection={expanded}
-          toggleSection={toggleExpanded}
-          setheader={true}
+    <View className="mt-6 border border-border bg-body rounded-xl p-2 w-full">
+      <CollapsibleSection
+        title="Payment Methods"
+        icon={null}
+        setheader={true}
+        iconColor={theme.body}
+        textColor={theme.body}
+        buttonClassName={
+          "rounded-xl p-2 !bg-accent text-lg font-bold text-body"
+        }
+      >
+        {/* Animated sliding container */}
+        <Animated.View
+          style={{ height: heightInterpolate, overflow: "hidden" }}
         >
-          {/* Animated sliding container */}
-          <Animated.View
-            style={{ height: heightInterpolate, overflow: "hidden" }}
-          >
-            <RadioParameter
-              control={control}
-              enable={true}
-              value={paymentValueIndex}
-              fieldName={"payment"}
-              values={values}
-            />
-            {paymentValueIndex === "1" && (
-              <View className="mt-4">
-                <View className="flex-row items-center space-x-3">
-                  <TouchableOpacity
-                    className="p-2 rounded-lg me-2 bg-accent items-center justify-center"
-                    // onPress={() => setIsModalVisible(true)}
+          <RadioParameter
+            control={control}
+            enable={true}
+            value={paymentValueIndex}
+            fieldName={"payment"}
+            values={values}
+          />
+          {paymentValueIndex === "1" && (
+            <View className="mt-4">
+              <View className="flex-row items-center space-x-3">
+                <TouchableOpacity
+                  className="p-2 rounded-lg me-2 bg-accent items-center justify-center"
+                  // onPress={() => setIsModalVisible(true)}
+                >
+                  <Entypo name="plus" size={20} color="white" />
+                </TouchableOpacity>
+
+                <Select
+                  value={paymentRow ? paymentRow.name : "error"} // only the id is passed around
+                  onValueChange={(selected) => {
+                    dispatch(
+                      updatePayment({
+                        index: control._formValues.payment,
+                        paymentRow: selected,
+                      })
+                    ); // store full object
+                  }}
+                  className="flex-1"
+                >
+                  <SelectTrigger
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 justify-between h-11"
                   >
-                    <Entypo name="plus" size={20} color="white" />
-                  </TouchableOpacity>
+                    <SelectInput
+                      placeholder={label}
+                      value={paymentRow ? paymentRow.name : "error"}
+                      className="text-base text-text h-12"
+                    />
+                    <SelectIcon
+                      as={AntDesign}
+                      name="down"
+                      className="mr-3 text-text"
+                    />
+                  </SelectTrigger>
 
-                  <Select
-                    value={paymentRow ? paymentRow.name : "error"} // only the id is passed around
-                    onValueChange={(selected) => {
-                      dispatch(
-                        updatePayment({
-                          index: control._formValues.payment,
-                          paymentRow: selected,
-                        })
-                      ); // store full object
-                    }}
-                    className="flex-1"
-                  >
-                    <SelectTrigger
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 justify-between h-11"
-                    >
-                      <SelectInput
-                        placeholder={label}
-                        value={paymentRow ? paymentRow.name : "error"}
-                        className="text-base text-text h-12"
-                      />
-                      <SelectIcon
-                        as={AntDesign}
-                        name="down"
-                        className="mr-3 text-text"
-                      />
-                    </SelectTrigger>
+                  <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
 
-                    <SelectPortal>
-                      <SelectBackdrop />
-                      <SelectContent>
-                        <SelectDragIndicatorWrapper>
-                          <SelectDragIndicator />
-                        </SelectDragIndicatorWrapper>
-
-                        {paymentMethods.map((method) => (
-                          <SelectItem
-                            key={method.id}
-                            value={method}
-                            label={method.name}
-                          />
-                        ))}
-                      </SelectContent>
-                    </SelectPortal>
-                  </Select>
-                </View>
+                      {paymentMethods.map((method) => (
+                        <SelectItem
+                          key={method.id}
+                          value={method}
+                          label={method.name}
+                        />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
+                </Select>
               </View>
-            )}
-          </Animated.View>
-        </CollapsibleSection>
-      </View>
-    </ScrollView>
+            </View>
+          )}
+        </Animated.View>
+      </CollapsibleSection>
+    </View>
   );
 }

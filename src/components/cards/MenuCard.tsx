@@ -13,7 +13,7 @@ import ImageCardActions from "./ImageCardActions";
 export const MenuCard = ({ item, fieldsType, schemaActions }) => {
   return (
     <View>
-      <View className={`relative flex flex-row`}>
+      <View className={`relative flex flex-row h-full`}>
         <View className="w-1/2 justify-center items-end px-1">
           <ImageCardActions fieldsType={fieldsType} item={item}>
             <View

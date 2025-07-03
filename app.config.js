@@ -4,8 +4,11 @@ export default {
     slug: "HUM-App",
     version: "1.0.0",
     orientation: "portrait",
+    platforms: ["ios", "android", "web"],
     icon: "./assets/icon.png",
-    userInterfaceStyle: "light",
+    scheme: "myapp",
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true,
     splash: {
       image: "./assets/icon.png",
       resizeMode: "contain",
@@ -42,6 +45,7 @@ export default {
       },
     },
     web: {
+      bundler: "metro",
       favicon: "./assets/favicon.png",
     },
     plugins: [
@@ -60,6 +64,9 @@ export default {
       eas: {
         projectId: "e70421d7-bd0c-4677-90b5-2f8d26945831",
       },
+    },
+    experiments: {
+      typedRoutes: true,
     },
   },
 };

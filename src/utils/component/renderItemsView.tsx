@@ -6,7 +6,7 @@ import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.js
 import MenuView from "../../components/menu-components/MenuView";
 import HomePage from "../../kitchensink-components/HomestayPage";
 import MarketPlace from "../../kitchensink-components/MarketPlace";
-import MobileProfilePage from "../../kitchensink-components/MobileProfilePage";
+import MobileProfilePage from "../../kitchensink-components/profile/MobileProfilePage";
 import { updateCurrentLocation } from "../../reducers/LocationReducer";
 import { SetResponsiveContainer } from "../component/SetResponsiveContainer";
 import { GetCard } from "../operation/GetCard";

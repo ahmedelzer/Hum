@@ -81,9 +81,13 @@ const MenuCardView = ({
     }
   };
   return (
-    <Pressable onPress={handlePress} onLongPress={handleLongPress}>
+    <Pressable
+      onPress={handlePress}
+      onLongPress={handleLongPress}
+      className="h-full"
+    >
       <Card
-        className={`items-center rounded-xl overflow-hidden my-4 border-1 ${
+        className={`items-center rounded-xl overflow-hidden border-1 h-ful ${
           selected ? "border-2 border-green-500 bg-green-100" : "bg-dark_card"
         }`}
       >
@@ -112,7 +116,11 @@ const MenuCardView = ({
             {
               platform: "web",
               component: (
-                <MenuCardWeb item={itemPackage} fieldsType={fieldsType} />
+                <MenuCardWeb
+                  item={itemPackage}
+                  fieldsType={fieldsType}
+                  schemaActions={schemaActions}
+                />
               ),
             },
           ]}

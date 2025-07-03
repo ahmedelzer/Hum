@@ -1,7 +1,7 @@
 import { Entypo } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { TouchableOpacity, View } from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
 import AddressLocationAction from "../../Schemas/AddressLocation/AddressLocationAction.json";
@@ -70,11 +70,17 @@ export default function AddLocation({
     <View>
       <PopupModal
         isOpen={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
+        onClose={() => {
+          setIsModalVisible(false);
+          Platform.OS !== "web" && reset();
+        }}
         onSubmit={async () => {
           await handleSubmit(onSubmit);
         }}
         control={control}
+        headerTitle={
+          AddressLocationSchema.dashboardFormSchemaInfoDTOView.addingHeader
+        }
         schema={AddressLocationSchema}
         errors={reqError || errors}
         disable={disable}

@@ -15,7 +15,7 @@ import {
   SelectDragIndicatorWrapper,
   SelectItem,
 } from "../../../../components/ui";
-//!localization
+import { useSelector } from "react-redux";
 function SelectParameter({
   values = [], // Array of objects with { label, value }
   value: defaultValue,
@@ -24,6 +24,7 @@ function SelectParameter({
   control,
   ...props
 }) {
+  const localization = useSelector((state) => state.localization.localization);
   // const [selectedValue, setSelectedValue] = useState(value); // Selected value
   // const [isFocus, setIsFocus] = useState(false);
   // // Prepare dropdown options
@@ -50,29 +51,6 @@ function SelectParameter({
         }}
         name={fieldName}
         render={({ field: { onChange, onBlur, value } }) => (
-          // <Dropdown
-          //   style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
-          //   placeholderStyle={styles.placeholderStyle}
-          //   selectedTextStyle={styles.selectedTextStyle}
-          //   inputSearchStyle={styles.inputSearchStyle}
-          //   iconStyle={styles.iconStyle}
-          //   data={dropdownData} // Map values dynamically
-          //   search
-          //   maxHeight={300}
-          //   labelField="label"
-          //   valueField="value"
-          //   placeholder={!isFocus ? "Select an item" : "..."}
-          //   searchPlaceholder="Search..."
-          //   value={selectedValue}
-          //   disabled={!enable} // Disable dropdown if not enabled
-          //   onFocus={() => setIsFocus(true)}
-          //   onBlur={() => setIsFocus(false)}
-          //   onChange={(item) => {
-          //     setSelectedValue(item.value);
-          //     onChange(item.value); // Call onChange handler
-          //     setIsFocus(false);
-          //   }}
-          // />
           <Select
             value={value || defaultValue}
             onValueChange={(newValue) => {
@@ -86,7 +64,7 @@ function SelectParameter({
               className="w-full h-11 flex flex-row justify-between"
             >
               <SelectInput
-                placeholder="Select option"
+                placeholder={localization.inputs.select.placeholder}
                 value={value || defaultValue}
                 className="text-base text-text"
               />

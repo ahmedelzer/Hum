@@ -16,7 +16,6 @@ export default async function LoadData(
   // const navigate = useNavigate(); seen error dom hooks
   const query = dataSourceAPI(getAction, requestedSkip, take);
 
-
   if (!getAction) return;
   if ((query !== lastQuery || reRequest) && (!loading || abortController)) {
     const cached = cache.getRows(requestedSkip, take);
@@ -25,7 +24,7 @@ export default async function LoadData(
     } else {
       dispatch({ type: "FETCH_INIT" });
       const headers = await SetHeaders();
-      
+
       fetch(query, {
         method: "GET",
         headers: {

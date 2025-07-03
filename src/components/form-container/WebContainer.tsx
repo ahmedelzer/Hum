@@ -9,6 +9,7 @@ export const WebContainer = ({
   control,
   errorResult,
   actionField,
+  ...props
 }) => {
   return (
     <div>
@@ -32,6 +33,10 @@ export const WebContainer = ({
                   value={SetValue(param)}
                   onChange={() => {}}
                   errorResult={errorResult}
+                  formSchemaParameters={
+                    tableSchema?.dashboardFormSchemaParameters
+                  }
+                  {...props}
                 />
               </Col>
             ))}

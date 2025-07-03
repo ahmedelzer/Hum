@@ -8,6 +8,8 @@ import React, {
 } from "react";
 import {
   I18nManager,
+  Image,
+  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -42,6 +44,15 @@ import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl
 import InvoiceSummary from "./InvoiceSummary";
 import PaymentMethods from "./PaymentMethods";
 import PaymentOptions from "./PaymentOptions";
+import ShippingOptions from "./ShippingOptions";
+import {
+  Checkbox,
+  CheckboxIcon,
+  CheckboxIndicator,
+  CheckboxLabel,
+} from "../../../components/ui";
+import { AntDesign } from "@expo/vector-icons";
+import PrivacyCheckbox from "../../utils/component/PrivacyCheckbox";
 
 const CartPage = () => {
   const [reRequest, setReRequest] = useState(false);
@@ -191,8 +202,14 @@ const CartPage = () => {
   // }, [reRequest]);
 
   const pressHandler = () => {
-    console.log("back");
-    navigation.navigate("Home");
+    if (Platform.OS === "web") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
+    } else {
+      navigation.navigate("Home");
+    }
   };
 
   // const oldCartButton = (
@@ -215,95 +232,11 @@ const CartPage = () => {
   //     </View>
   //   </TouchableOpacity>
   // );
-
-  return (
-    <View className="flex-1 bg-body">
-      {/* Header */}
-      <GoBackHeader
-        subTitle={localization.Hum_screens.cart.header.subTitle}
-        title={localization.Hum_screens.cart.header.title}
-        rightComponent={
-          <OldCartButton
-            projectUrl={GetProjectUrl()}
-            //onPress={() => navigation.navigate("OldCustomerCartScreen")}
-          />
-        }
-      />
-
-      {/* Scrollable Content */}
-      <ScrollView className="flex-1 py-2">
-        {/* Cart Items */}
-        {cartState.rows.length > 0 ? (
-          cartState.rows.map((item) => (
-            <View className="mb-1" key={item[cartFieldsType.idField]}>
-              <CardCartItem
-                schemaActions={CartSchemaActions}
-                fieldsType={cartFieldsType}
-                item={item}
-              />
-            </View>
-          ))
-        ) : (
-          <View className="flex-1 bg-body justify-center items-center">
-            <Text className="font-semibold text-lg text-accent">
-              {localization.Hum_screens.cart.emptyCart}
-            </Text>
-          </View>
-        )}
-
-        {/* Suggestions */}
-        <View className="flex flex-row">
-          <Text className="text-lg font-bold mt-6 items-start">
-            {localization.Hum_screens.cart.suggests}
-          </Text>
-        </View>
-        <SuggestCardContainer suggestContainerType={0} />
-
-        {/* Special Request */}
-
-        {/* Voucher */}
-        <View className="mt-4">
-          <View className="items-start">
-            <Text className="text-lg font-bold">
-              {localization.Hum_screens.cart.saveOrder}
-            </Text>
-          </View>
-          <InputWithAction
-            placeholder={localization.Hum_screens.cart.saveOrderPlaceholder}
-            submitButtonText={localization.Hum_screens.cart.submitButton}
-          />
-        </View>
-
-        {/* Total price */}
-      </ScrollView>
-      <View>
-        <PaymentMethods
-          paymentMethods={[
-            { id: "1", name: "Credit Card" },
-            { id: "2", name: "PayPal" },
-            { id: "3", name: "Cash on Delivery" },
-          ]}
-          selected={""}
-          onSelect={(id) => {
-            console.log("test");
-          }}
-          onAddPaymentMethod={() => {
-            // Open another modal or form to add a method
-          }}
-        />
-        <PaymentOptions
-          onApply={(options) => {
-            console.log("User Payment Options:", options);
-            // Submit to API or apply to cart
-          }}
-        />
-        <InvoiceSummary cartInfo={{}} title="test" />
-      </View>
-
-      {/* Footer (Static Buttons) */}
-      <View className="flex-row items-center justify-between bg-body py-4 border-t border-card">
+  const BottomButtons = () => {
+    return (
+      <View className="flex-row items-center justify-between bg-body py-4 border-t border-card px-2">
         <TouchableOpacity
-          className="flex-1 bg-card py-3 mr-2 rounded-lg"
+          className="flex-1 bg-card py-3 me-2 rounded-lg"
           onPress={pressHandler}
         >
           <Text className="text-center text-text">
@@ -312,19 +245,98 @@ const CartPage = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className={`${
-            cartState < 1 ? "bg-card" : "bg-accent"
+            cartRows.length < 1 ? "bg-card" : "bg-accent"
           } flex-1 py-3 rounded-lg`}
-          disabled={cartState < 1}
+          disabled={cartRows.length < 1}
           onPress={() => navigation.navigate("CheckoutScreen")}
         >
           <Text
             className={`text-center ${
-              cartState < 1 ? "text-text" : "text-body"
+              cartRows.length < 1 ? "text-text" : "text-body"
             }`}
           >
             {localization.Hum_screens.cart.checkoutButton}
           </Text>
         </TouchableOpacity>
+      </View>
+    );
+  };
+  return (
+    <View className="flex-1 bg-body">
+      <GoBackHeader
+        title={localization.Hum_screens.cart.header.title}
+        subTitle={localization.Hum_screens.cart.header.subTitle}
+        rightComponent={<OldCartButton projectUrl={GetProjectUrl()} />}
+      />
+
+      {/* Main layout */}
+      <ScrollView className="flex-1 py-2 px-2">
+        <View className="w-full flex flex-col md:!flex-row gap-4">
+          {/* LEFT COLUMN - CART + SUGGESTIONS */}
+
+          {/* RIGHT COLUMN - PAYMENT */}
+          <View className="flex-1 h-fit md:!order-5">
+            {cartRows.length > 0 ? (
+              cartRows.map((item) => (
+                <View className="mb-2" key={item[cartFieldsType.idField]}>
+                  <CardCartItem
+                    schemaActions={CartSchemaActions}
+                    fieldsType={cartFieldsType}
+                    item={item}
+                  />
+                </View>
+              ))
+            ) : (
+              <View className="items-center justify-center py-10">
+                <Text className="font-semibold text-lg text-accent">
+                  {localization.Hum_screens.cart.emptyCart}
+                </Text>
+              </View>
+            )}
+
+            {/* Suggestions */}
+            <Text className="text-lg font-bold mt-6 mb-2">
+              {localization.Hum_screens.cart.suggests}
+            </Text>
+            <SuggestCardContainer suggestContainerType={0} />
+          </View>
+          <View className="md:!w-[40%] lg:!w-[30%] md:!order-1">
+            <PaymentMethods
+              paymentMethods={[
+                { id: "1", name: "Credit Card" },
+                { id: "2", name: "PayPal" },
+                { id: "3", name: "Cash on Delivery" },
+              ]}
+              selected={""}
+              onSelect={(id) => {
+                console.log("Payment method selected:", id);
+              }}
+              onAddPaymentMethod={() => {
+                console.log("Add payment method");
+              }}
+            />
+
+            {/* <ShippingOptions /> */}
+            <PaymentOptions
+              onApply={(options) => {
+                console.log("User Payment Options:", options);
+              }}
+            />
+            <View className="my-2">
+              <PrivacyCheckbox />
+            </View>
+
+            <InvoiceSummary />
+            <View className="md:flex hidden">
+              <BottomButtons />
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Bottom Buttons */}
+      <View className="md:hidden flex">
+        <BottomButtons />
       </View>
     </View>
   );
