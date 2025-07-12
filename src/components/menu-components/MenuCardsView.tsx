@@ -36,15 +36,20 @@ import { getField } from "../../utils/operation/getField";
 import { getItemPackage } from "./getItemPackage";
 import { SetResponsiveContainer } from "../../utils/component/SetResponsiveContainer";
 import { VStack } from "../../../components/ui";
+import { useWS } from "../../../context/WSProvider";
+import { useSchemas } from "../../../context/SchemaProvider";
 const VIRTUAL_PAGE_SIZE = 4;
 
 const MenuCardsView = ({ row, isRefreshed }: any) => {
   const navigation = useNavigation();
   const [reRequest, setReRequest] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [_WSMessageMenuItems, setWSMessageMenuItems] = useState("{}");
-  const [_WSMessageCart, setWSMessageCart] = useState("{}");
-  const [WS_Connected, setWS_Connected] = useState(false);
+  // const [_WSMessageMenuItems, setWSMessageMenuItems] = useState("{}");
+  const { _wsMessageMenuItem, setWSMessageMenuItem } = useWS();
+  const { _wsMessageCart, setWSMessageCart } = useWS();
+  const { menuItemsState, setMenuItemsState } = useSchemas();
+  const [WSMenu_Connected, setWSMenu_Connected] = useState(false);
+  const [cart_WS_Connected, setCartWS_Connected] = useState(false);
   const previousRowRef = useRef({});
   const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
   // const selectedNode = selectSelectedNode(store.getState());
@@ -96,14 +101,14 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
   });
   // 🌐 Setup WebSocket connection on mount or WS_Connected change
   useEffect(() => {
-    if (WS_Connected) return;
+    if (WSMenu_Connected) return;
 
     SetReoute(NodeMenuItemsSchema.projectProxyRoute);
 
-    ConnectToWS(setWSMessageMenuItems, setWS_Connected)
+    ConnectToWS(setWSMessageMenuItem, setWSMenu_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));
-  }, [WS_Connected]);
+  }, [WSMenu_Connected]);
 
   // 🧠 Reducer callback to update rows
   const callbackReducerUpdate = async (ws_updatedRows) => {
@@ -119,29 +124,23 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
   // 📨 React to WebSocket messages only when valid
   useEffect(() => {
     if (!rows) return;
-    if (!_WSMessageMenuItems) return;
+    if (!_wsMessageMenuItem) return;
     const _handleWSMessage = new WSMessageHandler({
-      _WSsetMessage: _WSMessageMenuItems,
+      _WSsetMessage: _wsMessageMenuItem,
       fieldsType,
       rows,
       totalCount,
       callbackReducerUpdate,
     });
     _handleWSMessage.process();
-    setWSMessageMenuItems(null);
-  }, [_WSMessageMenuItems]);
+    setWSMessageMenuItem(null);
+  }, [_wsMessageMenuItem]);
 
   ////cart
   const [cartState, cartReducerDispatch] = useReducer(
     reducer,
     initialState(4000, CartSchema.idField)
   );
-  const {
-    rows: cartRows,
-    totalCount: cartTotalCount,
-    loading: cartLoading,
-  } = cartState;
-  const [cart_WS_Connected, setCartWS_Connected] = useState(false);
 
   const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
 
@@ -168,6 +167,8 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
 
   // 🌐 WebSocket connect effect
   useEffect(() => {
+    console.log(CartSchema, cart_WS_Connected);
+
     if (cart_WS_Connected) return;
 
     SetReoute(CartSchema.projectProxyRoute);
@@ -179,6 +180,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
 
   // ✅ Callback to update reducer
   const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
+    console.log("cartCallbackReducerUpdate", cart_ws_updatedRows);
     await cartReducerDispatch({
       type: "WS_OPE_ROW",
       payload: {
@@ -189,20 +191,6 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
   };
 
   // 📨 WebSocket message handler
-  useEffect(() => {
-    if (!cartState.rows) return;
-    if (!_WSMessageCart) return;
-
-    const handlerCartWSMessage = new WSMessageHandler({
-      _WSsetMessage: _WSMessageCart, // match param name
-      fieldsType: cartFieldsType,
-      rows: cartRows,
-      totalCount: cartTotalCount,
-      callbackReducerUpdate: cartCallbackReducerUpdate,
-    });
-    handlerCartWSMessage.process();
-    setWSMessageCart(null);
-  }, [_WSMessageCart, cartState.rows]);
   const cartDataSourceAPI = (query, skip, take) => {
     SetReoute(CartSchema.projectProxyRoute);
     return buildApiUrl(query, {
@@ -239,6 +227,23 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
     });
     //console.log("cart.rows",cartState);
   }, [selectedLocation, selectedNode]);
+
+  useEffect(() => {
+    console.log("cartState.rows", cartState, _wsMessageCart);
+    if (!_wsMessageCart) return;
+
+    const handlerCartWSMessage = new WSMessageHandler({
+      _WSsetMessage: _wsMessageCart, // match param name
+      fieldsType: cartFieldsType,
+      rows: cartState.rows,
+      totalCount: cartState.totalCount,
+      callbackReducerUpdate: cartCallbackReducerUpdate,
+    });
+    handlerCartWSMessage.process();
+    console.log("after cartState.rows", cartState);
+    //setWSMessageCart(null);
+  }, [_wsMessageCart]);
+
   useEffect(() => {
     if (!row) return;
 
@@ -371,7 +376,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
       onScroll={handleScroll}
       contentContainerStyle={{ paddingBottom: 20 }}
     >
-      <VStack className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
+      <VStack className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:auto-rows-fr">
         {/*!for web*/}
         {rows?.map((item: any, index: number) => (
           <View
@@ -384,7 +389,7 @@ const MenuCardsView = ({ row, isRefreshed }: any) => {
                 cartState.rows,
                 NodeMenuItemsSchema
               )}
-              schemaActions={CartSchemaActions}
+              schemaActions={NodeMenuItemsSchemaActions}
               setSelectedItems={setSelectedItems}
               selectedItems={selectedItems}
             />

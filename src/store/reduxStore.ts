@@ -13,6 +13,7 @@ import LocationReducer from "../reducers/LocationReducer";
 import wsReducer from "../reducers/WS_Reducer";
 import PaymentReducer from "../reducers/PaymentReducer";
 import localizationReducer from "../reducers/localizationReducer"; // ✅ import this
+import SchemasReducer from "../reducers/SchemasReducer"; // ✅ import this
 
 const rootReducer = combineReducers({
   cart: CartReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   ws: wsReducer,
   localization: localizationReducer,
   payment: PaymentReducer,
+  schemas: SchemasReducer,
 });
 
 const persistConfig = {
@@ -37,6 +39,7 @@ const persistConfig = {
     "ws",
     "localization",
     "payment",
+    "schemas",
   ],
 };
 

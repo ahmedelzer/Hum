@@ -1,10 +1,10 @@
 {
   "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
   "schemaType": "InvoiceSummary",
-  "idField": "personID",
+  "idField": "cartID",
   "dashboardFormSchemaInfoDTOView": {
     "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
-    "schemaHeader": "Customer Cart",
+    "schemaHeader": "Order Summary",
     "addingHeader": "Add Cart",
     "editingHeader": "Edit Cart"
   },
@@ -13,10 +13,10 @@
       "dashboardFormSchemaParameterID": "9e49c792-9b64-4d15-8c47-90a21c560e95",
       "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
       "isEnable": true,
-      "parameterType": "personID",
-      "parameterField": "personID",
-      "parameterTitel": "Person ID",
-      "parameterLookupTitel": "Person",
+      "parameterType": "text",
+      "parameterField": "cartID",
+      "parameterTitel": "cart ID",
+      "parameterLookupTitel": null,
       "isIDField": true,
       "indexNumber": 1
     },
@@ -51,6 +51,15 @@
       "dashboardFormSchemaParameterID": "f46519c0-b5a4-4f4e-90fc-bb0b6ceff2f3",
       "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
       "isEnable": true,
+      "parameterType": "totalFeesAmount",
+      "parameterField": "totalFeesAmount",
+      "parameterTitel": "Total Fees Amount",
+      "indexNumber": 5
+    },
+    {
+      "dashboardFormSchemaParameterID": "f46519c0-b5a4-4f4e-90fc-bb0b6ceff2f3",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
       "parameterType": "feesAmount",
       "parameterField": "feesAmount",
       "parameterTitel": "Fees",
@@ -60,9 +69,9 @@
       "dashboardFormSchemaParameterID": "31f0de20-39e9-4eec-a199-d21b9f5d7611",
       "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
       "isEnable": true,
-      "parameterType": "specialFeesAmount",
-      "parameterField": "specialFeesAmount",
-      "parameterTitel": "Special Fees",
+      "parameterType": "netAmount",
+      "parameterField": "netAmount",
+      "parameterTitel": "Net Amount",
       "indexNumber": 6
     },
     {
@@ -82,6 +91,42 @@
       "parameterField": "invoiceDiscountAmount",
       "parameterTitel": "Invoice Discount",
       "indexNumber": 8
+    },
+    {
+      "dashboardFormSchemaParameterID": "2b08bc1a-baa7-4d77-94ae-2e694d42fa1b",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "totalDiscountAmount",
+      "parameterField": "totalDiscountAmount",
+      "parameterTitel": "Total Discount",
+      "indexNumber": 9
+    },
+    {
+      "dashboardFormSchemaParameterID": "2b08bc1a-baa7-4d77-94ae-2e694d42fa1b",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "totalTaxAmount",
+      "parameterField": "totalTaxAmount",
+      "parameterTitel": "Total Tax Amount",
+      "indexNumber": 9
+    },
+    {
+      "dashboardFormSchemaParameterID": "2b08bc1a-baa7-4d77-94ae-2e694d42fa1b",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "otherFees",
+      "parameterField": "otherFees",
+      "parameterTitel": "Other Fees",
+      "indexNumber": 9
+    },
+    {
+      "dashboardFormSchemaParameterID": "2b08bc1a-baa7-4d77-94ae-2e694d42fa1b",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "shipmentFees",
+      "parameterField": "shipmentFees",
+      "parameterTitel": "Shipment Fees",
+      "indexNumber": 9
     },
     {
       "dashboardFormSchemaParameterID": "2b08bc1a-baa7-4d77-94ae-2e694d42fa1b",

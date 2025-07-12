@@ -9,25 +9,6 @@ export default function CheckoutScreen() {
   const [selectedPayment, setSelectedPayment] = useState("visa");
   const localization = useSelector((state) => state.localization.localization);
   const total = useSelector((state) => state.cart.totalAmount);
-  const branches = [
-    {
-      LocationLatitudePoint: "37.7749",
-      LocationLongitudePoint: "-122.4194",
-      name: "San Francisco",
-      description: "Main Branch",
-    },
-    {
-      LocationLatitudePoint: "34.0522",
-      LocationLongitudePoint: "-118.2437",
-      name: "Los Angeles",
-    },
-    {
-      LocationLatitudePoint: "40.7128",
-      LocationLongitudePoint: "-74.0060",
-      name: "New York City",
-      description: "East Coast Branch",
-    },
-  ];
   return (
     <View className="flex-1 bg-body">
       {/* Header */}

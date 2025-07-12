@@ -5,8 +5,6 @@ import StepIndicator from "react-native-step-indicator";
 import { useSelector } from "react-redux";
 import { theme } from "../../Theme";
 
-const labels = ["Welcome", "Language", "Intro"];
-
 const customStyles = {
   stepIndicatorSize: 30,
   currentStepIndicatorSize: 35,
@@ -31,16 +29,14 @@ const customStyles = {
   currentStepLabelColor: theme.accentHover,
 };
 
-const StepHeader = ({ currentPosition = 0 }) => {
-  const localization = useSelector((state) => state.localization.localization);
-
+const StepHeader = ({ currentPosition = 0, labels }) => {
   return (
     <View style={styles.container}>
       <StepIndicator
         customStyles={customStyles}
         direction="horizontal"
         currentPosition={currentPosition}
-        labels={localization.Hum_screens.splash.headerLabels}
+        labels={labels}
         stepCount={labels.length}
       />
     </View>

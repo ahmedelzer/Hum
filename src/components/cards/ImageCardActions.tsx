@@ -12,15 +12,15 @@ import { useSelector } from "react-redux";
 export default function ImageCardActions({
   item,
   fieldsType,
-  style = {},
+  style = { width: scale(135) },
   showFaovertIcon = true,
   children,
   className = "",
 }) {
   const localization = useSelector((state) => state.localization.localization);
-
+  const discountWidth = (style?.width / 100) * 55;
   return (
-    <View className="w-full">
+    <View className="size-full items-center">
       {item[fieldsType.imageView] && (
         <Box
           key={`${fieldsType.imageView}-${item[fieldsType.imageView]}`}
@@ -47,7 +47,7 @@ export default function ImageCardActions({
             <FaovertCardIcon fieldsType={fieldsType} item={item} />
           )}
           {item[fieldsType.discount] > 0 && (
-            <View className="absolute top-0 right-0 bg-red-500 px-2 py-1 rounded-tr-lg rounded-bl-lg">
+            <View className="absolute top-0 right-0 bg-red-500 px-2 py-1 rounded-tr-lg rounded-bl-lg w-1/2">
               <Text className="text-body font-bold text-sm">
                 {item[fieldsType.discount]}% {localization.menu.off}
               </Text>

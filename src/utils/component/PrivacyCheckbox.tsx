@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, Text, Pressable } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import {
@@ -7,18 +7,29 @@ import {
   CheckboxIndicator,
   CheckboxLabel,
 } from "../../../components/ui";
-
-export default function PrivacyCheckbox() {
+import { useSelector } from "react-redux";
+//!make shema for that filed name :isFastWay type:cheackBox
+export default function PrivacyCheckbox({ row, setRow }) {
   const [showHint, setShowHint] = useState(false);
-
+  const [isChecked, setIsChecked] = useState(false);
+  const selectedTab = useSelector((state: any) => state.location?.selectedTab);
+  if (selectedTab !== 1) {
+    return null;
+  }
   return (
     <View className="flex-row items-center space-x-2 relative">
       {/* Gluestack Checkbox */}
+
       <Checkbox
         size="sm"
         value="accept Privacy"
         aria-label="accept Privacy"
         className="items-center"
+        isChecked={isChecked} // Controlled checked state
+        onChange={(checked) => {
+          setIsChecked(checked === true);
+          setRow({ ...row, isFastWay: checked });
+        }}
       >
         <CheckboxIndicator>
           <CheckboxIcon

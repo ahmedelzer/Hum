@@ -1,66 +1,46 @@
 import { useNavigation } from "@react-navigation/native";
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useState,
-} from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
-  I18nManager,
-  Image,
   Platform,
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
 // import { LocalizationContext } from "../../../context/LocalizationContext";
-import SuggestCard from "../../components/cards/SuggestCard";
-import GoBackHeader from "../../components/header/GoBackHeader";
-import CardCartItem from "./CardCartItem";
-import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import { useWS } from "../../../context/WSProvider";
 import { GetProjectUrl, SetReoute } from "../../../request";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import CustomerCartInfo from "./CustomerCartInfo";
 import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
-import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
-import { ConnectToWS } from "../../utils/WS/ConnectToWS";
-import InputWithAction from "../../utils/component/InputWithAction";
-import { getField } from "../../utils/operation/getField";
-import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
-import reducer from "../../components/Pagination/reducer";
-import { initialState } from "../../components/Pagination/initialState";
-import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
-import { updateRows } from "../../components/Pagination/updateRows";
-import OldCartButton from "./OldCartButton";
-import useWebSocketHandler from "../../utils/WS/useWebSocketHandler";
-import { prepareLoad } from "../../utils/operation/loadHelpers";
 import { createRowCache } from "../../components/Pagination/createRowCache";
-import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import { initialState } from "../../components/Pagination/initialState";
+import reducer from "../../components/Pagination/reducer";
+import GoBackHeader from "../../components/header/GoBackHeader";
+import { ConnectToWS } from "../../utils/WS/ConnectToWS";
+import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
+import AddressLocationCollapsible from "../../utils/component/AddressLocationCollapsible";
+import PrivacyCheckbox from "../../utils/component/PrivacyCheckbox";
+import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
+import { getField } from "../../utils/operation/getField";
+import { isRTL } from "../../utils/operation/isRTL";
+import { prepareLoad } from "../../utils/operation/loadHelpers";
+import CardCartItem from "./CardCartItem";
+import Checkout from "./Checkout";
 import InvoiceSummary from "./InvoiceSummary";
+import OldCartButton from "./OldCartButton";
 import PaymentMethods from "./PaymentMethods";
 import PaymentOptions from "./PaymentOptions";
-import ShippingOptions from "./ShippingOptions";
-import {
-  Checkbox,
-  CheckboxIcon,
-  CheckboxIndicator,
-  CheckboxLabel,
-} from "../../../components/ui";
-import { AntDesign } from "@expo/vector-icons";
-import PrivacyCheckbox from "../../utils/component/PrivacyCheckbox";
+import CartInfoSchemaAction from "../../Schemas/MenuSchema/CartInfoSchemaAction.json";
 
 const CartPage = () => {
-  const [reRequest, setReRequest] = useState(false);
-  const [_WSsetMessage, setWSsetMessage] = useState("{}");
-  const [WS_Connected, setWS_Connected] = useState(false);
+  const { _wsMessageCart, setWSMessageCart } = useWS();
+  //const [_wsMessageCart, setWSMessageCart] = useState();
   const navigation = useNavigation();
   const localization = useSelector((state) => state.localization.localization);
-
+  const [row, setRow] = useState({});
+  const [checkoutFiring, setCheckoutFiring] = useState(false);
   // Get schema parameters
   ////cart
   const [cartState, cartReducerDispatch] = useReducer(
@@ -103,7 +83,7 @@ const CartPage = () => {
 
     SetReoute(CartSchema.projectProxyRoute);
 
-    ConnectToWS(setWSsetMessage, setCartWS_Connected)
+    ConnectToWS(setWSMessageCart, setCartWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => console.error("❌ Cart WebSocket error", e));
   }, [cart_WS_Connected]);
@@ -122,17 +102,17 @@ const CartPage = () => {
   // 📨 WebSocket message handler
   useEffect(() => {
     if (!cartState.rows) return;
-    if (!_WSsetMessage) return;
+    if (!_wsMessageCart) return;
 
     const handlerCartWSMessage = new WSMessageHandler({
-      _WSsetMessage, // match param name
+      _WSsetMessage: _wsMessageCart, // match param name
       fieldsType: cartFieldsType,
       rows: cartRows,
       totalCount: cartTotalCount,
       callbackReducerUpdate: cartCallbackReducerUpdate,
     });
     handlerCartWSMessage.process();
-  }, [_WSsetMessage, cartState.rows]);
+  }, [_wsMessageCart, cartState.rows]);
 
   const cartDataSourceAPI = (query, skip, take) => {
     SetReoute(CartSchema.projectProxyRoute);
@@ -232,6 +212,11 @@ const CartPage = () => {
   //     </View>
   //   </TouchableOpacity>
   // );
+  const postCheckoutAction =
+    CartInfoSchemaAction &&
+    CartInfoSchemaAction.find(
+      (action) => action.dashboardFormActionMethodType === "Post"
+    );
   const BottomButtons = () => {
     return (
       <View className="flex-row items-center justify-between bg-body py-4 border-t border-card px-2">
@@ -248,7 +233,7 @@ const CartPage = () => {
             cartRows.length < 1 ? "bg-card" : "bg-accent"
           } flex-1 py-3 rounded-lg`}
           disabled={cartRows.length < 1}
-          onPress={() => navigation.navigate("CheckoutScreen")}
+          onPress={() => setCheckoutFiring(true)}
         >
           <Text
             className={`text-center ${
@@ -258,6 +243,14 @@ const CartPage = () => {
             {localization.Hum_screens.cart.checkoutButton}
           </Text>
         </TouchableOpacity>
+        {checkoutFiring && (
+          <Checkout
+            postAction={postCheckoutAction}
+            setCheckoutFiring={setCheckoutFiring}
+            proxyRoute={cartFieldsType.proxyRoute}
+            row={row}
+          />
+        )}
       </View>
     );
   };
@@ -295,13 +288,21 @@ const CartPage = () => {
             )}
 
             {/* Suggestions */}
-            <Text className="text-lg font-bold mt-6 mb-2">
+            <Text
+              className="text-lg font-bold mt-6 mb-2"
+              style={{ direction: isRTL() ? "rtl" : "ltr" }}
+            >
               {localization.Hum_screens.cart.suggests}
             </Text>
             <SuggestCardContainer suggestContainerType={0} />
           </View>
           <View className="md:!w-[40%] lg:!w-[30%] md:!order-1">
+            <View>
+              <AddressLocationCollapsible />
+            </View>
             <PaymentMethods
+              row={row}
+              setRow={setRow}
               paymentMethods={[
                 { id: "1", name: "Credit Card" },
                 { id: "2", name: "PayPal" },
@@ -317,16 +318,12 @@ const CartPage = () => {
             />
 
             {/* <ShippingOptions /> */}
-            <PaymentOptions
-              onApply={(options) => {
-                console.log("User Payment Options:", options);
-              }}
-            />
+            <PaymentOptions row={row} setRow={setRow} />
             <View className="my-2">
-              <PrivacyCheckbox />
+              <PrivacyCheckbox row={row} setRow={setRow} />
             </View>
 
-            <InvoiceSummary />
+            <InvoiceSummary row={row} setRow={setRow} />
             <View className="md:flex hidden">
               <BottomButtons />
             </View>

@@ -9,9 +9,14 @@ import { styles } from "./styles";
 const SplashScreen = () => {
   const [stepNum, setStepNum] = useState(0);
   const languageRow = useSelector((state) => state.localization.languageRow);
+  const localization = useSelector((state) => state.localization.localization);
+
   return (
     <View style={styles.container}>
-      <StepHeader currentPosition={stepNum} />
+      <StepHeader
+        currentPosition={stepNum}
+        labels={localization.Hum_screens.splash.headerLabels}
+      />
       <StepBody stepNum={stepNum} />
       <StepFooter
         stepNum={stepNum}

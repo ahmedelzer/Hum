@@ -19,6 +19,8 @@ const MenuCardView = ({
   schemaActions,
 }) => {
   //!uncomment the attribute
+  console.log(itemPackage);
+
   const [item, setItem] = useState(itemPackage);
   // const [att, setAtt] = useState(item.attribute);
   const navigation = useNavigation();
@@ -73,11 +75,11 @@ const MenuCardView = ({
     if (selectedItems.length > 0) {
       handleLongPress();
     } else {
-      navigation.navigate("DetailsProductScreen", {
-        item: item,
-        fieldsType: fieldsType,
-        schemaActions: schemaActions,
-      });
+      // navigation.navigate("DetailsProductScreen", {
+      //   item: item,
+      //   fieldsType: fieldsType,
+      //   schemaActions: schemaActions,
+      // });
     }
   };
   return (

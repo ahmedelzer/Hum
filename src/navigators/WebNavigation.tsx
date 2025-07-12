@@ -37,7 +37,7 @@ const dummyArr = [
   {
     dashboardItemID: "5359edc3-663c-4669-9432-0d57de60ee83",
     dashboardMenuItemName: "MenuItem1",
-    routePath: "test",
+    routePath: "Orders",
     projectProxyRoute: "HumMenu",
   },
   {
@@ -145,14 +145,14 @@ const WebNavigator = () => {
         }
       />
       <Stack.Screen name="DetailsProductScreen" component={DetailsScreen} />
-      {!userGust && (
+      {/* {!userGust && (
         <Stack.Screen
           name="CheckoutScreen"
           component={(props) =>
             SetResponsiveContainer(<CheckoutScreen {...props} />, true)
           }
         />
-      )}
+      )} */}
       {!userGust && (
         <Stack.Screen
           name="NotificationScreen"

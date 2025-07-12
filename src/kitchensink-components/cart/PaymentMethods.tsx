@@ -101,6 +101,8 @@ export default function PaymentMethods({
   onAddPaymentMethod,
   selected,
   label = "Select Payment Method",
+  row,
+  setRow,
 }) {
   const paymentValueIndex =
     useSelector((state) => state.payment.paymentValueIndex) || "0";
@@ -129,21 +131,23 @@ export default function PaymentMethods({
     outputRange: [0, maxHeight],
   });
   const values = ["cache", "visa"];
-  useEffect(() => {
-    dispatch(updatePayment({ index: watch().payment }));
-  }, [watch()]);
-  useEffect(() => {
-    // console.log("====================================");
-    // console.log(payment);
-    // console.log("====================================");
-    // !loading &&
-    // rows.length > 0
-    // if (!Object.keys(payment).length > 0) {
-    dispatch(
-      updatePayment({ index: watch().payment, payment: paymentMethods[0] })
-    );
-    // }
-  }, []); //set loading here
+  // useEffect(() => {
+  //   setRow({ ...row, index: watch().payment });
+  //   dispatch(updatePayment({ index: watch().payment }));
+  // }, [watch()]);
+  // useEffect(() => {
+  //   // console.log("====================================");
+  //   // console.log(payment);
+  //   // console.log("====================================");
+  //   setRow({ ...row, index: watch().payment, payment: paymentMethods[0] });
+  //   // !loading &&
+  //   // rows.length > 0
+  //   // if (!Object.keys(payment).length > 0) {
+  //   dispatch(
+  //     updatePayment({ index: watch().payment, payment: paymentMethods[0] })
+  //   );
+  //   // }
+  // }, []); //set loading here
   console.log("====================================");
   console.log(paymentRow, paymentValueIndex, "payment");
   console.log("====================================");

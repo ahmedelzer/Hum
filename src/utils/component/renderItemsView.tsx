@@ -5,25 +5,33 @@ import { GetProjectUrl, SetReoute } from "../../../request";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import MenuView from "../../components/menu-components/MenuView";
 import HomePage from "../../kitchensink-components/HomestayPage";
-import MarketPlace from "../../kitchensink-components/MarketPlace";
 import MobileProfilePage from "../../kitchensink-components/profile/MobileProfilePage";
 import { updateCurrentLocation } from "../../reducers/LocationReducer";
 import { SetResponsiveContainer } from "../component/SetResponsiveContainer";
 import { GetCard } from "../operation/GetCard";
 import { requestLocationPermission } from "./requestLocationPermission";
-
+import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import useFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
+import OrdersScreen from "../../kitchensink-components/orders/OrdersScreen";
 const RenderItemsView = ({ dashboardItemId, routePath }: any) => {
-  SetReoute(NodeMenuItemsSchema.projectProxyRoute);
+  const getAction =
+    CartSchemaActions &&
+    CartSchemaActions.find(
+      (action) => action.dashboardFormActionMethodType === "Get"
+    );
+
+  const dataSourceAPI = (query) => {
+    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
+    return buildApiUrl(query);
+  };
   const {
     data: GetCustomerCart,
     error,
     isLoading,
-  } = useFetch("/ShopNode/GetCustomerCart", GetProjectUrl());
+  } = useFetchWithoutBaseUrl(dataSourceAPI(getAction));
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
-  const currentLocation = useSelector(
-    (state) => state.location.currentLocation
-  );
   const total = useSelector((state) => state.cart.totalAmount);
 
   useEffect(() => {
@@ -54,8 +62,8 @@ const RenderItemsView = ({ dashboardItemId, routePath }: any) => {
       return SetResponsiveContainer(<HomePage />, true);
     case "Profile":
       return SetResponsiveContainer(<MobileProfilePage />, true);
-    case "marketPlace":
-      return SetResponsiveContainer(<MarketPlace />, true);
+    case "Orders":
+      return SetResponsiveContainer(<OrdersScreen />, true);
     default:
       return <HomePage />;
   }

@@ -18,6 +18,8 @@ import { persistor, store } from "./src/store/reduxStore";
 import { theme } from "./src/Theme";
 import UserProviderLayer from "./context/UserProviderLayer";
 import { PreparingApp } from "./context/PreparingApp";
+import { WSProvider } from "./context/WSProvider";
+import { SchemaProvider } from "./context/SchemaProvider";
 // import UserProviderLayer from "./context/UserProviderLayer";
 
 const queryClient = new QueryClient();
@@ -45,12 +47,12 @@ export default function App() {
               <PreparingApp>
                 <AuthProvider>
                   <SafeAreaView style={{ flex: 1 }}>
-                    <UserProviderLayer
-
-                    // selectedLocation={selectedLocation}
-                    //  selectedNode={selectedNode}
-                    />
-                    <RootStack />
+                    <UserProviderLayer />
+                    <SchemaProvider>
+                      <WSProvider>
+                        <RootStack />
+                      </WSProvider>
+                    </SchemaProvider>
                   </SafeAreaView>
                 </AuthProvider>
               </PreparingApp>

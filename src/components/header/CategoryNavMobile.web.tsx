@@ -29,7 +29,6 @@ const CategoryNavMobile = ({ setCatNavMobile }) => {
           color="black"
           className={categoryNavMobileStyles.closeButtonIcon}
         />
-        {/* <FiX  /> */}
       </div>
       <div className={categoryNavMobileStyles.linkWrapper}>
         {tabs.map((tab) => (
@@ -48,7 +47,7 @@ const CategoryNavMobile = ({ setCatNavMobile }) => {
           </TouchableOpacity>
         ))}
         <div>
-          <label className="uppercase mb-1 !font-primary">Language</label>
+          <label className="uppercase mb-1">Language</label>
           <LanguageSelector />
         </div>
       </div>

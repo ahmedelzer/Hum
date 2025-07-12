@@ -13,4 +13,8 @@
 2-set project name famuous app&& logo &&icon tap 
 6-make setCorrectNumber to set numbers length or search in git repo to get
 
-//profile
+//style
+1-invoice summary set it by the coorect line
+2-menu item card image and discount 
+3-disable card in cart and market places 
+4-align center header of grid

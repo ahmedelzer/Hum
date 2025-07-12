@@ -101,6 +101,7 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
     });
 
     if (addressLocationState.rows.length > 0) {
+      //!make shure if SelectedLocation do not select before
       dispatch(updateSelectedLocation(addressLocationState.rows[0]));
       setSelectedLocation(addressLocationState.rows[0]);
     }
@@ -145,6 +146,7 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
     });
 
     if (nodeState.rows.length > 0) {
+      //!make shure if SelectedNode do not select before
       const firstNode = nodeState.rows[0];
       dispatch(updateSelectedNode(firstNode));
       setSelectedNode(firstNode);
@@ -157,7 +159,8 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
     if (!selectedNode || WS_Connected) return;
 
     SetReoute(NodeMenuItemsSchema.projectProxyRoute);
-
+    //!we do not need to connect to WS of NodeMenuItems here we want it only in menu page
+    //!instead of that connect to WS of Cart
     ConnectToWS(setWSsetMessage, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));

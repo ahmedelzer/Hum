@@ -1,26 +1,24 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
-  Animated,
   LayoutAnimation,
   Platform,
   UIManager,
+  ScrollView,
 } from "react-native";
+import { useSelector } from "react-redux";
 import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
 import { SetReoute } from "../../../request";
 import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import { getField } from "../../utils/operation/getField";
-import { initialState } from "../../components/Pagination/initialState";
-import reducer from "../../components/Pagination/reducer";
-import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import CartInfoSchemaAction from "../../Schemas/MenuSchema/CartInfoSchemaAction.json";
-import CustomerCartInfo from "./CustomerCartInfo";
+import CustomerInfoSchema from "../../Schemas/MenuSchema/CartInfoSchema.json";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import useFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
-import CustomerInfoSchema from "../../Schemas/MenuSchema/CartInfoSchema.json";
-
+import { useWS } from "../../../context/WSProvider";
+import { isRTL } from "../../utils/operation/isRTL";
 // Enable LayoutAnimation on Android
 if (
   Platform.OS === "android" &&
@@ -29,145 +27,272 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-export default function InvoiceSummary() {
+export default function InvoiceSummary({ row, setRow }) {
   const [expanded, setExpanded] = useState(true);
-  const [reRequest, setReRequest] = useState(false);
-  const [_WSsetMessage, setWSsetMessage] = useState("{}");
-  const [WS_Connected, setWS_Connected] = useState(false);
-  //const navigation = useNavigation();
-  //const { localization } = useContext(LocalizationContext);
+  const [cartInfo, setCartInfo] = useState({});
+  const { _wsMessageCart, setWSMessageCart } = useWS();
+  const [cartInfo_WS_Connected, setCartInfoWS_Connected] = useState(false);
+  const localization = useSelector((state) => state.localization.localization);
 
-  // Get schema parameters
-  ////cart
-  const [cartState, cartReducerDispatch] = useReducer(
-    reducer,
-    initialState(4000, CartSchema.idField)
+  const cartInfoDataSourceAPI = (query) => {
+    SetReoute(CustomerInfoSchema.projectProxyRoute);
+    return buildApiUrl(query);
+  };
+
+  const getCustomerCartAction = CartInfoSchemaAction?.find(
+    (action) => action.dashboardFormActionMethodType === "Get"
   );
-  const {
-    rows: cartRows,
-    totalCount: cartTotalCount,
-    loading: cartLoading,
-  } = cartState;
-  const [cart_WS_Connected, setCartWS_Connected] = useState(false);
 
-  const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
+  const { data: GetCustomerCartInfo, isLoading } = useFetchWithoutBaseUrl(
+    cartInfoDataSourceAPI(getCustomerCartAction)
+  );
 
-  const cartFieldsType = {
-    imageView: getField(parameters, "menuItemImage"),
-    text: getField(parameters, "menuItemName"),
-    description: getField(parameters, "menuItemDescription"),
-    price: getField(parameters, "price"),
-    rate: getField(parameters, "rate"),
-    likes: getField(parameters, "likes"),
-    dislikes: getField(parameters, "dislikes"),
-    orders: getField(parameters, "orders"),
-    reviews: getField(parameters, "reviews"),
-    isAvailable: getField(parameters, "isAvailable"),
-    menuCategoryID: getField(parameters, "menuCategoryID"),
-    idField: CartSchema.idField,
-    dataSourceName: CartSchema.dataSourceName,
-    cardAction: getField(parameters, "cardAction"),
-    discount: getField(parameters, "discount"),
-    priceAfterDiscount: getField(parameters, "priceAfterDiscount"),
-    note: getField(parameters, "note"),
-    proxyRoute: CartSchema.projectProxyRoute,
+  useEffect(() => {
+    if (!isLoading && GetCustomerCartInfo) {
+      setCartInfo(GetCustomerCartInfo);
+    }
+  }, [isLoading, GetCustomerCartInfo]);
+
+  const params = CustomerInfoSchema?.dashboardFormSchemaParameters ?? [];
+
+  const cartInfoFieldsType = {
+    idField: CustomerInfoSchema.idField,
+    dataSourceName: CustomerInfoSchema.dataSourceName,
+    proxyRoute: CustomerInfoSchema.projectProxyRoute,
+    totalAmount: getField(params, "totalAmount", false),
+    invoiceItemsTaxAmount: getField(params, "invoiceItemsTaxAmount", false),
+    invoiceTaxAmount: getField(params, "invoiceTaxAmount", false),
+    totalFeesAmount: getField(params, "totalFeesAmount", false),
+    feesAmount: getField(params, "feesAmount", false),
+    netAmount: getField(params, "netAmount", false),
+    invoiceItemsDiscountAmount: getField(
+      params,
+      "invoiceItemsDiscountAmount",
+      false
+    ),
+    invoiceDiscountAmount: getField(params, "invoiceDiscountAmount", false),
+    totalDiscountAmount: getField(params, "totalDiscountAmount", false),
+    totalTaxAmount: getField(params, "totalTaxAmount", false),
+    totalShipmentsNeeded: getField(params, "totalShipmentsNeeded", false),
+    shipmentFees: getField(params, "shipmentFees", false),
+    otherFees: getField(params, "otherFees", false),
   };
 
   // 🌐 WebSocket connect effect
   useEffect(() => {
-    if (cart_WS_Connected) return;
+    if (cartInfo_WS_Connected) return;
 
-    SetReoute(CartSchema.projectProxyRoute);
+    SetReoute(CustomerInfoSchema.projectProxyRoute);
 
-    ConnectToWS(setWSsetMessage, setCartWS_Connected)
+    ConnectToWS(setWSMessageCart, setCartInfoWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => console.error("❌ Cart WebSocket error", e));
-  }, [cart_WS_Connected]);
+  }, [cartInfo_WS_Connected]);
 
   // ✅ Callback to update reducer
-  const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
-    await cartReducerDispatch({
-      type: "WS_OPE_ROW",
-      payload: {
-        rows: cart_ws_updatedRows.rows,
-        totalCount: cart_ws_updatedRows.totalCount,
-      },
-    });
+  const cartCallbackReducerUpdate = async (cartInfo_ws_updatedRows) => {
+    console.log(cartInfo_ws_updatedRows, "cartInfo_ws_updatedRows");
+
+    setCartInfo(cartInfo_ws_updatedRows.rows[0]);
   };
 
   // 📨 WebSocket message handler
   useEffect(() => {
-    if (!cartState.rows) return;
-    if (!_WSsetMessage) return;
+    if (!_wsMessageCart) return;
 
     const handlerCartWSMessage = new WSMessageHandler({
-      _WSsetMessage, // match param name
-      fieldsType: cartFieldsType,
-      rows: cartRows,
-      totalCount: cartTotalCount,
+      _WSsetMessage: _wsMessageCart,
+      fieldsType: cartInfoFieldsType,
+      rows: [cartInfo],
+      totalCount: 0,
       callbackReducerUpdate: cartCallbackReducerUpdate,
     });
     handlerCartWSMessage.process();
-  }, [_WSsetMessage, cartState.rows]);
-
-  // Animate height (optional approach)
-  // You could also use LayoutAnimation for automatic smooth height changes (simpler)
+  }, [_wsMessageCart]);
 
   const toggleExpanded = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
   };
-  const cartInfoDataSourceAPI = (query) => {
-    SetReoute(CartSchema.projectProxyRoute);
-    return buildApiUrl(query);
+
+  const getValue = (field) => {
+    if (field.parameterField) {
+      return cartInfo?.[field.parameterField];
+    }
+    return 0;
   };
-  const getCustomerCartAction =
-    CartInfoSchemaAction &&
-    CartInfoSchemaAction.find(
-      (action) => action.dashboardFormActionMethodType === "Get"
-    );
-  const { data: GetCustomerCartInfo } = useFetchWithoutBaseUrl(
-    cartInfoDataSourceAPI(getCustomerCartAction)
-  );
-  const totalField = getField(
-    CustomerInfoSchema?.dashboardFormSchemaParameters,
-    "totalAmount"
-  );
+
+  const isPositive = (value) => (value > 0 ? true : false);
+  console.log(cartInfo, cartInfoFieldsType);
+  useEffect(() => {
+    setRow({ ...row, ...cartInfo });
+  }, [cartInfo]);
   return (
     <View className="mt-1 mb-6 border border-accent rounded-xl p-2">
-      {/* Header area - tap to toggle */}
+      {/* Expandable Section */}
+      {expanded && (
+        <View className="space-y-1 mt-2 p-4">
+          {/* Total Amount */}
+          {cartInfoFieldsType.totalAmount && (
+            <SummaryLine
+              label={cartInfoFieldsType.totalAmount.parameterTitel}
+              value={getValue(cartInfoFieldsType.totalAmount)}
+            />
+          )}
+          <View className="border-b border-gray-300 my-2" />
+
+          {/* Discounts */}
+          {cartInfoFieldsType.totalDiscountAmount &&
+            isPositive(getValue(cartInfoFieldsType.totalDiscountAmount)) && (
+              <View>
+                <Text className="font-bold text-base mb-1">
+                  {localization.Hum_screens.cart.paymentSummary.discounts}:
+                </Text>
+                {getValue(cartInfoFieldsType.invoiceDiscountAmount) >= 0 && (
+                  <SummaryLine
+                    label={
+                      cartInfoFieldsType.invoiceDiscountAmount.parameterTitel
+                    }
+                    setDash={true}
+                    value={getValue(cartInfoFieldsType.invoiceDiscountAmount)}
+                  />
+                )}
+                {getValue(cartInfoFieldsType.invoiceItemsDiscountAmount) >=
+                  0 && (
+                  <SummaryLine
+                    label={
+                      cartInfoFieldsType.invoiceItemsDiscountAmount
+                        .parameterTitel
+                    }
+                    setDash={true}
+                    value={getValue(
+                      cartInfoFieldsType.invoiceItemsDiscountAmount
+                    )}
+                  />
+                )}
+                <View className="flex-row justify-between py-2">
+                  <Text className="font-bold">
+                    ➤ {cartInfoFieldsType.totalDiscountAmount.parameterTitel}
+                  </Text>
+                  <Text className="font-bold" style={{ color: "#16a34a" }}>
+                    {localization.menu.currency}{" "}
+                    {getValue(cartInfoFieldsType.totalDiscountAmount)}
+                  </Text>
+                </View>
+                <View className="border-b border-gray-300 my-2" />
+              </View>
+            )}
+          {/* totalTaxAmount */}
+          {cartInfoFieldsType.totalTaxAmount &&
+            isPositive(getValue(cartInfoFieldsType.totalTaxAmount)) && (
+              <View>
+                <Text className="font-bold text-base mb-1">
+                  {localization.Hum_screens.cart.paymentSummary.taxes}:
+                </Text>
+                {getValue(cartInfoFieldsType.invoiceTaxAmount) >= 0 && (
+                  <SummaryLine
+                    label={cartInfoFieldsType.invoiceTaxAmount.parameterTitel}
+                    setDash={true}
+                    value={getValue(cartInfoFieldsType.invoiceTaxAmount)}
+                  />
+                )}
+                {getValue(cartInfoFieldsType.invoiceItemsTaxAmount) >= 0 && (
+                  <SummaryLine
+                    label={
+                      cartInfoFieldsType.invoiceItemsTaxAmount.parameterTitel
+                    }
+                    setDash={true}
+                    value={getValue(cartInfoFieldsType.invoiceItemsTaxAmount)}
+                  />
+                )}
+                <View className="flex-row justify-between py-2">
+                  <Text className="font-bold">
+                    ➤ {cartInfoFieldsType.totalTaxAmount.parameterTitel}
+                  </Text>
+                  <Text className="font-bold" style={{ color: "#dc2626" }}>
+                    {localization.menu.currency}{" "}
+                    {getValue(cartInfoFieldsType.totalTaxAmount)}
+                  </Text>
+                </View>
+                <View className="border-b border-gray-300 my-2" />
+              </View>
+            )}
+          {/* totalFeesAmount */}
+          {cartInfoFieldsType.totalFeesAmount &&
+            isPositive(getValue(cartInfoFieldsType.totalFeesAmount)) && (
+              <View>
+                <Text className="font-bold text-base mb-1">
+                  {localization.Hum_screens.cart.paymentSummary.fees}:
+                </Text>
+                {getValue(cartInfoFieldsType.feesAmount) >= 0 && (
+                  <SummaryLine
+                    label={cartInfoFieldsType.feesAmount.parameterTitel}
+                    setDash={true}
+                    value={getValue(cartInfoFieldsType.feesAmount)}
+                  />
+                )}
+                {getValue(cartInfoFieldsType.shipmentFees) >= 0 && (
+                  <SummaryLine
+                    label={cartInfoFieldsType.shipmentFees.parameterTitel}
+                    setDash={true}
+                    value={getValue(cartInfoFieldsType.shipmentFees)}
+                  />
+                )}
+                <View className="flex-row justify-between py-2">
+                  <Text className="font-bold">
+                    ➤ {cartInfoFieldsType.totalFeesAmount.parameterTitel}
+                  </Text>
+                  <Text className="font-bold">
+                    {localization.menu.currency}{" "}
+                    {getValue(cartInfoFieldsType.totalFeesAmount)}
+                  </Text>
+                </View>
+                <View className="border-b border-gray-300 my-2" />
+              </View>
+            )}
+          {/* Final Total */}
+          {/* <View className="flex-row justify-between items-center bg-yellow-100 py-3 px-2 border !border-yellow-400 mt-2">
+            <Text className="font-bold text-lg">
+              🟧 {cartInfoFieldsType.netAmount.parameterTitel}:
+            </Text>
+            <Text className="font-bold text-lg">
+              {localization.menu.currency}{" "}
+              {getValue(cartInfoFieldsType.netAmount)}
+            </Text>
+          </View> */}
+        </View>
+      )}
       <TouchableOpacity
         onPress={toggleExpanded}
         activeOpacity={0.7}
         className="mt-1 mb-2 rounded-xl p-2 !bg-accent flex-row justify-between items-center"
       >
-        <Text className="text-lg font-bold text-body">Order Summary</Text>
         <Text className="text-lg font-bold text-body">
-          {GetCustomerCartInfo?.[totalField]
-            ? `$${GetCustomerCartInfo[totalField].toFixed(2)}`
-            : "$0.00"}
+          {CustomerInfoSchema.dashboardFormSchemaInfoDTOView.schemaHeader}
+        </Text>
+        <Text
+          className="text-lg font-bold text-body"
+          key={`${cartInfoFieldsType.netAmount.parameterField}-${getValue(cartInfoFieldsType.netAmount)}`}
+        >
+          {localization.menu.currency}{" "}
+          {Number(getValue(cartInfoFieldsType.netAmount)).toFixed(2) || "0.00"}
         </Text>
       </TouchableOpacity>
-
-      {/* Expandable details */}
-      {expanded && (
-        <View className="space-y-1 mt-2">
-          {GetCustomerCartInfo &&
-            CustomerInfoSchema?.dashboardFormSchemaParameters
-              .filter((i) => !i.isIDField)
-              .map((i) => (
-                <View
-                  className="flex-row mt-2 items-center justify-between"
-                  key={i.dashboardFormSchemaID}
-                >
-                  <Text className="text-md">{i.parameterTitel}</Text>
-                  <Text className="text-md">
-                    {GetCustomerCartInfo[i.parameterField]}
-                  </Text>
-                </View>
-              ))}
-        </View>
-      )}
     </View>
   );
 }
+const SummaryLine = ({ label, value, setDash = false }) => {
+  const localization = useSelector((state) => state.localization.localization);
+  const dash = setDash && "-";
+  return (
+    <View className="flex-row justify-between py-2">
+      <Text className="text-base">
+        {dash}
+        {label}:
+      </Text>
+      <Text className="text-base">
+        {localization.menu.currency} {value}
+      </Text>
+    </View>
+  );
+};

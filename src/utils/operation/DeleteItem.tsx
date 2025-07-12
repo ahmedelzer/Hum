@@ -1,29 +1,36 @@
 import APIHandling from "../../../components/hooks/APIsFunctions/APIHandling";
 import { GetProjectUrl, SetReoute } from "../../../request";
-
+import { onApply } from "../../components/form-container/OnApply";
 
 export default async function DeleteItem(
   id,
-  // modalIsOpen,
-  // setModalIsOpen,
-  DeleteItemCallback,
   deleteWithApi,
   action,
   proxyRoute
 ) {
-  
-  if (deleteWithApi) {
-    SetReoute(proxyRoute);
-    const deleteRequest = await APIHandling(
-      `${GetProjectUrl()}/${action.routeAdderss}/${id}`,
-      action.dashboardFormActionMethodType,
-      ""
+  if (!action || !id) return false;
+
+  const modifiedDeleteAction = {
+    ...action,
+    routeAdderss: `${action.routeAdderss}/${id}`,
+  };
+
+  try {
+    const apply = await onApply(
+      {},
+      null,
+      true,
+      modifiedDeleteAction,
+      proxyRoute
     );
-    console.log("deleteRequest:",deleteRequest);
-    if (deleteRequest.data && deleteRequest.success) {
-      DeleteItemCallback();
+
+    if (apply?.success) {
+      return true;
+    } else {
+      return false;
     }
-  } else {
-    DeleteItemCallback(id);
+  } catch (error) {
+    console.error("❌ DeleteItem error:", error);
+    return false;
   }
 }

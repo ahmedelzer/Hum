@@ -4,6 +4,7 @@ import { onApply } from "../../components/form-container/OnApply";
 import { addToCart } from "../../reducers/CartReducer";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import DeleteItem from "../../utils/operation/DeleteItem";
+
 export const AddItemToCart = async (
   item,
   setLoading,
@@ -15,18 +16,25 @@ export const AddItemToCart = async (
   SetReoute(NodeMenuItemsSchema.projectProxyRoute);
   setLoading(true);
   try {
-    if (quantity <= 0) {
+    //console.log("AddItemToCart cartState",addToCart);
+    if (quantity == 0) {
       const deleteAction = schemaActions?.find(
         (action) => action.dashboardFormActionMethodType === "Delete"
       );
 
-      await DeleteItem(
-        item[fieldsType.idField],
-        dispatch(addToCart({ item: item, fieldsType: fieldsType })),
-        true,
-        deleteAction,
-        NodeMenuItemsSchema.projectProxyRoute
-      );
+      if (
+        await DeleteItem(
+          item[fieldsType.idField],
+          //dispatch(addToCart({ item: item, fieldsType: fieldsType })),
+          true,
+          deleteAction,
+          NodeMenuItemsSchema.projectProxyRoute
+        )
+      ) {
+        dispatch(addToCart({ item: item, fieldsType: fieldsType }));
+      }
+      //dispatch(addToCart({ item: item, fieldsType: fieldsType })),
+      //DeleteItem();
     } else {
       const postAction = schemaActions?.find(
         (action) => action.dashboardFormActionMethodType === "Post"

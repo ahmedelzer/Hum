@@ -41,6 +41,7 @@ const linking = {
       MenuView: "menu",
       SignIn: "signin",
       SignUp: "signup",
+      Orders: "orders",
       ForgetPassword: "forget-password",
       NotificationScreen: "notifications",
       CheckoutScreen: "checkout",

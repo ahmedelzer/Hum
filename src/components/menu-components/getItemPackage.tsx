@@ -1,7 +1,12 @@
 import { keysToLowerFirstChar } from "../../utils/operation/keysToLowerFirstChar";
 
-export function getItemPackage(item = {}, cartItems = [], nodeMenuItem = {}) {
-  const idField = nodeMenuItem?.idField;
+export function getItemPackage(
+  item = {},
+  cartItems = [],
+  nodeMenuItemsSchema = {}
+) {
+  const idField = nodeMenuItemsSchema?.idField;
+  console.log(cartItems, "cartItems form getItemPackage");
 
   if (!idField || !item?.[idField]) {
     console.warn("⚠️ getItemPackage: Missing idField or item[idField]");
@@ -14,11 +19,11 @@ export function getItemPackage(item = {}, cartItems = [], nodeMenuItem = {}) {
     return normalizedCartItem?.[idField] === item?.[idField];
   });
 
-
-
-  return {
+  //console.log("matchingCartItem",matchingCartItem,);
+  const result = {
     ...item,
     ...matchingCartItem,
   };
+  //console.log("getItemPackage",result);
+  return result;
 }
-

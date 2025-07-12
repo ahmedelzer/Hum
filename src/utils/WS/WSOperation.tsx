@@ -13,14 +13,13 @@ export function WSOperation(
   const message = JSON.parse(messageString);
   const payload = keysToLowerFirstChar(message[dataSourceName]);
 
-
   const handlers = {
     Insert: () => {
       const newRows = Array.isArray(payload) ? payload : [payload];
       if (!rows.find((row) => row[idField] === newRows[0][idField])) {
         return {
           rows: [...rows, ...newRows],
-          totalCount: TotalCount(message.ope, totalCount),
+          totalCount: TotalCount(totalCount, message.ope),
         };
       }
     },
@@ -33,13 +32,17 @@ export function WSOperation(
             row[idField] === payload[idField] ? { ...row, ...payload } : row
           )
         : [];
+      console.log(idField, updatedRows, "updatedRows", 111111111111111111);
+
       return {
         rows: updatedRows,
         totalCount: TotalCount(totalCount, message.ope),
       };
     },
     Delete: () => {
-      const newRows = rows.filter((row) => row[idField] !== message[dataSourceName]);
+      const newRows = rows.filter(
+        (row) => row[idField] !== message[dataSourceName]
+      );
       return { rows: newRows, totalCount: TotalCount(message.ope, totalCount) };
     },
 

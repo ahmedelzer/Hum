@@ -58,51 +58,53 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
         renderRightActions={
           !I18nManager.isRTL
             ? (progress, dragX) =>
-                RenderDeleteAction(progress, dragX, () =>
-                  DeleteItem(
+                RenderDeleteAction(progress, dragX, async () => {
+                  const success = await DeleteItem(
                     item[fieldsType.idField],
-                    () => {
-                      console.log("begin");
-
-                      dispatch(
-                        addToCart({
-                          item: {
-                            ...item,
-                            // [fieldsType.cardAction]: -1,
-                            addQuantity: -1,
-                          },
-                          fieldsType: fieldsType,
-                        })
-                      );
-                    },
                     true,
                     delAction,
                     fieldsType.proxyRoute
-                  )
-                )
+                  );
+
+                  if (success) {
+                    dispatch(
+                      addToCart({
+                        item: {
+                          ...item,
+                          [fieldsType.cardAction]: 1,
+                          addQuantity: -1,
+                        },
+                        fieldsType,
+                      })
+                    );
+                  }
+                })
             : null
         }
         renderLeftActions={
           I18nManager.isRTL
             ? (progress, dragX) =>
-                RenderDeleteAction(progress, dragX, () =>
-                  DeleteItem(
+                RenderDeleteAction(progress, dragX, async () => {
+                  const success = await DeleteItem(
                     item[fieldsType.idField],
-                    () =>
-                      dispatch(
-                        addToCart({
-                          item: {
-                            ...item,
-                            [fieldsType.cardAction]: -1,
-                          },
-                          fieldsType: fieldsType,
-                        })
-                      ),
                     true,
                     delAction,
                     fieldsType.proxyRoute
-                  )
-                )
+                  );
+
+                  if (success) {
+                    dispatch(
+                      addToCart({
+                        item: {
+                          ...item,
+                          [fieldsType.cardAction]: 1,
+                          addQuantity: -1,
+                        },
+                        fieldsType,
+                      })
+                    );
+                  }
+                })
             : null
         }
       >
@@ -187,7 +189,7 @@ export default function CardCartItem({ fieldsType, schemaActions, item }) {
             haveFooter={false}
             isOpen={modalOpen}
             onSubmit={async () => {
-              await onSubmitFun("", fieldsType.note);
+              await onSubmitFun(item[fieldsType.cartIdField], fieldsType.note);
             }}
             onClose={() => setModalOpen(false)}
             headerTitle="set notes"

@@ -15,10 +15,7 @@ import PaymentOptionsSchema from "../../Schemas/MenuSchema/PaymentOptions.json";
 import PaymentOptionsActions from "../../Schemas/MenuSchema/PaymentOptionsActions.json";
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 
-const PaymentOptions = ({ onApply }: { onApply: (options: any) => void }) => {
-  const [voucher, setVoucher] = useState("");
-  const [points, setPoints] = useState("0");
-  const [credit, setCredit] = useState("");
+const PaymentOptions = ({ row: rootRow, setRow: setRootRow }) => {
   const [row, setRow] = useState({});
   const [_WSsetMessage, setWSsetMessage] = useState("{}");
   const [WS_Connected, setWS_Connected] = useState(false);
@@ -89,7 +86,9 @@ const PaymentOptions = ({ onApply }: { onApply: (options: any) => void }) => {
     });
     handlerCartWSMessage.process();
   }, [_WSsetMessage, row]);
-
+  useEffect(() => {
+    setRootRow({ ...rootRow, ...row });
+  }, [row]);
   return (
     <View className="mt-6 border border-border bg-body rounded-xl p-2 w-full">
       <CollapsibleSection

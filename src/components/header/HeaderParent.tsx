@@ -11,7 +11,11 @@ import RedCounter from "../../utils/component/RedCounter";
 import { useDeviceInfo } from "../../utils/component/useDeviceInfo";
 import Notification from "../notification/Notification";
 import CategoryNavMobile from "./CategoryNavMobile.web";
+// import { styled } from "nativewind";
 import { TabsHeader } from "./Tabs.web";
+import TransitionComponent from "../../utils/component/TransitionComponent";
+// const AnimatedView = styled(View);
+
 export default function HeaderParent() {
   const navigation = useNavigation();
   const { os } = useDeviceInfo();
@@ -77,7 +81,22 @@ export default function HeaderParent() {
         {/* Cart Icon */}
       </View>
       {os === "web" && mobileNavOpen && (
-        <CategoryNavMobile setCatNavMobile={setMobileNavOpen} />
+        <TransitionComponent
+          animation={mobileNavOpen ? "slideUp" : "fadeIn"} // choose what fits
+          duration={300}
+          style={{
+            position: "fixed",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            zIndex: 500,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "white",
+          }}
+        >
+          <CategoryNavMobile setCatNavMobile={setMobileNavOpen} />
+        </TransitionComponent>
       )}
     </View>
   );

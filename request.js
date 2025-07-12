@@ -8,7 +8,7 @@ export const domainURL = "41.196.0.25";
 export const baseURL = "http://" + domainURL + ":8000";
 export const defaultProjectProxyRoute = `${baseURL}/BrandingMart/api/`;
 export const defaultProjectProxyRouteWithoutAPI = `${baseURL}/BrandingMart/`;
-export const publicImageURL = "http://" + domainURL + ":5055/";
+export const publicImageURL = "http://" + domainURL + ":5056/";
 //export const publicImageURL = "https://ihs-solutions.com:5055/";
 //export const websocketBaseURI =
 // "wss://maingatewayapi.ihs-solutions.com:8000/Chanels";

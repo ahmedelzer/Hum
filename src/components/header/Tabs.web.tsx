@@ -12,6 +12,7 @@ export function TabsHeader() {
   const tabs = [
     { name: "Home", icon: "home" },
     { name: "MenuView", icon: "menu" },
+    { name: "Orders", icon: "receipt" },
     { name: "Profile", icon: "person" },
   ];
 

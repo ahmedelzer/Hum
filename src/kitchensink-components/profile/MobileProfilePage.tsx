@@ -4,7 +4,7 @@ import {
   FontAwesome6,
   MaterialIcons,
 } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 import {
@@ -37,27 +37,145 @@ import { getField } from "../../utils/operation/getField";
 import { GetProjectUrl, SetReoute } from "../../../request";
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 import { formatCount } from "../../utils/operation/formatCount";
+import { useSchemas } from "../../../context/SchemaProvider";
+import { useWS } from "../../../context/WSProvider";
+import { ConnectToWS } from "../../utils/WS/ConnectToWS";
+import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
+import FormContainer from "../../components/form-container/FormContainer";
+import { useForm } from "react-hook-form";
+import { onApply } from "../../components/form-container/OnApply";
 const MobileProfilePage = () => {
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] = useState(false);
   const { userGust, user } = useAuth();
+  const { signupState } = useSchemas();
+  const [result, setResult] = useState(null);
+  const [disable, setDisable] = useState(null);
+  const localization = useSelector((state) => state.localization.localization);
+  const voucherLocale = localization.Hum_screens.profile.collapses.find(
+    (collapse) => collapse.type === "vouchers"
+  ).childrenText;
 
+  const DValues = {};
+  const {
+    control,
+    handleSubmit,
+    formState: { defaultValues = DValues, errors },
+    watch,
+    clearErrors,
+  } = useForm({
+    defaultValues: DValues,
+  });
+  const allParams = signupState.schema.dashboardFormSchemaParameters;
+
+  // Get the parameterField values for phoneNumber and confirmPassword
+  const phoneNumberField = getField(allParams, "phoneNumber");
+  const passwordField = getField(allParams, "confirmPassword", false);
+
+  // Filter out phoneNumber and password fields by their `parameterField` values
+  const sanitizedParams = allParams.filter(
+    (param) =>
+      param.parameterField !== phoneNumberField &&
+      param.parameterField !== passwordField.parameterField
+  );
+
+  // Create schema with filtered parameters
+  const restOfSchema = {
+    ...signupState.schema,
+    dashboardFormSchemaParameters: sanitizedParams,
+  };
+
+  // Optional: If you want individual schemas too (same sanitized version reused)
+  const passwordSchema = {
+    ...signupState.schema,
+    dashboardFormSchemaParameters: [passwordField],
+  };
+
+  const onSubmit = async (data: any) => {
+    // Destructure to remove confirmPassword from the sent data
+    const { confirmPassword, ...sanitizedData } = data;
+    setDisable(true);
+    try {
+      const request = await onApply(
+        sanitizedData,
+        null,
+        true,
+        signupState.action,
+        signupState.schema.projectProxyRoute
+      );
+      setResult(request);
+
+      if (request && request.success === true) {
+        const passwordField = getField(signupState.schema, "confirmPassword");
+        const { [passwordField]: removedPassword, ...dataWithoutPassword } =
+          data;
+
+        // navigation.navigate("Verify", {
+        //   ...dataWithoutPassword,
+        //   ...request.data,
+        //   VerifySchemaAction: VerifySchemaAction,
+        // });
+      }
+    } catch (error) {
+      console.error("API call failed:", error);
+      // Optionally, handle the error here (e.g., show a notification)
+    } finally {
+      // Enable the button after the API call
+      setDisable(false);
+    }
+  };
   return (
     <ScrollView style={{ flex: 1, height: "100%" }}>
       <View className="flex flex-col md:!flex-row gap-0 md:!gap-x-12">
-        <View>
+        <View className="md:!flex-1">
           {!userGust && (
             <>
               <ProfileCard />
               <Divider className="my-2" />
-              <CollapsibleSection
-                title="Personal Info"
-                icon={() => <Feather name="user" size={22} />}
-                withSpecialAction={true}
-                setheader
-                buttonClassName="py-2"
-              >
-                <Text>Details about personal information go here.</Text>
-              </CollapsibleSection>
+              <View className="flex md:hidden">
+                <CollapsibleSection
+                  title="Personal Info"
+                  icon={() => <Feather name="user" size={22} />}
+                  setheader
+                  buttonClassName="py-2"
+                >
+                  <FormContainer
+                    tableSchema={restOfSchema}
+                    row={{}}
+                    control={control}
+                    errorResult={result || errors}
+                    clearErrors={clearErrors}
+                  />
+                  <Button
+                    action="positive"
+                    variant="solid"
+                    onPress={async () => {
+                      await handleSubmit(onSubmit)();
+                    }}
+                    className="mt-4"
+                  >
+                    <ButtonText>{voucherLocale.more}</ButtonText>
+                  </Button>
+                </CollapsibleSection>
+              </View>
+              <View className="hidden md:flex">
+                <FormContainer
+                  tableSchema={restOfSchema}
+                  row={{}}
+                  control={control}
+                  errorResult={result || errors}
+                  clearErrors={clearErrors}
+                />
+                <Button
+                  action="positive"
+                  variant="solid"
+                  onPress={async () => {
+                    await handleSubmit(onSubmit)();
+                  }}
+                  className="mt-4"
+                >
+                  <ButtonText>{localization.formSteps.popup.save}</ButtonText>
+                </Button>
+              </View>
               {/* Add more sections you want in left column */}
             </>
           )}
@@ -72,7 +190,16 @@ const MobileProfilePage = () => {
                 icon={() => <Feather name="settings" size={22} />}
                 setheader
               >
-                <LanguageSelector key={1} />
+                <View>
+                  <FormContainer
+                    tableSchema={passwordSchema}
+                    row={{}}
+                    control={control}
+                    errorResult={result || errors}
+                    clearErrors={clearErrors}
+                  />
+                  <LanguageSelector key={1} />
+                </View>
               </CollapsibleSection>
               <Divider className="my-2" />
               <CollapsibleSection
@@ -156,6 +283,33 @@ const MobileProfilePage = () => {
 };
 const ProfileCard = () => {
   const { userGust, user } = useAuth();
+  const { _wsMessageAccounting, setWSMessageAccounting } = useWS();
+  const { menuItemsState, setMenuItemsState } = useSchemas();
+  const [WS_Connected, setWS_Connected] = useState(false);
+  const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
+  useEffect(() => {
+    if (WS_Connected) return;
+
+    SetReoute(menuItemsState.schema.projectProxyRoute);
+
+    ConnectToWS(setWSMessageAccounting, setWS_Connected)
+      .then(() => console.log("🔌 WebSocket setup done"))
+      .catch((e) => console.error("❌ WebSocket setup error", e));
+  }, [WS_Connected]);
+
+  // 🧠 Reducer callback to update rows
+  const callbackReducerUpdate = async (ws_updatedRows) => {
+    // await reducerDispatch({
+    //   type: "WS_OPE_ROW",
+    //   payload: {
+    //     rows: ws_updatedRows.rows,
+    //     totalCount: ws_updatedRows.totalCount,
+    //   },
+    // });
+  };
+
+  // 📨 React to WebSocket messages only when valid
+
   const creditField = getField(
     CreditsSchema.dashboardFormSchemaParameters,
     "credit",
@@ -177,8 +331,20 @@ const ProfileCard = () => {
     `/${getAction.routeAdderss}`,
     GetProjectUrl()
   );
+  useEffect(() => {
+    if (!_wsMessageAccounting) return;
+    const _handleWSMessage = new WSMessageHandler({
+      _WSsetMessage: _wsMessageAccounting,
+      fieldsType,
+      rows: [data],
+      totalCount: 0,
+      callbackReducerUpdate,
+    });
+    _handleWSMessage.process();
+    setWSMessageAccounting(null);
+  }, [_wsMessageAccounting]);
   return (
-    <HStack className="justify-between items-center">
+    <HStack className="flex-col sm:flex-row justify-between">
       <HStack space="md" className="items-center">
         <Avatar className="bg-body">
           <AvatarFallbackText>{user.Username}</AvatarFallbackText>

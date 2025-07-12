@@ -18,16 +18,19 @@ import { formatCount } from "../../utils/operation/formatCount";
 export const MenuCardWeb = ({ item, fieldsType, schemaActions }) => {
   const { userGust } = useAuth();
   return (
-    <View className="size-full flex">
-      <div className="relative grid grid-cols-2 overflow-hidden w-full">
+    <View className="size-full grid grid-rows-[75%_25%] md:!flex">
+      {/* <View className="size-full flex"> */}
+      <View className="relative grid grid-cols-2 overflow-hidden w-full">
         {/* Image Section */}
-        <View className="w-full flex pe-4">
+        <View
+          className="size-full flex-1 flex flex-col justify-between pe-0"
+          style={{ flex: 8 }}
+        >
           <Box className="rounded-2xl flex justify-center overflow-hidden w-full">
             <ImageCardActions
               fieldsType={fieldsType}
               item={item}
-              style={{ width: 150, height: 150 }}
-              className="!size-[80%] md:!size-40"
+              className="!size-[115px] sm:!size-48 md:!size-40 !items-center"
             >
               <View
                 pointerEvents="box-none"
@@ -46,29 +49,28 @@ export const MenuCardWeb = ({ item, fieldsType, schemaActions }) => {
               </View>
             </ImageCardActions>
           </Box>
-          <View
-            className="flex-row justify-between items-center mt-1 "
-            style={{ width: "100%", paddingHorizontal: scale(10) }}
-          >
-            {item[fieldsType.rate] && (
-              <View
-                className="flex-row items-center px-2"
-                key={`${item[fieldsType.idField]}-${fieldsType.rate}-${item[fieldsType.rate]}`}
-              >
-                <StarsIcons value={parseFloat(item[fieldsType.rate])} />
-              </View>
-            )}
-            <GetIconMenuItem
-              count={formatCount(item[fieldsType.orders])}
-              iconName={"orders"}
-              size={18}
-              style={{ marginHorizontal: scale(1), color: theme.accent }}
-            />
+          <View className="flex-col items-center">
+            <View className="flex-row justify-between items-center mt-1 space-x-2">
+              {item[fieldsType.rate] && (
+                <View
+                  className="flex-row"
+                  key={`${item[fieldsType.idField]}-${fieldsType.rate}-${item[fieldsType.rate]}`}
+                >
+                  <StarsIcons value={parseFloat(item[fieldsType.rate])} />
+                </View>
+              )}
+              <GetIconMenuItem
+                count={formatCount(item[fieldsType.orders])}
+                iconName={"orders"}
+                size={18}
+                style={{ marginHorizontal: scale(1), color: theme.accent }}
+              />
+            </View>
           </View>
         </View>
 
         {/* Content Section */}
-        <div className="w-full flex flex-col justify-between">
+        <View className="w-full flex flex-col justify-between">
           <VStack>
             <View
               className={isRTL() ? "items-start" : "items-start" + " min-h-28"}
@@ -91,16 +93,30 @@ export const MenuCardWeb = ({ item, fieldsType, schemaActions }) => {
                   key={`${item[fieldsType.idField]}-${fieldsType.description}-${item[fieldsType.description]}`}
                   //key={`${item[fieldsType.description]}-${randomID}`}
                 >
-                  {getPaddedText(`${item[fieldsType.description]}`)}
+                  {getPaddedText(`${item[fieldsType.description]}`, 3)}
                 </Text>
               )}
             </View>
-            <CardPriceDiscount fieldsType={fieldsType} item={item} />
           </VStack>
-        </div>
-      </div>
-      <View className="flex flex-row justify-between items-center w-full">
-        <View></View>
+          <CardPriceDiscount fieldsType={fieldsType} item={item} />
+        </View>
+      </View>
+      <View className="flex flex-row justify-between items-center px-2">
+        {/* Points */}
+        <View className="relative w-6 h-6 justify-center items-center">
+          <MaterialCommunityIcons
+            name="gift-outline"
+            size={24}
+            color={theme.accent}
+          />
+          <View className="absolute -top-1 -end-2 bg-green-600 rounded-full px-1">
+            <Text className="text-xs text-white font-bold">
+              {item[fieldsType.rewardPoints] ?? 0}
+            </Text>
+          </View>
+        </View>
+
+        {/* Add to Cart Button */}
         <View className="w-1/2">
           {fieldsType.cardAction && fieldsType.isAvailable && !userGust && (
             <AddToCartPrimaryButton
@@ -112,7 +128,7 @@ export const MenuCardWeb = ({ item, fieldsType, schemaActions }) => {
         </View>
       </View>
       {/* {item[fieldsType.rewardPoints] && ( */}
-      <View
+      {/* <View
         style={{
           position: "absolute",
           bottom: 0,
@@ -132,7 +148,7 @@ export const MenuCardWeb = ({ item, fieldsType, schemaActions }) => {
             </Text>
           </View>
         </View>
-      </View>
+      </View> */}
       {/* )} */}
     </View>
   );

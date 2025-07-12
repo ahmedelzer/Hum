@@ -1,9 +1,20 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { ScrollView } from "react-native";
 import SuggestCard from "../../components/cards/SuggestCard";
 import { scale } from "react-native-size-matters";
 import { theme } from "../../Theme";
+import { useWS } from "../../../context/WSProvider";
+import { useSelector } from "react-redux";
+import { useSchemas } from "../../../context/SchemaProvider";
+import reducer from "../../reducers/LocationReducer";
+import { initialState } from "../../components/Pagination/initialState";
+import { SetReoute } from "../../../request";
+import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import { createRowCache } from "../../components/Pagination/createRowCache";
+import { prepareLoad } from "../operation/loadHelpers";
+import { ConnectToWS } from "../WS/ConnectToWS";
+import { WSMessageHandler } from "../WS/handleWSMessage";
 export function renderSuggestCards(suggestContainerType, items) {
   const chunkArray = (arr, size) => {
     return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
@@ -73,279 +84,90 @@ export function renderSuggestCards(suggestContainerType, items) {
       return null;
   }
 }
+const VIRTUAL_PAGE_SIZE = 4;
 
 export default function SuggestCardContainer({
   Schema,
   suggestContainerType = 1,
 }) {
-  const items = [
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-    {
-      canReturn: true,
-      quantity: 2,
-      discount: 15,
-      heightCm: 0,
-      indexOflike: 0,
-      isActive: true,
-      isAvailable: true,
-      itemImage:
-        "MenuItemImages\\34a706bf-8bf2-4c45-b660-c247ed177d99.jpg?v5/22/2025 12:12:13 PM?v5/22/2025 12:12:13 PM",
-      keywords: "wee,apples12",
-      lengthCm: 0,
-      menuCategoryID: "b7d65f7f-f87a-4fa6-beaa-d799ba77b9ce",
-      menuCategoryName: "طعام",
-      menuItemDescription: "rtr",
-      menuItemID: "f348161f-905a-4d78-af2f-068bd35599b5",
-      menuItemName: "apples12",
-      nodeAddress: null,
-      nodeID: "2421d86a-0043-441b-988a-e7cfad6273a7",
-      nodeMenuItemID: "b30ca2db-6662-4c70-9858-ab7d6bcae6e8",
-      node_Name: "MainNode",
-      numberOfDislikes: 0,
-      numberOfLikes: 47,
-      numberOfOrders: 0,
-      numberOfReviews: 0,
-      packageDegree: 0,
-      preparingTimeAmountPerMinute: 0,
-      price: 5,
-      priceAfterDiscount: 4,
-      rate: 5,
-      size: 0,
-      sku: "",
-      taxAmount: 0,
-      taxTypeID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      volume: 0,
-      weightKg: 0,
-      widthCm: 0,
-    },
-  ];
+  const [reRequest, setReRequest] = useState(false);
+  const [WS_Connected, setWS_Connected] = useState(false);
+
+  const { _wsMessageMenuItem, setWSMessageMenuItem } = useWS();
+  const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
+
+  const { menuItemsState, setMenuItemsState } = useSchemas();
+  const [state, reducerDispatch] = useReducer(
+    reducer,
+    initialState(10, menuItemsState.schema.idField)
+  );
+  const [currentSkip, setCurrentSkip] = useState(1);
+  const dataSourceAPI = (query, skip, take) => {
+    SetReoute(menuItemsState.schema.projectProxyRoute);
+    return buildApiUrl(query, {
+      pageIndex: skip + 1,
+      pageSize: take,
+      // ...row,
+    });
+  };
+  const cache = createRowCache(VIRTUAL_PAGE_SIZE);
+  const getAction =
+    menuItemsState.action &&
+    menuItemsState.action.find(
+      (action) => action.dashboardFormActionMethodType === "Get"
+    );
+
+  const { rows, skip, totalCount, loading } = state;
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    prepareLoad({
+      state,
+      dataSourceAPI,
+      getAction,
+      cache,
+      reducerDispatch,
+    });
+    setReRequest(false);
+    // Call LoadData with the controller
+  });
+  // 🌐 Setup WebSocket connection on mount or WS_Connected change
+  useEffect(() => {
+    if (WS_Connected) return;
+
+    SetReoute(menuItemsState.schema.projectProxyRoute);
+
+    ConnectToWS(setWSMessageMenuItem, setWS_Connected)
+      .then(() => console.log("🔌 WebSocket setup done"))
+      .catch((e) => console.error("❌ WebSocket setup error", e));
+  }, [WS_Connected]);
+
+  // 🧠 Reducer callback to update rows
+  const callbackReducerUpdate = async (ws_updatedRows) => {
+    await reducerDispatch({
+      type: "WS_OPE_ROW",
+      payload: {
+        rows: ws_updatedRows.rows,
+        totalCount: ws_updatedRows.totalCount,
+      },
+    });
+  };
+
+  // 📨 React to WebSocket messages only when valid
+  useEffect(() => {
+    if (!rows) return;
+    if (!_wsMessageMenuItem) return;
+    const _handleWSMessage = new WSMessageHandler({
+      _WSsetMessage: _wsMessageMenuItem,
+      fieldsType,
+      rows,
+      totalCount,
+      callbackReducerUpdate,
+    });
+    _handleWSMessage.process();
+    setWSMessageMenuItem(null);
+  }, [_wsMessageMenuItem]);
 
   return (
     <ScrollView
@@ -358,7 +180,7 @@ export default function SuggestCardContainer({
         alignItems: "flex-start",
       }}
     >
-      {renderSuggestCards(suggestContainerType, items)}
+      {renderSuggestCards(suggestContainerType, state.rows)}
     </ScrollView>
   );
 }

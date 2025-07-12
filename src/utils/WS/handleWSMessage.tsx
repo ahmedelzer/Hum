@@ -19,6 +19,12 @@ export class WSMessageHandler {
 
   process() {
     if (!this._WSsetMessage) return;
+    console.log(
+      this._WSsetMessage,
+      this.fieldsType.idField,
+      this.fieldsType,
+      111111111111111111
+    );
 
     console.log("📩 WS message received, processing...");
     const parsed = JSON.parse(this._WSsetMessage);
@@ -38,9 +44,7 @@ export class WSMessageHandler {
 
       //console.log("✅ ws_updatedRows", ws_updatedRows);
 
-      if (ws_updatedRows?.rows?.length > 0) {
-        this.callbackReducerUpdate(ws_updatedRows);
-      }
+      this.callbackReducerUpdate(ws_updatedRows);
     } catch (e) {
       console.error("❌ WS message processing failed", e);
     }

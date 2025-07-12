@@ -13,6 +13,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import FormContainer from "../../components/form-container/FormContainer";
 import { useSelector } from "react-redux";
+import { StyleSheet, View } from "react-native";
 
 const PopupModal = ({
   haveFooter = true,
@@ -20,11 +21,14 @@ const PopupModal = ({
   onClose,
   onSubmit,
   control,
-  schema,
-  errors,
-  disable,
+  schema = {},
+  errors = {},
+  disable = false,
   headerTitle = "Invite your team",
   isFormModal = true,
+  footer = null,
+  row = {},
+
   children,
 }) => {
   const localization = useSelector((state) => state.localization.localization);
@@ -44,7 +48,7 @@ const PopupModal = ({
           {isFormModal && (
             <FormContainer
               tableSchema={schema}
-              row={{}}
+              row={row}
               errorResult={errors}
               control={control}
             />
@@ -53,22 +57,27 @@ const PopupModal = ({
         </ModalBody>
         {haveFooter && (
           <ModalFooter>
-            <Button
-              isDisabled={disable}
-              variant="outline"
-              action="secondary"
-              onPress={onClose}
-            >
-              <ButtonText>{localization.formSteps.popup.cancel}</ButtonText>
-            </Button>
-            <Button onPress={onSubmit} isDisabled={disable}>
-              <ButtonText>{localization.formSteps.popup.done}</ButtonText>
-            </Button>
+            {footer ? (
+              footer
+            ) : (
+              <View>
+                <Button
+                  isDisabled={disable}
+                  variant="outline"
+                  action="secondary"
+                  onPress={onClose}
+                >
+                  <ButtonText>{localization.formSteps.popup.cancel}</ButtonText>
+                </Button>
+                <Button onPress={onSubmit} isDisabled={disable}>
+                  <ButtonText>{localization.formSteps.popup.done}</ButtonText>
+                </Button>
+              </View>
+            )}
           </ModalFooter>
         )}
       </ModalContent>
     </Modal>
   );
 };
-
 export default PopupModal;

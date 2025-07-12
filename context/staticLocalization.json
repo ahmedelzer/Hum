@@ -308,6 +308,7 @@
     },
     "popup": {
       "done": "Done",
+      "save": "Save",
       "cancel": "Cancel"
     }
   },
@@ -390,7 +391,8 @@
           "title": "Details",
           "subTitle": ""
         }
-      }
+      },
+      "addToCartButton": "Add to Cart"
     },
     "cart": {
       "header": {
@@ -398,8 +400,9 @@
         "subTitle": "Famous"
       },
       "paymentSummary": {
-        "title": "Payment summary",
-        "totalAmount": "Total Amount"
+        "discounts": "Discounts",
+        "taxes": "Taxes",
+        "fees": "Additional Fees"
       },
       "emptyCart": "cart is empty",
       "suggests": "You might also like...",
@@ -409,6 +412,17 @@
       "submitButton": "Submit",
       "addItemsButton": "Add items",
       "checkoutButton": "Checkout"
+    },
+    "orders": {
+      "pickupSteps": ["Preparing", "Prepared", "Picked Up"],
+      "deliverySteps": [
+        "Preparing",
+        "Prepared",
+        "Out for Delivery",
+        "Delivered"
+      ],
+      "showDetails": "Show Details",
+      "order": "Order"
     },
     "profile": {
       "collapses": [
@@ -434,15 +448,9 @@
       "title": "Checkout",
       "subTitle": "finish the order"
     },
-    "paymentSummary": {
-      "title": "Payment summary",
-      "totalAmount": "Total Amount"
-    },
     "emptyCart": "cart is empty",
     "suggests": "You might also like...",
     "specialRequest": "Special request",
-    "saveOrder": "Save on your order",
-    "saveOrderPlaceholder": "Enter voucher code",
     "submitButton": "Submit",
     "addItemsButton": "Add items",
     "checkoutButton": "Checkout"

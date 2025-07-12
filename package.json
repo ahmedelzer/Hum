@@ -99,6 +99,7 @@
     "react-native-size-matters": "^0.4.2",
     "react-native-step-indicator": "^1.0.3",
     "react-native-svg": "15.8.0",
+    "react-native-table-component": "^1.2.2",
     "react-native-web": "^0.19.13",
     "react-navigation": "^4.4.4",
     "react-redux": "^9.2.0",
