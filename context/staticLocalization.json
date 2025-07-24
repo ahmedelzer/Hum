@@ -373,7 +373,8 @@
     "home": {
       "shortcuts": "Shortcuts",
       "faovert": "Faovert Items",
-      "MarketPlace": "Market Places"
+      "MarketPlace": "Market Places",
+      "marketPlaceTaps": ["Pickup", "Address"]
     },
     "menu": {
       "search": { "placeholder": "Search by keywords, name, or description" },
@@ -392,6 +393,7 @@
           "subTitle": ""
         }
       },
+      "outOfStock": "Out of Stock",
       "addToCartButton": "Add to Cart"
     },
     "cart": {
@@ -422,7 +424,11 @@
         "Delivered"
       ],
       "showDetails": "Show Details",
-      "order": "Order"
+      "order": "Order",
+      "cancelConfirmationTitle": "Cancel Order?",
+      "cancelConfirmationMessage": "Are you sure you want to cancel this order? This action cannot be undone.",
+      "yes": "Yes",
+      "no": "No"
     },
     "profile": {
       "collapses": [

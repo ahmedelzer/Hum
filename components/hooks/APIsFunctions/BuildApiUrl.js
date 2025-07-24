@@ -50,6 +50,7 @@ export function buildApiUrl(
     ...selectedNode,
     ...selectedLocation,
   };
+
   if (!apiRequest || !apiRequest.dashboardFormSchemaActionQueryParams) {
     // Handle the case where apiRequest is null or does not have dashboardFormSchemaActionQueryParams
     return null; // or some default value or throw an error, depending on your use case
@@ -67,9 +68,7 @@ export function buildApiUrl(
     .join("&");
 
   const apiUrl = `${getProjectUrl}/${routeAddress}${routeAddress.includes("?") ? "&" : "?"}${queryParam}`;
-  console.log("====================================");
-  console.log(apiUrl, "apiUrl");
-  console.log("====================================");
+
   //const apiUrl = `${getProjectUrl}/${apiRequest.routeAdderss}?${queryParam}`;
   return apiUrl;
 }

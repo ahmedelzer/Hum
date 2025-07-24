@@ -5,7 +5,8 @@ import { Pressable } from "react-native";
 import { useSelector } from "react-redux";
 import { Card } from "../../../components/ui";
 import SetComponentsPlatforms from "../../utils/component/SetComponentsPlatforms";
-import { MenuCard, MenuCardWeb } from "../cards";
+import { MenuCard } from "../cards";
+import { MenuCardWeb } from "../cards";
 import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSchemaActions.json";
 
 //todo update att when any param changes
@@ -19,8 +20,6 @@ const MenuCardView = ({
   schemaActions,
 }) => {
   //!uncomment the attribute
-  console.log(itemPackage);
-
   const [item, setItem] = useState(itemPackage);
   // const [att, setAtt] = useState(item.attribute);
   const navigation = useNavigation();
@@ -89,14 +88,14 @@ const MenuCardView = ({
       className="h-full"
     >
       <Card
-        className={`items-center rounded-xl overflow-hidden border-1 h-ful ${
+        className={`items-center rounded-xl overflow-hidden border h-full ${
           selected ? "border-2 border-green-500 bg-green-100" : "bg-dark_card"
         }`}
       >
-        <SetComponentsPlatforms
+        {/* <SetComponentsPlatforms
           components={[
             {
-              platform: "android",
+              platform: "android" ,
               component: (
                 <MenuCard
                   item={itemPackage}
@@ -126,8 +125,12 @@ const MenuCardView = ({
               ),
             },
           ]}
+        /> */}
+        <MenuCardWeb
+          item={itemPackage}
+          fieldsType={fieldsType}
+          schemaActions={schemaActions}
         />
-
         {/* {itemPackage.attributes && (
           <ScrollView className="w-full">
             <FormContainer

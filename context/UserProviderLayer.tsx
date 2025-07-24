@@ -13,6 +13,7 @@ import { buildApiUrl } from "../components/hooks/APIsFunctions/BuildApiUrl";
 import { prepareLoad } from "../src/utils/operation/loadHelpers";
 import { initialState } from "../src/components/Pagination/initialState";
 import reducer from "../src/components/Pagination/reducer";
+import { useNetwork } from "./NetworkContext";
 
 const VIRTUAL_PAGE_SIZE = 4000;
 const UserProviderLayer = (
@@ -21,6 +22,7 @@ const UserProviderLayer = (
     // selectedNode,
   }
 ) => {
+   const { status: { isConnected: isOnline } } = useNetwork();
   const reduxSelectedLocation = useSelector(
     (state: any) => state.location?.selectedLocation
   );
@@ -66,11 +68,16 @@ const UserProviderLayer = (
     if (cart_WS_Connected) return;
 
     SetReoute(CartSchema.projectProxyRoute);
-
+let cleanup;
     ConnectToWS(setCartWSsetMessage, setCartWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => console.error("❌ Cart WebSocket error", e));
-  }, [cart_WS_Connected]);
+
+       return () => {
+    if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+    console.log("🧹 Cleaned up WebSocket handler");
+  };
+  }, [cart_WS_Connected,isOnline]);
 
   // ✅ Callback to update reducer
   const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
@@ -95,7 +102,7 @@ const UserProviderLayer = (
       callbackReducerUpdate: cartCallbackReducerUpdate,
     });
     _handleWSMessage.process();
-  }, [cart_WSsetMessage, cartState.rows]);
+  }, [cart_WSsetMessage, cartState.rows,isOnline]);
 
   const dataSourceAPI = (query, skip, take) => {
     SetReoute(CartSchema.projectProxyRoute);
@@ -112,16 +119,16 @@ const UserProviderLayer = (
       (action) => action.dashboardFormActionMethodType === "Get"
     );
 
-  useEffect(() => {
-    SetReoute(CartSchema.projectProxyRoute);
-    prepareLoad({
-      state: cartState,
-      dataSourceAPI,
-      getAction: getCustomerCartAction,
-      cache,
-      reducerDispatch: cartReducerDispatch,
-    });
-  }, [selectedLocation, selectedNode]);
+  // useEffect(() => {
+  //   SetReoute(CartSchema.projectProxyRoute);
+  //   prepareLoad({
+  //     state: cartState,
+  //     dataSourceAPI,
+  //     getAction: getCustomerCartAction,
+  //     cache,
+  //     reducerDispatch: cartReducerDispatch,
+  //   });
+  // }, [selectedLocation, selectedNode]);
 
   return null;
 };

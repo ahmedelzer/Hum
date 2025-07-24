@@ -13,7 +13,7 @@
       "dashboardFormSchemaParameterID": "b7100c23-a107-4898-afb3-0a4994aa3bd0",
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
       "isEnable": true,
-      "parameterType": "cartItemID",
+      "parameterType": "text",
       "parameterField": "customerCartItemID",
       "parameterTitel": "customerCartItemID",
       "parameterLookupTitel": "customerCartItemID",
@@ -135,34 +135,8 @@
       "lookupDisplayField": null,
       "indexNumber": 9
     },
-    {
-      "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
-      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
-      "isEnable": false,
-      "parameterType": "isAvailable",
-      "parameterField": "isAvailable",
-      "parameterTitel": "isAvailable",
-      "parameterLookupTitel": "isAvailable",
-      "isIDField": false,
-      "lookupID": null,
-      "lookupReturnField": null,
-      "lookupDisplayField": null,
-      "indexNumber": 9
-    },
-    {
-      "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
-      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
-      "isEnable": false,
-      "parameterType": "menuCategoryID",
-      "parameterField": "menuCategoryID",
-      "parameterTitel": "menuCategoryID",
-      "parameterLookupTitel": "menuCategoryID",
-      "isIDField": false,
-      "lookupID": null,
-      "lookupReturnField": null,
-      "lookupDisplayField": null,
-      "indexNumber": 9
-    },
+
+
     {
       "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",

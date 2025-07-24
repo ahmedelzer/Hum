@@ -1,55 +1,58 @@
-import { projectProxyRoute, websocketBaseURI } from "../../../request";
-
 export class WSclass {
   constructor(url) {
     this.url = url;
     this.socket = null;
+    this.messageCallbacks = []; // Array to store multiple callbacks
+    this.connectionCallbacks = [];
   }
 
-  connect() {
-    console.log("🔌 Connecting to WebSocket:");
+  connect(onConnect) {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      if (onConnect) onConnect();
+      return;
+    }
 
     this.socket = new WebSocket(this.url);
 
     this.socket.onopen = () => {
-      console.log("✅ WebSocket connected:");
+      this.connectionCallbacks.forEach(cb => cb(true));
+      if (onConnect) onConnect();
+    };
+
+    this.socket.onclose = () => {
+      this.connectionCallbacks.forEach(cb => cb(false));
     };
 
     this.socket.onmessage = (event) => {
-      // will be overridden by ReciveMessages
-    };
-
-    this.socket.onclose = (event) => {
-      console.warn("❌ WebSocket closed by server, reconnecting in 1s:");
-      // if(this.socket.CLOSED)
-      // {
-
-      // setTimeout(() => this.connect(), 1000); // recreate connection
-      // }
-      
+      this.messageCallbacks.forEach(cb => cb(event.data));
     };
 
     this.socket.onerror = (error) => {
-      console.error("⚠️ WebSocket error:", error);
-      // Let onclose handle reconnect
+      console.error('WebSocket error:', error);
     };
   }
 
-  ReciveMessages(messageCallback) {
-    if (!this.socket) return;
+  addMessageHandler(callback) {
+    console.log("this.messageCallbacks",this.messageCallbacks.length);
+    if (typeof callback === 'function' && !this.messageCallbacks.includes(callback)) {
+      this.messageCallbacks.push(callback);
+    }
+    return () => this.removeMessageHandler(callback); // Return cleanup function
+  }
 
-    this.socket.onmessage = (event) => {
-      const blob = event.data;
-      messageCallback(blob);
-    };
+  removeMessageHandler(callback) {
+    this.messageCallbacks = this.messageCallbacks.filter(cb => cb !== callback);
   }
 
   disconnect() {
     if (this.socket) {
-      console.log("🛑 Manual disconnect");
-      this.socket.onclose = null; // prevent reconnect on manual close
       this.socket.close();
+      this.messageCallbacks = [];
+      this.connectionCallbacks = [];
     }
   }
-}
 
+  get readyState() {
+    return this.socket?.readyState;
+  }
+}

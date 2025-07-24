@@ -21,8 +21,13 @@ export const cartSlice = createSlice({
     customerCartInfo: {},
     notes: [],
     totalAmount: 0,
+    totalItemsQuantity: 0,
   },
   reducers: {
+    setItemQuantity: (state, action) => {
+      console.log("total items", action);
+      state.totalItemsQuantity += action.payload;
+    },
     addToCart: (state, action) => {
       const item = action.payload.item;
       const fieldsType = action.payload.fieldsType;
@@ -30,26 +35,26 @@ export const cartSlice = createSlice({
       const itemPresent = state.cart.find(
         (cartItem) => cartItem[idField] === item[idField]
       );
-      console.log(itemPresent, state, idField, item, "0000000000");
 
-      if (itemPresent) {
-        if (
-          item.addQuantity == -1 &&
-          itemPresent[fieldsType.cardAction] === 1
-        ) {
-          const removeFromCart = state.cart.filter(
-            (removeItem) => removeItem[idField] !== item[idField]
-          );
-          state.cart = removeFromCart;
-        } else {
-          itemPresent[fieldsType.cardAction] += +item.addQuantity;
-        }
-      } else {
-        state.cart.push({ ...item, [fieldsType.cardAction]: 1 });
-      }
-      // Recalculate totalAmount
-      state.totalAmount += item[fieldsType.price] * action.payload.addQuantity;
+      // if (itemPresent) {
+
+      //   if (item.addQuantity < 0 && itemPresent[fieldsType.cardAction] === 1) {
+      //     const removeFromCart = state.cart.filter(
+      //       (removeItem) => removeItem[idField] !== item[idField]
+      //     );
+      //     state.cart = removeFromCart;
+      //   } else {
+      //     itemPresent[fieldsType.cardAction] += +item.addQuantity;
+      //   }
+      // } else {
+      //   state.cart.push({ ...item, [fieldsType.cardAction]: 1 });
+      // }
+      // // Recalculate totalAmount
+      // state.totalAmount += item[fieldsType.price] * action.payload.addQuantity;
+      // // Save to secure storage
+      // saveCartToStorage(state.cart, state.totalAmount);
     },
+
     setCartFromStorage: (state, action) => {
       state.cart = action.payload.cart;
       state.totalAmount = action.payload.totalAmount;
@@ -74,6 +79,7 @@ export const loadCartFromStorage = () => async (dispatch) => {
   dispatch(setCartFromStorage({ cart, totalAmount }));
 };
 
-export const { addToCart, setCartFromStorage, updateNotes } = cartSlice.actions;
+export const { addToCart, setCartFromStorage, updateNotes, setItemQuantity } =
+  cartSlice.actions;
 
 export default cartSlice.reducer;

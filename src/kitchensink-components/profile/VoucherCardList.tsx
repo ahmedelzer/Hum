@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
+import { Button, ScrollView, Text, View, StyleSheet, Dimensions } from "react-native";
 import reducer from "../../components/Pagination/reducer";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import { SetReoute } from "../../../request";
@@ -7,10 +8,12 @@ import ScratchVoucherCardActions from "../../Schemas/MenuSchema/ScratchVoucherCa
 import { prepareLoad } from "../../utils/operation/loadHelpers";
 import { createRowCache } from "../../components/Pagination/createRowCache";
 import { initialState } from "../../components/Pagination/initialState";
-import { Button, ScrollView, Text, View } from "react-native";
-import { getRemoteRows } from "../../components/Pagination/getRemoteRows";
 import { useSelector } from "react-redux";
-const VIRTUAL_PAGE_SIZE = 4;
+import { ImageBackground } from "../../../components/ui";
+import VoucherCard from "./VoucherCard";
+
+const VIRTUAL_PAGE_SIZE = 2;
+
 const VoucherCardList = () => {
   const [state, reducerDispatch] = useReducer(
     reducer,
@@ -23,6 +26,7 @@ const VoucherCardList = () => {
 
   const [currentSkip, setCurrentSkip] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  
   const dataSourceAPI = (query, skip, take) => {
     SetReoute(ScratchVoucherCard.projectProxyRoute);
     return buildApiUrl(query, {
@@ -30,6 +34,7 @@ const VoucherCardList = () => {
       pageSize: take,
     });
   };
+
   const cache = createRowCache(VIRTUAL_PAGE_SIZE);
   const getAction =
     ScratchVoucherCardActions &&
@@ -48,40 +53,46 @@ const VoucherCardList = () => {
       cache,
       reducerDispatch,
     });
-    // Call LoadData with the controller
   }, [currentPage]);
+
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
+
   if (!rows.length) return <Text>{voucherLocale.notFound}</Text>;
 
+  // Get screen width for responsive layout
+  const screenWidth = Dimensions.get('window').width;
+  
+  // Determine number of columns based on screen width
+  const getColumns = () => {
+    if (screenWidth < 1460) return 1;   // Mobile (equivalent to sm:)
+    return 2;  // Tablet (equivalent to lg:)
+                         // Desktop
+  };
+
+  const numColumns = getColumns();
+
   return (
-    <View>
-      <View className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {rows.map((card) => (
-          <View
-            className="bg-body shadow-md rounded-xl p-4 border hover:shadow-lg transition"
-            key={card.voucherCardUsageID}
-          >
-            <Text className="text-lg font-medium !text-accent truncate">
-              {card.voucherCardCode}
-            </Text>
-            <Text className="text-sm text-primary-custom mt-1">
-              {voucherLocale.usedOn} {card.usedAt}
-            </Text>
-          </View>
-        ))}
-      </View>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={[styles.gridContainer, { 
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        }]}>
+          {rows.map((card, index) => (
+            <View key={index} style={{
+              width: `${100/numColumns}%`,
+              padding: 8, // Equivalent to gap-4 (16px total)
+            }}>
+              <VoucherCard item={card} />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
 
       {/* Pagination Controls */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          marginVertical: 10,
-          gap: 10,
-        }}
-      >
+      <View style={styles.paginationContainer}>
         <Button
           title={voucherLocale.more}
           onPress={handleNext}
@@ -91,5 +102,24 @@ const VoucherCardList = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingVertical: 16,
+  },
+  gridContainer: {
+    width: '100%',
+  },
+  paginationContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
+    gap: 10,
+  },
+});
 
 export default VoucherCardList;

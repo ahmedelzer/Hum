@@ -44,6 +44,7 @@ import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
 import FormContainer from "../../components/form-container/FormContainer";
 import { useForm } from "react-hook-form";
 import { onApply } from "../../components/form-container/OnApply";
+import { useNetwork } from "../../../context/NetworkContext";
 const MobileProfilePage = () => {
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] = useState(false);
   const { userGust, user } = useAuth();
@@ -190,24 +191,7 @@ const MobileProfilePage = () => {
                 icon={() => <Feather name="settings" size={22} />}
                 setheader
               >
-                <View>
-                  <FormContainer
-                    tableSchema={passwordSchema}
-                    row={{}}
-                    control={control}
-                    errorResult={result || errors}
-                    clearErrors={clearErrors}
-                  />
-                  <LanguageSelector key={1} />
-                </View>
-              </CollapsibleSection>
-              <Divider className="my-2" />
-              <CollapsibleSection
-                title="Payment Settings"
-                icon={() => <Feather name="credit-card" size={22} />}
-                setheader
-              >
-                <Text>Manage payment methods.</Text>
+                <LanguageSelector key={1} />
               </CollapsibleSection>
               <Divider className="my-2" />
               <CollapsibleSection
@@ -223,7 +207,15 @@ const MobileProfilePage = () => {
                 setheader
                 icon={() => <Feather name="lock" size={22} />}
               >
-                <Text>Update password and security settings.</Text>
+                <View>
+                  <FormContainer
+                    tableSchema={passwordSchema}
+                    row={{}}
+                    control={control}
+                    errorResult={result || errors}
+                    clearErrors={clearErrors}
+                  />
+                </View>
               </CollapsibleSection>
               <Divider className="my-2" />
               <CollapsibleNavigation
@@ -287,15 +279,22 @@ const ProfileCard = () => {
   const { menuItemsState, setMenuItemsState } = useSchemas();
   const [WS_Connected, setWS_Connected] = useState(false);
   const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
+  const {
+    status: { isConnected: isOnline },
+  } = useNetwork();
   useEffect(() => {
     if (WS_Connected) return;
 
     SetReoute(menuItemsState.schema.projectProxyRoute);
-
+    let cleanup;
     ConnectToWS(setWSMessageAccounting, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));
-  }, [WS_Connected]);
+    return () => {
+      if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+      console.log("🧹 Cleaned up WebSocket handler");
+    };
+  }, [WS_Connected, isOnline]);
 
   // 🧠 Reducer callback to update rows
   const callbackReducerUpdate = async (ws_updatedRows) => {
@@ -366,7 +365,7 @@ const ProfileCard = () => {
                 />
                 <Text className="text-primary-custom text-sm">
                   {creditField.parameterTitel}:{""}{" "}
-                  {formatCount(data[creditField.lookupDisplayField])}
+                  {formatCount(data[creditField.parameterField])}
                 </Text>
               </HStack>
               <HStack space="xs" className="items-center">
@@ -378,14 +377,16 @@ const ProfileCard = () => {
                 />
                 <Text className="text-primary-custom text-sm">
                   {pointsField.parameterTitel}:{""} :{" "}
-                  {formatCount(data[pointsField.lookupDisplayField])}
+                  {formatCount(data[pointsField.parameterField])}
                 </Text>
               </HStack>
             </VStack>
           )}
         </VStack>
       </HStack>
-      <LanguageSelector key={1} />
+      <View className="max-w-52 max-h-32">
+        <LanguageSelector key={1} />
+      </View>
     </HStack>
   );
 };

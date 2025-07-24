@@ -48,7 +48,12 @@ export default function ImageCardActions({
           )}
           {item[fieldsType.discount] > 0 && (
             <View className="absolute top-0 right-0 bg-red-500 px-2 py-1 rounded-tr-lg rounded-bl-lg w-1/2">
-              <Text className="text-body font-bold text-sm">
+              <Text className="text-body font-bold text-sm"
+               style={{
+        fontSize: scale(7), // 👈 dynamic font size
+     
+      }}
+      numberOfLines={1}>
                 {item[fieldsType.discount]}% {localization.menu.off}
               </Text>
             </View>

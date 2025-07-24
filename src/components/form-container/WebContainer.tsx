@@ -17,7 +17,7 @@ export const WebContainer = ({
       <Container>
         <WebRow>
           {tableSchema?.dashboardFormSchemaParameters
-            ?.filter((column: any) => !column.isIDField)
+            ?.filter((column: any) => !column.isIDField && column.isEnable)
             .map((param: any) => (
               <Col
                 sm={SmWeb(param)}

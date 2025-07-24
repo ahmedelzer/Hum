@@ -28,6 +28,7 @@ import { CollapsibleSection } from "../../utils/component/Collapsible";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePayment } from "../../reducers/PaymentReducer";
 import { theme } from "../../Theme";
+import SelectComponent from "../../utils/component/SelectComponent";
 
 // Assume you have these components from your UI lib:
 
@@ -100,9 +101,9 @@ export default function PaymentMethods({
   paymentMethods = [],
   onAddPaymentMethod,
   selected,
-  label = "Select Payment Method",
   row,
   setRow,
+  label = "Select Payment Method",
 }) {
   const paymentValueIndex =
     useSelector((state) => state.payment.paymentValueIndex) || "0";
@@ -131,26 +132,21 @@ export default function PaymentMethods({
     outputRange: [0, maxHeight],
   });
   const values = ["cache", "visa"];
-  // useEffect(() => {
-  //   setRow({ ...row, index: watch().payment });
-  //   dispatch(updatePayment({ index: watch().payment }));
-  // }, [watch()]);
-  // useEffect(() => {
-  //   // console.log("====================================");
-  //   // console.log(payment);
-  //   // console.log("====================================");
-  //   setRow({ ...row, index: watch().payment, payment: paymentMethods[0] });
-  //   // !loading &&
-  //   // rows.length > 0
-  //   // if (!Object.keys(payment).length > 0) {
-  //   dispatch(
-  //     updatePayment({ index: watch().payment, payment: paymentMethods[0] })
-  //   );
-  //   // }
-  // }, []); //set loading here
-  console.log("====================================");
-  console.log(paymentRow, paymentValueIndex, "payment");
-  console.log("====================================");
+  useEffect(() => {
+    dispatch(updatePayment({ index: watch().payment }));
+  }, [watch()]);
+  useEffect(() => {
+    // console.log("====================================");
+    // console.log(payment);
+    // console.log("====================================");
+    // !loading &&
+    // rows.length > 0
+    // if (!Object.keys(payment).length > 0) {
+    dispatch(
+      updatePayment({ index: watch().payment, payment: paymentMethods[0] })
+    );
+    // }
+  }, []); //set loading here
   return (
     <View className="mt-6 border border-border bg-body rounded-xl p-2 w-full">
       <CollapsibleSection
@@ -164,76 +160,91 @@ export default function PaymentMethods({
         }
       >
         {/* Animated sliding container */}
-        <Animated.View
+        {/* <Animated.View
           style={{ height: heightInterpolate, overflow: "hidden" }}
-        >
-          <RadioParameter
-            control={control}
-            enable={true}
-            value={paymentValueIndex}
-            fieldName={"payment"}
-            values={values}
-          />
-          {paymentValueIndex === "1" && (
-            <View className="mt-4">
-              <View className="flex-row items-center space-x-3">
-                <TouchableOpacity
-                  className="p-2 rounded-lg me-2 bg-accent items-center justify-center"
-                  // onPress={() => setIsModalVisible(true)}
+        > */}
+        <RadioParameter
+          control={control}
+          enable={true}
+          value={paymentValueIndex}
+          fieldName={"payment"}
+          values={values}
+        />
+        {paymentValueIndex === "1" && (
+          <View className="mt-4">
+            <View className="flex-row items-center space-x-3">
+              <TouchableOpacity
+                className="p-2 rounded-lg me-2 bg-accent items-center justify-center"
+                // onPress={() => setIsModalVisible(true)}
+              >
+                <Entypo name="plus" size={20} color="white" />
+              </TouchableOpacity>
+              <SelectComponent
+                idField={"id"}
+                labelField={"name"}
+                mapData={paymentMethods}
+                onValueChange={(selected) => {
+                  dispatch(
+                    updatePayment({
+                      index: control._formValues.payment,
+                      paymentRow: selected,
+                    })
+                  );
+                }}
+                selectedValue={paymentRow}
+                valueField="name"
+              />
+
+              {/* <Select
+                value={paymentRow ? paymentRow.name : "error"} // only the id is passed around
+                onValueChange={(selected) => {
+                  dispatch(
+                    updatePayment({
+                      index: control._formValues.payment,
+                      paymentRow: selected,
+                    })
+                  ); // store full object
+                }}
+                className="flex-1"
+              >
+                <SelectTrigger
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 justify-between h-11"
                 >
-                  <Entypo name="plus" size={20} color="white" />
-                </TouchableOpacity>
+                  <SelectInput
+                    placeholder={label}
+                    value={paymentRow ? paymentRow.name : "error"}
+                    className="text-base text-text h-12"
+                  />
+                  <SelectIcon
+                    as={AntDesign}
+                    name="down"
+                    className="mr-3 text-text"
+                  />
+                </SelectTrigger>
 
-                <Select
-                  value={paymentRow ? paymentRow.name : "error"} // only the id is passed around
-                  onValueChange={(selected) => {
-                    dispatch(
-                      updatePayment({
-                        index: control._formValues.payment,
-                        paymentRow: selected,
-                      })
-                    ); // store full object
-                  }}
-                  className="flex-1"
-                >
-                  <SelectTrigger
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 justify-between h-11"
-                  >
-                    <SelectInput
-                      placeholder={label}
-                      value={paymentRow ? paymentRow.name : "error"}
-                      className="text-base text-text h-12"
-                    />
-                    <SelectIcon
-                      as={AntDesign}
-                      name="down"
-                      className="mr-3 text-text"
-                    />
-                  </SelectTrigger>
+                <SelectPortal>
+                  <SelectBackdrop />
+                  <SelectContent>
+                    <SelectDragIndicatorWrapper>
+                      <SelectDragIndicator />
+                    </SelectDragIndicatorWrapper>
 
-                  <SelectPortal>
-                    <SelectBackdrop />
-                    <SelectContent>
-                      <SelectDragIndicatorWrapper>
-                        <SelectDragIndicator />
-                      </SelectDragIndicatorWrapper>
-
-                      {paymentMethods.map((method) => (
-                        <SelectItem
-                          key={method.id}
-                          value={method}
-                          label={method.name}
-                        />
-                      ))}
-                    </SelectContent>
-                  </SelectPortal>
-                </Select>
-              </View>
+                    {paymentMethods.map((method) => (
+                      <SelectItem
+                        key={method.id}
+                        value={method}
+                        label={method.name}
+                      />
+                    ))}
+                  </SelectContent>
+                </SelectPortal>
+              </Select> */}
             </View>
-          )}
-        </Animated.View>
+          </View>
+        )}
+        {/* </Animated.View> */}
       </CollapsibleSection>
     </View>
   );

@@ -20,6 +20,7 @@ import UserProviderLayer from "./context/UserProviderLayer";
 import { PreparingApp } from "./context/PreparingApp";
 import { WSProvider } from "./context/WSProvider";
 import { SchemaProvider } from "./context/SchemaProvider";
+import { NetworkProvider } from "./context/NetworkContext";
 // import UserProviderLayer from "./context/UserProviderLayer";
 
 const queryClient = new QueryClient();
@@ -44,18 +45,20 @@ export default function App() {
         >
           <QueryClientProvider client={queryClient}>
             <GluestackUIProvider mode="light">
-              <PreparingApp>
-                <AuthProvider>
-                  <SafeAreaView style={{ flex: 1 }}>
-                    <UserProviderLayer />
-                    <SchemaProvider>
-                      <WSProvider>
-                        <RootStack />
-                      </WSProvider>
-                    </SchemaProvider>
-                  </SafeAreaView>
-                </AuthProvider>
-              </PreparingApp>
+              <NetworkProvider>
+                <PreparingApp>
+                  <AuthProvider>
+                    <SafeAreaView style={{ flex: 1 }}>
+                      <UserProviderLayer />
+                      <SchemaProvider>
+                        <WSProvider>
+                          <RootStack />
+                        </WSProvider>
+                      </SchemaProvider>
+                    </SafeAreaView>
+                  </AuthProvider>
+                </PreparingApp>
+              </NetworkProvider>
             </GluestackUIProvider>
           </QueryClientProvider>
         </PersistGate>

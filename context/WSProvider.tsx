@@ -1,14 +1,15 @@
 // WSContext.tsx
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 // Create context
 export const WSContext = createContext(null);
 
 // Context provider component
 export const WSProvider = ({ children }) => {
-  const [_wsMessageCart, setWSMessageCart] = useState(null);
+  const [_wsMessageCart, setWSMessageCart] = useState("{}");
   const [_wsMessageMenuItem, setWSMessageMenuItem] = useState("{}");
   const [_wsMessageAccounting, setWSMessageAccounting] = useState("{}");
+ 
 
   return (
     <WSContext.Provider

@@ -16,6 +16,7 @@ export default function PrivacyCheckbox({ row, setRow }) {
   if (selectedTab !== 1) {
     return null;
   }
+  console.log("PrivacyCheckbox")
   return (
     <View className="flex-row items-center space-x-2 relative">
       {/* Gluestack Checkbox */}

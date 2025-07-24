@@ -1,57 +1,51 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import LanguageSelector from "../language/LanguageSelector";
+import { TabsHeader } from "./Tabs.web";
+import { theme } from "../../Theme";
+
 const categoryNavMobileStyles = {
   container: "w-full h-full bg-card p-8",
   closeButtonWrapper: "flex justify-end mb-8 cursor-pointer",
   closeButtonIcon: "text-3xl",
   linkWrapper: "flex flex-col gap-y-8",
-  link: "uppercase font-medium",
 };
+
 const CategoryNavMobile = ({ setCatNavMobile }) => {
   const navigation = useNavigation();
-  const tabs = [
-    { name: "Home", icon: "home" },
-    { name: "MenuView", icon: "menu" },
-    { name: "Profile", icon: "person" },
-  ];
+
+  const handleNavigate = (routeName) => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: routeName }],
+    });
+    setCatNavMobile(false); // close after navigation
+  };
+
   return (
-    <div className={categoryNavMobileStyles.container}>
-      <div
-        onClick={() => setCatNavMobile(false)}
-        className={categoryNavMobileStyles.closeButtonWrapper}
-      >
-        <AntDesign
-          name="closecircle"
-          size={24}
-          color="black"
-          className={categoryNavMobileStyles.closeButtonIcon}
+    <View
+      className={categoryNavMobileStyles.container}
+      style={ { backgroundColor: theme.body }}
+    >
+      {/* Close button */}
+     
+
+      {/* Navigation Links via TabsHeader */}
+      <View className={categoryNavMobileStyles.linkWrapper}>
+        <TabsHeader
+          direction="vertical"
+
         />
-      </div>
-      <div className={categoryNavMobileStyles.linkWrapper}>
-        {tabs.map((tab) => (
-          <TouchableOpacity
-            key={tab.name}
-            onPress={() => {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: tab.name }], // This prevents back navigation
-              });
-            }}
-            className={categoryNavMobileStyles.link}
-            // style={styles.link}
-          >
-            {tab.name}
-          </TouchableOpacity>
-        ))}
-        <div>
-          <label className="uppercase mb-1">Language</label>
+
+        {/* Language Selector */}
+        <View className="mt-6">
+          <Text className="uppercase mb-1 font-medium">Language</Text>
           <LanguageSelector />
-        </div>
-      </div>
-    </div>
+        </View>
+      </View>
+    </View>
   );
 };
 

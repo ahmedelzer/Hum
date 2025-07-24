@@ -154,7 +154,9 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                 fetchProducts();
               }}
             >
-              {item.name === "menuItem" ? (
+             {/**
+              * 
+              *  {item.name === "menuItem" ? (
                 <Feather
                   name="list"
                   size={20}
@@ -175,6 +177,7 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
                   }`}
                 />
               )}
+              */}
             </Pressable>
           ))}
         </Box>

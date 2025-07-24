@@ -1,78 +1,56 @@
 import { WSclass } from "../../../components/hooks/ws/WS_Class";
 
 
-
-// Store sockets in memory, keyed by wsKey (e.g. pathname only)
 const wsMemoryInstances = {};
 
 export function getWSInstance(url, onMessageCallback) {
-  //const wsKey = getWSKeyFromUrl(url); // normalized key based on path
-  //const wsStateInstances = store.getState().ws.wsInstances;
-
-  let existing = wsMemoryInstances[url];
-  const isClosed =
-    !existing?.socket ||
-    existing.socket.readyState === WebSocket.CLOSING ||
-    existing.socket.readyState === WebSocket.CLOSED;
+  let instance = wsMemoryInstances[url];
+  const isClosed = !instance || 
+                  instance.readyState === WebSocket.CLOSING || 
+                  instance.readyState === WebSocket.CLOSED;
 
   if (isClosed) {
     console.log("🆕 Creating new WebSocket instance", url);
-
-    const wsObject = new WSclass(url); // create your custom WS wrapper
-
-    wsMemoryInstances[url] = wsObject;
-
- 
-
-    // // Connect and bind callback
-     wsObject.connect(() => {
-    //   store.dispatch(
-    //     changeInstanceConnectState({
-    //       key: wsKey,
-    //       connected: true,
-    //     })
-    //   );
-
+    instance = new WSclass(url);
+    wsMemoryInstances[url] = instance;
+    
+    instance.connect(() => {
       if (typeof onMessageCallback === "function") {
-        wsObject.ReciveMessages(onMessageCallback);
+        const removeHandler = instance.addMessageHandler(onMessageCallback);
+        return { instance, removeHandler };
       }
     });
-
-    return wsObject;
   } else {
-    console.log("♻️ Reusing existing WebSocket instance");
-
-    if (
-      typeof onMessageCallback === "function" &&
-      existing.ReciveMessages
-    ) {
-      existing.ReciveMessages(onMessageCallback);
+    console.log("♻️ Reusing existing WebSocket instance", url);
+    
+    if (typeof onMessageCallback === "function") {
+      const removeHandler = instance.addMessageHandler(onMessageCallback);
+      return { instance, removeHandler };
     }
-
-    return existing;
+    
+    if (instance.readyState !== WebSocket.OPEN) {
+      instance.connect();
+    }
   }
+
+  return { instance };
 }
 
 export function disconnectWS(url) {
   const instance = wsMemoryInstances[url];
-  if (instance?.disconnect) {
-    instance.disconnect();
-    console.log("🔌 WebSocket disconnected:", url);
+  if (instance) {
+    // Only disconnect if no more message handlers
+    if (instance.messageCallbacks.length === 0) {
+      instance.disconnect();
+      delete wsMemoryInstances[url];
+      console.log("🔌 WebSocket disconnected:", url);
+    } else {
+      console.log("⚠️ Keeping connection alive - active handlers:", instance.messageCallbacks.length);
+    }
   }
 }
 
 export function isWSConnected(url) {
-  //const wsKey = getWSKeyFromUrl(url);
   const instance = wsMemoryInstances[url];
-  return instance?.socket?.readyState === WebSocket.OPEN;
+  return instance?.readyState === WebSocket.OPEN;
 }
-
-// function getWSKeyFromUrl(url) {
-//   try {
-//     const parsedUrl = new URL(url);
-//     return parsedUrl.pathname; // normalize key to avoid duplicates with different params
-//   } catch (err) {
-//     console.error("Invalid WebSocket URL:", url);
-//     return url; // fallback to original
-//   }
-// }

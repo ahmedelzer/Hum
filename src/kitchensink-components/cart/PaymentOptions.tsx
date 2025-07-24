@@ -14,8 +14,10 @@ import { getField } from "../../utils/operation/getField";
 import PaymentOptionsSchema from "../../Schemas/MenuSchema/PaymentOptions.json";
 import PaymentOptionsActions from "../../Schemas/MenuSchema/PaymentOptionsActions.json";
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
+import { useNetwork } from "../../../context/NetworkContext";
+import { cleanObject } from "../../utils/operation/cleanObject";
 
-const PaymentOptions = ({ row: rootRow, setRow: setRootRow }) => {
+const PaymentOptions = ({ rootRow, setRootRow }) => {
   const [row, setRow] = useState({});
   const [_WSsetMessage, setWSsetMessage] = useState("{}");
   const [WS_Connected, setWS_Connected] = useState(false);
@@ -53,42 +55,60 @@ const PaymentOptions = ({ row: rootRow, setRow: setRootRow }) => {
     idField: PaymentOptionsSchema.idField,
     dataSourceName: PaymentOptionsSchema.dataSourceName,
   };
-
+  const {
+    status: { isConnected: isOnline },
+  } = useNetwork();
   // 🌐 WebSocket connect effect
   useEffect(() => {
     if (WS_Connected) return;
 
     SetReoute(PaymentOptionsSchema.projectProxyRoute);
-
-    ConnectToWS(setWSsetMessage, setWS_Connected, {}, wsAction)
+    let cleanup;
+    ConnectToWS(
+      setWSsetMessage,
+      setWS_Connected,
+      {},
+      wsAction,
+      PaymentOptionsSchema.projectProxyRoute
+    )
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => console.error("❌ Cart WebSocket error", e));
-  }, [setWS_Connected]);
+    return () => {
+      if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+      console.log("🧹 Cleaned up WebSocket handler");
+    };
+  }, [WS_Connected, isOnline]);
 
   // ✅ Callback to update reducer
   const paymentOptionsCallbackReducerUpdate = async (ws_updatedRow) => {
     console.log(ws_updatedRow, "ws_updatedRow payment options");
 
-    setRow(ws_updatedRow.rows);
+    setRow(ws_updatedRow.rows[0]);
   };
 
   // 📨 WebSocket message handler
   useEffect(() => {
-    if (row) return;
     if (!_WSsetMessage) return;
 
     const handlerCartWSMessage = new WSMessageHandler({
       _WSsetMessage, // match param name
       fieldsType: paymentOptionsFieldsType,
-      rows: row,
+      rows: [row],
       totalCount: 0,
       callbackReducerUpdate: paymentOptionsCallbackReducerUpdate,
     });
     handlerCartWSMessage.process();
-  }, [_WSsetMessage, row]);
+  }, [_WSsetMessage]);
   useEffect(() => {
-    setRootRow({ ...rootRow, ...row });
-  }, [row]);
+    const subscription = watch((formValues) => {
+      // Clean object is optional if you want to remove empty/undefined values
+      const cleanedValues = cleanObject(formValues);
+      setRootRow({ ...rootRow, ...cleanedValues });
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, rootRow, setRootRow]);
+
   return (
     <View className="mt-6 border border-border bg-body rounded-xl p-2 w-full">
       <CollapsibleSection

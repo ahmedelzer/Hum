@@ -19,7 +19,6 @@ import { initialState } from "../../components/Pagination/initialState";
 import reducer from "../../components/Pagination/reducer";
 import ScratchVoucherCard from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import CustomerSaleInvoicesActions from "../../Schemas/Profile/CustomerSaleInvoicesActions.json";
-import ShopSaleInvoiceItemSchema from "../../Schemas/Profile/ShopSaleInvoiceItemSchema.json";
 import SaleInvoiceSchema from "../../Schemas/Profile/SaleInvoiceSchema.json";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
 import DynamicTable from "../../components/table/DynamicTable";

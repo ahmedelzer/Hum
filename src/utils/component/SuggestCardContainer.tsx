@@ -1,26 +1,37 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useReducer, useState } from "react";
-import { ScrollView } from "react-native";
-import SuggestCard from "../../components/cards/SuggestCard";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
+import { ScrollView, View } from "react-native";
 import { scale } from "react-native-size-matters";
-import { theme } from "../../Theme";
-import { useWS } from "../../../context/WSProvider";
 import { useSelector } from "react-redux";
-import { useSchemas } from "../../../context/SchemaProvider";
-import reducer from "../../reducers/LocationReducer";
-import { initialState } from "../../components/Pagination/initialState";
-import { SetReoute } from "../../../request";
+import { useNetwork } from "../../../context/NetworkContext";
+import { useWS } from "../../../context/WSProvider";
+import { theme } from "../../Theme";
+import SuggestCard from "../../components/cards/SuggestCard";
+// import { LocalizationContext } from "../../../context/LocalizationContext";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
+import { useCart } from "../../../context/CartProvider";
+import { SetReoute } from "../../../request";
+import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
+import SuggestCardSchema from "../../Schemas/MenuSchema/SuggestCardSchema.json";
 import { createRowCache } from "../../components/Pagination/createRowCache";
-import { prepareLoad } from "../operation/loadHelpers";
-import { ConnectToWS } from "../WS/ConnectToWS";
-import { WSMessageHandler } from "../WS/handleWSMessage";
-export function renderSuggestCards(suggestContainerType, items) {
+import { initialState } from "../../components/Pagination/initialState";
+import reducer from "../../components/Pagination/reducer";
+import { getItemPackage } from "../../components/menu-components/getItemPackage";
+import { prepareLoad } from "../../utils/operation/loadHelpers";
+
+export function renderSuggestCards(suggestContainerType, items, schemaActions) {
   const chunkArray = (arr, size) => {
     return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
       arr.slice(i * size, i * size + size)
     );
   };
+  const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
+  const { cartState, cartReducerDispatch, cartFieldsType } = useCart();
 
   const chunkedItems = chunkArray(items, 4); // Creates groups of 4 items each
   const BOX_high = scale(300);
@@ -30,7 +41,16 @@ export function renderSuggestCards(suggestContainerType, items) {
       return (
         <>
           {items.map((item) => (
-            <SuggestCard key={item.uniqueKey} item={item} />
+            <SuggestCard
+              key={item[fieldsType.idField]}
+              schemaActions={schemaActions}
+              item={getItemPackage(
+                item,
+                cartState.rows,
+                NodeMenuItemsSchema,
+                fieldsType
+              )}
+            />
           ))}
         </>
       );
@@ -71,6 +91,7 @@ export function renderSuggestCards(suggestContainerType, items) {
                       width: scale(110),
                       height: scale(90),
                     }}
+                    schemaActions={schemaActions}
                     showPrice={false}
                   />
                 </View>
@@ -84,90 +105,130 @@ export function renderSuggestCards(suggestContainerType, items) {
       return null;
   }
 }
-const VIRTUAL_PAGE_SIZE = 4;
 
 export default function SuggestCardContainer({
-  Schema,
+  schema,
+  schemaActions,
   suggestContainerType = 1,
+  shownNodeMenuItemIDs,
 }) {
-  const [reRequest, setReRequest] = useState(false);
-  const [WS_Connected, setWS_Connected] = useState(false);
+  const { status, isOnline } = useNetwork();
 
   const { _wsMessageMenuItem, setWSMessageMenuItem } = useWS();
-  const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
-
-  const { menuItemsState, setMenuItemsState } = useSchemas();
-  const [state, reducerDispatch] = useReducer(
+  //const [_wsMessageCart, setWSMessageCart] = useState();
+  // Get schema parameters
+  ////cart
+  const [suggestState, suggestReducerDispatch] = useReducer(
     reducer,
-    initialState(10, menuItemsState.schema.idField)
+    initialState(4000, SuggestCardSchema.idField)
   );
-  const [currentSkip, setCurrentSkip] = useState(1);
-  const dataSourceAPI = (query, skip, take) => {
-    SetReoute(menuItemsState.schema.projectProxyRoute);
+  const {
+    rows: suggestRows,
+    totalCount: suggestTotalCount,
+    loading: suggestLoading,
+  } = suggestState;
+  const [suggest_WS_Connected, setsuggestWS_Connected] = useState(false);
+
+  const parameters = SuggestCardSchema?.dashboardFormSchemaParameters ?? [];
+
+  // 🌐 WebSocket connect effect
+  // useEffect(() => {
+  //   if (suggest_WS_Connected) return;
+
+  //   SetReoute(suggestSchema.projectProxyRoute);
+  //   let cleanup;
+  //   ConnectToWS(setWSMessageCart, setCartWS_Connected)
+  //     .then(() => console.log("🔌 Cart WebSocket connected"))
+  //     .catch((e) => console.error("❌ Cart WebSocket error", e));
+  //   return () => {
+  //     if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+  //     console.log("🧹 Cleaned up WebSocket handler");
+  //   };
+  // }, [cart_WS_Connected, isOnline]);
+
+  // ✅ Callback to update reducer
+  // const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
+  //   await cartReducerDispatch({
+  //     type: "WS_OPE_ROW",
+  //     payload: {
+  //       rows: cart_ws_updatedRows.rows,
+  //       totalCount: cart_ws_updatedRows.totalCount,
+  //     },
+  //   });
+  // };
+
+  // 📨 WebSocket message handler
+  // useEffect(() => {
+  //   console.log("cart ws");
+  //   if (!_wsMessageCart) return;
+
+  //   const handlerCartWSMessage = new WSMessageHandler({
+  //     _WSsetMessage: _wsMessageCart, // match param name
+  //     fieldsType: cartFieldsType,
+  //     rows: cartRows,
+  //     totalCount: cartTotalCount,
+  //     callbackReducerUpdate: cartCallbackReducerUpdate,
+  //   });
+  //   handlerCartWSMessage.process();
+  // }, [_wsMessageCart, cartState.rows]);
+
+  const suggestDataSourceAPI = (query, skip, take) => {
+    SetReoute(SuggestCardSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
-      // ...row,
+      shownNodeMenuItemIDs: shownNodeMenuItemIDs.join(","),
     });
   };
-  const cache = createRowCache(VIRTUAL_PAGE_SIZE);
-  const getAction =
-    menuItemsState.action &&
-    menuItemsState.action.find(
+  const getSuggestAction =
+    schemaActions &&
+    schemaActions.find(
       (action) => action.dashboardFormActionMethodType === "Get"
     );
+  const reduxSelectedLocation = useSelector(
+    (state: any) => state.location?.selectedLocation
+  );
+  const reduxSelectedNode = useSelector(
+    (state: any) => state.location?.selectedNode
+  );
 
-  const { rows, skip, totalCount, loading } = state;
-
-  useEffect(() => {
-    const controller = new AbortController();
-
+  const [selectedLocation, setSelectedLocation] = useState(
+    reduxSelectedLocation || null
+  );
+  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
+  const loadData = useCallback(() => {
     prepareLoad({
-      state,
-      dataSourceAPI,
-      getAction,
-      cache,
-      reducerDispatch,
+      state: suggestState,
+      dataSourceAPI: suggestDataSourceAPI,
+      getAction: getSuggestAction,
+      cache: createRowCache(4000),
+      reducerDispatch: suggestReducerDispatch,
+      abortController: false,
+      reRequest: true,
     });
-    setReRequest(false);
-    // Call LoadData with the controller
-  });
-  // 🌐 Setup WebSocket connection on mount or WS_Connected change
+  }, [
+    suggestDataSourceAPI,
+    getSuggestAction,
+    suggestReducerDispatch,
+    suggestState,
+    selectedNode,
+    ,
+  ]);
   useEffect(() => {
-    if (WS_Connected) return;
+    if (isOnline) {
+      resetAndReload(); // Reload only when back online
+    }
+  }, [isOnline, shownNodeMenuItemIDs]);
 
-    SetReoute(menuItemsState.schema.projectProxyRoute);
-
-    ConnectToWS(setWSMessageMenuItem, setWS_Connected)
-      .then(() => console.log("🔌 WebSocket setup done"))
-      .catch((e) => console.error("❌ WebSocket setup error", e));
-  }, [WS_Connected]);
-
-  // 🧠 Reducer callback to update rows
-  const callbackReducerUpdate = async (ws_updatedRows) => {
-    await reducerDispatch({
-      type: "WS_OPE_ROW",
-      payload: {
-        rows: ws_updatedRows.rows,
-        totalCount: ws_updatedRows.totalCount,
-      },
+  const resetAndReload = useCallback(() => {
+    suggestReducerDispatch({
+      type: "RESET_QUERY",
+      payload: { lastQuery: "" },
     });
-  };
-
-  // 📨 React to WebSocket messages only when valid
-  useEffect(() => {
-    if (!rows) return;
-    if (!_wsMessageMenuItem) return;
-    const _handleWSMessage = new WSMessageHandler({
-      _WSsetMessage: _wsMessageMenuItem,
-      fieldsType,
-      rows,
-      totalCount,
-      callbackReducerUpdate,
-    });
-    _handleWSMessage.process();
-    setWSMessageMenuItem(null);
-  }, [_wsMessageMenuItem]);
+    setTimeout(() => {
+      loadData();
+    }, 0);
+  }, [loadData]);
 
   return (
     <ScrollView
@@ -180,7 +241,7 @@ export default function SuggestCardContainer({
         alignItems: "flex-start",
       }}
     >
-      {renderSuggestCards(suggestContainerType, state.rows)}
+      {renderSuggestCards(suggestContainerType, suggestRows, schemaActions)}
     </ScrollView>
   );
 }

@@ -3,12 +3,12 @@ import { keysToLowerFirstChar } from "../../utils/operation/keysToLowerFirstChar
 export function getItemPackage(
   item = {},
   cartItems = [],
-  nodeMenuItemsSchema = {}
+  nodeMenuItemsSchema = {},
+  fieldsType = {}
 ) {
   const idField = nodeMenuItemsSchema?.idField;
-  console.log(cartItems, "cartItems form getItemPackage");
 
-  if (!idField || !item?.[idField]) {
+  if (!idField || !item?.[idField] || cartItems.length === 0) {
     console.warn("⚠️ getItemPackage: Missing idField or item[idField]");
     return item;
   }
@@ -19,10 +19,14 @@ export function getItemPackage(
     return normalizedCartItem?.[idField] === item?.[idField];
   });
 
-  //console.log("matchingCartItem",matchingCartItem,);
+  console.log("fieldsType", fieldsType);
+
   const result = {
     ...item,
-    ...matchingCartItem,
+    ...(fieldsType?.cardAction &&
+      matchingCartItem && {
+        ...matchingCartItem,
+      }),
   };
   //console.log("getItemPackage",result);
   return result;

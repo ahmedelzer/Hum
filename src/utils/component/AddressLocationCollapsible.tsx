@@ -29,8 +29,10 @@ export default function AddressLocationCollapsible() {
           iconColor={theme.body}
           textColor={theme.body}
         >
-          <TabButtons loading={false} rows={["Pickup", "Address"]} />
-          //!schema or localization
+          <TabButtons
+            loading={false}
+            rows={localization.Hum_screens.home.marketPlaceTaps}
+          />
           {selectedTab == 1 ? (
             <View className="flex-row items-center justify-center overflow-auto mb-3">
               <AddressLocation />

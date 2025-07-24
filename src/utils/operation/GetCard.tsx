@@ -31,7 +31,6 @@ export function GetCard(
     idField: schema.idField,
     dataSourceName: schema.dataSourceName,
     cardAction: getField(parameters, "cardAction"),
-    cartIdField: getField(parameters, "cartIdField"),
   };
 
   dispatch(setFields(fieldsType));

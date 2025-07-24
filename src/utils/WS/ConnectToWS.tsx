@@ -8,15 +8,13 @@ import {
 } from "../../../request";
 import defWSSchemaAction from "../../Schemas/WSSchema/WSSchemaAction.json";
 import { disconnectWS, getWSInstance } from "./WSManager";
-import { WSOperation } from "./WSOperation";
-import { selectSelectedNode } from "../../reducers/LocationReducer";
-import store from "../../store/reduxStore"; // ⬅️ your Redux store
+
 
 export async function ConnectToWS(
   setWSsetMessage,
   setWS_Connected,
   row = {},
-  wS_SchemaAction = defWSSchemaAction
+  wS_SchemaAction = defWSSchemaAction,proxyRoute=projectProxyRoute
 ) {
   const token = await GetToken();
 
@@ -30,7 +28,7 @@ export async function ConnectToWS(
       ...row,
       token: token,
     },
-    websocketBaseURI + "/" + projectProxyRoute
+    websocketBaseURI + "/" + proxyRoute
   );
 
   const handleMessage = (WSMessage) => {
@@ -46,9 +44,17 @@ export async function ConnectToWS(
     }
   };
 
-  getWSInstance(buildUrl, handleMessage); // ✅ callback is set here
+ // Get instance and handler remover
+  const { removeHandler } = getWSInstance(buildUrl, handleMessage);
   setWS_Connected(true);
+
+  // Return cleanup function
   return () => {
-    disconnectWS(buildUrl);
+    removeHandler(); // Remove this specific handler
+    disconnectWS(buildUrl); // Will only disconnect if no handlers left
+    
+    // Optional: Store last received message
+    AsyncStorage.setItem('lastWSMessage', JSON.stringify(WSMessage))
+      .catch(err => console.error("Failed to store last message:", err));
   };
 }

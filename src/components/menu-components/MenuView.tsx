@@ -5,14 +5,14 @@ import Searchbar from "../search-bar/Searchbar";
 import MenuCardsView from "./MenuCardsView";
 import { useDeviceInfo } from "../../utils/component/useDeviceInfo";
 import { HomestayInfoTabs } from "./HomestayInfoTabs";
+import { useMenu } from "../../../context/MenuProvider";
 
 const MenuView = ({ schemas }: any) => {
-  const [row, setRow] = useState({});
   const { width, height, os, modelName } = useDeviceInfo();
 
   const [refreshing, setRefreshing] = useState(false);
   const [key, setKey] = useState(0);
-
+  const { row, setRow } = useMenu();
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setKey((r) => r + 1);
@@ -58,8 +58,7 @@ const MenuView = ({ schemas }: any) => {
         <View className="my-5">
           <HomestayInfoTabs setRow={setRow} row={row} />
         </View>
-        <MenuCardsView isRefreshed={key} row={row} />
-        
+        <MenuCardsView isRefreshed={key} />
       </Box>
     </ScrollView>
   );

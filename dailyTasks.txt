@@ -18,3 +18,13 @@
 2-menu item card image and discount 
 3-disable card in cart and market places 
 4-align center header of grid
+
+//features added
+1-card insted of table
+2-cart page add row and set
+3-schemaProvider orders localization profile schema remmaneded
+
+
+//
+1-make suggest like menu item
+2-make menuProvider

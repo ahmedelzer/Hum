@@ -52,8 +52,8 @@ import LocalizationSchemaActions from "../Schemas/Localization/LocalizationSchem
 import CollapseSchema from "../Schemas/Profile/CollapseScehma.json";
 import CreditsSchema from "../Schemas/Profile/CreditsSchema.json";
 import CustomerSaleInvoicesActions from "../Schemas/Profile/CustomerSaleInvoicesActions.json";
-import SaleInvoiceSchema from "../Schemas/Profile/SaleInvoiceSchema.json";
-import ShopSaleInvoiceItemSchema from "../Schemas/Profile/ShopSaleInvoiceItemSchema.json";
+// import SaleInvoiceSchema from "../Schemas/Profile/SaleInvoiceSchema.json";
+// import ShopSaleInvoiceItemSchema from "../Schemas/Profile/ShopSaleInvoiceItemSchema.json";
 import TabsSchemaActions from "../Schemas/Profile/TabsSchemaActions.json";
 import TapsSchema from "../Schemas/Profile/TapsSchema.json";
 
@@ -108,12 +108,12 @@ export const schemasSlice = createSlice({
 
     // Profile
     collapse: { schema: CollapseSchema, action: [{}] },
-    credits: { schema: CreditsSchema, action: [{}] },
-    customerSaleInvoices: {
-      schema: SaleInvoiceSchema,
-      action: CustomerSaleInvoicesActions,
-    },
-    shopSaleInvoiceItem: { schema: ShopSaleInvoiceItemSchema, action: [{}] },
+    // credits: { schema: CreditsSchema, action: [{}] },
+    // customerSaleInvoices: {
+    //   schema: SaleInvoiceSchema,
+    //   action: CustomerSaleInvoicesActions,
+    // },
+    //shopSaleInvoiceItem: { schema: ShopSaleInvoiceItemSchema, action: [{}] },
     tabs: { schema: TapsSchema, action: TabsSchemaActions },
     language: { schema: LanguageSchema, action: LanguageSchemaActions },
     localization: { schema: {}, action: LocalizationSchemaActions },

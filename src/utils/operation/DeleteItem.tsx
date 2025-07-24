@@ -2,6 +2,7 @@ import APIHandling from "../../../components/hooks/APIsFunctions/APIHandling";
 import { GetProjectUrl, SetReoute } from "../../../request";
 import { onApply } from "../../components/form-container/OnApply";
 
+
 export default async function DeleteItem(
   id,
   deleteWithApi,
@@ -16,13 +17,7 @@ export default async function DeleteItem(
   };
 
   try {
-    const apply = await onApply(
-      {},
-      null,
-      true,
-      modifiedDeleteAction,
-      proxyRoute
-    );
+    const apply = await onApply({}, null, true, modifiedDeleteAction, proxyRoute);
 
     if (apply?.success) {
       return true;

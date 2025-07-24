@@ -15,6 +15,8 @@ import WebNavigator from "./WebNavigation";
 import * as Linking from "expo-linking";
 import { ToastProvider } from "@gluestack-ui/toast";
 import { Toast } from "../../components/ui";
+import { CartProvider } from "../../context/CartProvider";
+import { MenuProvider } from "../../context/MenuProvider";
 // types
 export type RootStackParamList = {
   Home: undefined;
@@ -92,7 +94,13 @@ const RequiredScreens = () => {
     case "macos":
       return mobileScreens();
     case "web":
-      return <WebNavigator />;
+      return (
+        <CartProvider>
+          <MenuProvider>
+            <WebNavigator />
+          </MenuProvider>
+        </CartProvider>
+      );
   }
 };
 export default RootStack;

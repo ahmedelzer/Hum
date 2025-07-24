@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-
+import pageSchemas from "./i.json";
+import { pageSchema } from "../src/utils/operation/pageSchema";
+import CartInfoSchemaAction from "../src/Schemas/MenuSchema/CartInfoSchemaAction.json";
 // Create context
 export const SchemaContext = createContext(null);
 
@@ -10,6 +12,7 @@ export const SchemaProvider = ({ children }) => {
   const schemas = useSelector((state) => state.schemas);
 
   // 2. Create individual states for each schema
+  const [pageSchemaState, setPageSchemaState] = useState({});
   const [cartInfoState, setCartInfoState] = useState(schemas.cartInfo);
   const [cartState, setCartState] = useState(schemas.cart);
   const [fastWayState, setFastWayState] = useState(schemas.fastWay);
@@ -62,6 +65,16 @@ export const SchemaProvider = ({ children }) => {
   const [localizationState, setLocalizationState] = useState(
     schemas.localization
   );
+  useEffect(() => {
+    //cart schemas
+    pageSchema(setPageSchemaState, pageSchemas, "OtherPaymentOptions");
+    // call schema actions
+    setCartInfoState({
+      schema: pageSchemaState,
+      actions: CartInfoSchemaAction,
+    });
+    console.log("CartInfoState", cartInfoState); // call actions
+  }, []);
 
   // 3. Provide all states and setters via context
   return (

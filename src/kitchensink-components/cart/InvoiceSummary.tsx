@@ -19,6 +19,7 @@ import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl
 import useFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
 import { useWS } from "../../../context/WSProvider";
 import { isRTL } from "../../utils/operation/isRTL";
+import { useNetwork } from "../../../context/NetworkContext";
 // Enable LayoutAnimation on Android
 if (
   Platform.OS === "android" &&
@@ -48,10 +49,8 @@ export default function InvoiceSummary({ row, setRow }) {
   );
 
   useEffect(() => {
-    if (!isLoading && GetCustomerCartInfo) {
-      setCartInfo(GetCustomerCartInfo);
-    }
-  }, [isLoading, GetCustomerCartInfo]);
+     setCartInfo(GetCustomerCartInfo);
+  }, [ GetCustomerCartInfo]);
 
   const params = CustomerInfoSchema?.dashboardFormSchemaParameters ?? [];
 
@@ -77,21 +76,25 @@ export default function InvoiceSummary({ row, setRow }) {
     shipmentFees: getField(params, "shipmentFees", false),
     otherFees: getField(params, "otherFees", false),
   };
-
+ const { status: { isConnected: isOnline } } = useNetwork();
   // 🌐 WebSocket connect effect
   useEffect(() => {
     if (cartInfo_WS_Connected) return;
 
     SetReoute(CustomerInfoSchema.projectProxyRoute);
-
+let cleanup;
     ConnectToWS(setWSMessageCart, setCartInfoWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => console.error("❌ Cart WebSocket error", e));
-  }, [cartInfo_WS_Connected]);
+       return () => {
+    if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+    console.log("🧹 Cleaned up WebSocket handler");
+  };
+  }, [cartInfo_WS_Connected,isOnline]);
 
   // ✅ Callback to update reducer
   const cartCallbackReducerUpdate = async (cartInfo_ws_updatedRows) => {
-    console.log(cartInfo_ws_updatedRows, "cartInfo_ws_updatedRows");
+   
 
     setCartInfo(cartInfo_ws_updatedRows.rows[0]);
   };
@@ -99,7 +102,7 @@ export default function InvoiceSummary({ row, setRow }) {
   // 📨 WebSocket message handler
   useEffect(() => {
     if (!_wsMessageCart) return;
-
+ 
     const handlerCartWSMessage = new WSMessageHandler({
       _WSsetMessage: _wsMessageCart,
       fieldsType: cartInfoFieldsType,
@@ -115,15 +118,14 @@ export default function InvoiceSummary({ row, setRow }) {
     setExpanded(!expanded);
   };
 
-  const getValue = (field) => {
-    if (field.parameterField) {
-      return cartInfo?.[field.parameterField];
-    }
-    return 0;
-  };
+ const getValue = (field) => {
+  const key = field?.parameterField;
+  const value = key && cartInfo ? cartInfo[key] : 0;
+  return typeof value !== 'undefined' && value !== null ? value : 0;
+};
+
 
   const isPositive = (value) => (value > 0 ? true : false);
-  console.log(cartInfo, cartInfoFieldsType);
   useEffect(() => {
     setRow({ ...row, ...cartInfo });
   }, [cartInfo]);
@@ -267,6 +269,7 @@ export default function InvoiceSummary({ row, setRow }) {
         activeOpacity={0.7}
         className="mt-1 mb-2 rounded-xl p-2 !bg-accent flex-row justify-between items-center"
       >
+        
         <Text className="text-lg font-bold text-body">
           {CustomerInfoSchema.dashboardFormSchemaInfoDTOView.schemaHeader}
         </Text>
@@ -276,11 +279,12 @@ export default function InvoiceSummary({ row, setRow }) {
         >
           {localization.menu.currency}{" "}
           {Number(getValue(cartInfoFieldsType.netAmount)).toFixed(2) || "0.00"}
-        </Text>
+        </Text> 
       </TouchableOpacity>
     </View>
   );
 }
+// cartInfoFieldsType.net amount &&
 const SummaryLine = ({ label, value, setDash = false }) => {
   const localization = useSelector((state) => state.localization.localization);
   const dash = setDash && "-";

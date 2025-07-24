@@ -48,7 +48,7 @@ export default function GetIconMenuItem({
 }) {
   return (
     <View className="flex-1 justify-center">
-      {count && (
+      {count >= 0 && (
         <View className="flex-row items-center">
           {GetIconByName(iconName, size, style)}
           <Text

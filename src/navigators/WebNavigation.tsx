@@ -16,6 +16,8 @@ import LoadingScreen from "../kitchensink-components/loading/LoadingScreen";
 import { useAuth } from "../../context/auth";
 import VerifyScreen from "../kitchensink-components/auth/verfiy";
 import GoBackHeader from "../components/header/GoBackHeader";
+import ConnectionStatusOverlay from "../components/ConnectionStatusOverlay";
+import { View } from "react-native";
 
 const Stack = createStackNavigator();
 const MenuFilter = lazy(() => import("../components/filters/MenuFilter"));
@@ -109,64 +111,59 @@ const WebNavigator = () => {
   const { userGust } = useAuth();
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* Dynamically render content-based routes */}
-      {dummyArr.map((item) => (
-        <Stack.Screen
-          key={item.routePath}
-          name={item.routePath}
-          options={{
-            headerShown: true,
-            headerTitle: () => SetResponsiveContainer(<HeaderParent />, false),
-          }}
-          component={(props) => (
-            <RenderItemsView
-              {...props}
-              dashboardItemId={item.dashboardItemID}
-              routePath={item.routePath}
-            />
-          )}
-        />
-      ))}
+    <View style={{ flex: 1 }}>
+      {/* Main navigator stack */}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {dummyArr.map((item) => (
+          <Stack.Screen
+            key={item.routePath}
+            name={item.routePath}
+            options={{
+              headerShown: true,
+              headerTitle: () =>
+                SetResponsiveContainer(<HeaderParent />, false),
+            }}
+            component={(props) => (
+              <RenderItemsView
+                {...props}
+                dashboardItemId={item.dashboardItemID}
+                routePath={item.routePath}
+              />
+            )}
+          />
+        ))}
 
-      {/* Static route screens */}
-      {!userGust && (
+        {!userGust && (
+          <Stack.Screen
+            name="Cart"
+            component={(props) =>
+              SetResponsiveContainer(<CartPage {...props} />, true)
+            }
+          />
+        )}
         <Stack.Screen
-          name="Cart"
+          name="MenuFilter"
           component={(props) =>
-            SetResponsiveContainer(<CartPage {...props} />, true)
+            SetResponsiveContainer(<MenuFilter {...props} />, true)
           }
         />
-      )}
-      <Stack.Screen
-        name="MenuFilter"
-        component={(props) =>
-          SetResponsiveContainer(<MenuFilter {...props} />, true)
-        }
-      />
-      <Stack.Screen name="DetailsProductScreen" component={DetailsScreen} />
-      {/* {!userGust && (
-        <Stack.Screen
-          name="CheckoutScreen"
-          component={(props) =>
-            SetResponsiveContainer(<CheckoutScreen {...props} />, true)
-          }
-        />
-      )} */}
-      {!userGust && (
-        <Stack.Screen
-          name="NotificationScreen"
-          component={(props) =>
-            SetResponsiveContainer(<NotificationScreen {...props} />, true)
-          }
-        />
-      )}
-      <Stack.Screen name="SignIn" component={SignIn} />
-      <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="Verify" component={VerifyScreen} />
-
-      <Stack.Screen name="ForgetPassword" component={ForgotPassword} />
-    </Stack.Navigator>
+        <Stack.Screen name="DetailsProductScreen" component={DetailsScreen} />
+        {!userGust && (
+          <Stack.Screen
+            name="NotificationScreen"
+            component={(props) =>
+              SetResponsiveContainer(<NotificationScreen {...props} />, true)
+            }
+          />
+        )}
+        <Stack.Screen name="SignIn" component={SignIn} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="Verify" component={VerifyScreen} />
+        <Stack.Screen name="ForgetPassword" component={ForgotPassword} />
+      </Stack.Navigator>
+      {/* Show connection status at the top layer */}
+      <ConnectionStatusOverlay />
+    </View>
   );
 };
 

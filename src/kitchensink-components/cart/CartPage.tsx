@@ -1,5 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useReducer, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import {
   Platform,
   ScrollView,
@@ -33,9 +39,14 @@ import OldCartButton from "./OldCartButton";
 import PaymentMethods from "./PaymentMethods";
 import PaymentOptions from "./PaymentOptions";
 import CartInfoSchemaAction from "../../Schemas/MenuSchema/CartInfoSchemaAction.json";
-
+import { useNetwork } from "../../../context/NetworkContext";
+import RecommendedSchemaActions from "../../Schemas/MenuSchema/RecommendedSchemaActions.json";
+import { useCart } from "../../../context/CartProvider";
+const ITEM_HEIGHT = 330;
 const CartPage = () => {
-  const { _wsMessageCart, setWSMessageCart } = useWS();
+  const [shownNodeMenuItemIDs, setShownNodeMenuItemIDs] = useState([]);
+  const { cartState, cartReducerDispatch, cartFieldsType } = useCart();
+
   //const [_wsMessageCart, setWSMessageCart] = useState();
   const navigation = useNavigation();
   const localization = useSelector((state) => state.localization.localization);
@@ -43,113 +54,135 @@ const CartPage = () => {
   const [checkoutFiring, setCheckoutFiring] = useState(false);
   // Get schema parameters
   ////cart
-  const [cartState, cartReducerDispatch] = useReducer(
-    reducer,
-    initialState(4000, CartSchema.idField)
-  );
   const {
     rows: cartRows,
     totalCount: cartTotalCount,
     loading: cartLoading,
   } = cartState;
-  const [cart_WS_Connected, setCartWS_Connected] = useState(false);
+  // const [cart_WS_Connected, setCartWS_Connected] = useState(false);
 
-  const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
+  // const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
 
-  const cartFieldsType = {
-    imageView: getField(parameters, "menuItemImage"),
-    text: getField(parameters, "menuItemName"),
-    description: getField(parameters, "menuItemDescription"),
-    price: getField(parameters, "price"),
-    rate: getField(parameters, "rate"),
-    likes: getField(parameters, "likes"),
-    dislikes: getField(parameters, "dislikes"),
-    orders: getField(parameters, "orders"),
-    reviews: getField(parameters, "reviews"),
-    isAvailable: getField(parameters, "isAvailable"),
-    menuCategoryID: getField(parameters, "menuCategoryID"),
-    idField: CartSchema.idField,
-    dataSourceName: CartSchema.dataSourceName,
-    cardAction: getField(parameters, "cardAction"),
-    discount: getField(parameters, "discount"),
-    priceAfterDiscount: getField(parameters, "priceAfterDiscount"),
-    note: getField(parameters, "note"),
-    proxyRoute: CartSchema.projectProxyRoute,
-  };
+  // const cartFieldsType = {
+  //   imageView: getField(parameters, "menuItemImage"),
+  //   text: getField(parameters, "menuItemName"),
+  //   description: getField(parameters, "menuItemDescription"),
+  //   price: getField(parameters, "price"),
+  //   rate: getField(parameters, "rate"),
+  //   likes: getField(parameters, "likes"),
+  //   dislikes: getField(parameters, "dislikes"),
+  //   orders: getField(parameters, "orders"),
+  //   reviews: getField(parameters, "reviews"),
+  //   isAvailable: getField(parameters, "isAvailable"),
+  //   nodeMenuItemID: getField(parameters, "nodeMenuItemID"),
+  //   menuCategoryID: getField(parameters, "menuCategoryID"),
+  //   idField: CartSchema.idField,
+  //   dataSourceName: CartSchema.dataSourceName,
+  //   cardAction: getField(parameters, "cardAction"),
+  //   discount: getField(parameters, "discount"),
+  //   priceAfterDiscount: getField(parameters, "priceAfterDiscount"),
+  //   note: getField(parameters, "note"),
+  //   proxyRoute: CartSchema.projectProxyRoute,
+  // };
 
-  // 🌐 WebSocket connect effect
-  useEffect(() => {
-    if (cart_WS_Connected) return;
+  // // 🌐 WebSocket connect effect
+  // useEffect(() => {
+  //   if (cart_WS_Connected) return;
 
-    SetReoute(CartSchema.projectProxyRoute);
+  //   SetReoute(CartSchema.projectProxyRoute);
+  //   let cleanup;
+  //   ConnectToWS(setWSMessageCart, setCartWS_Connected)
+  //     .then(() => console.log("🔌 Cart WebSocket connected"))
+  //     .catch((e) => console.error("❌ Cart WebSocket error", e));
+  //   return () => {
+  //     if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+  //     console.log("🧹 Cleaned up WebSocket handler");
+  //   };
+  // }, [cart_WS_Connected, isOnline]);
 
-    ConnectToWS(setWSMessageCart, setCartWS_Connected)
-      .then(() => console.log("🔌 Cart WebSocket connected"))
-      .catch((e) => console.error("❌ Cart WebSocket error", e));
-  }, [cart_WS_Connected]);
+  // // ✅ Callback to update reducer
+  // const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
+  //   await cartReducerDispatch({
+  //     type: "WS_OPE_ROW",
+  //     payload: {
+  //       rows: cart_ws_updatedRows.rows,
+  //       totalCount: cart_ws_updatedRows.totalCount,
+  //     },
+  //   });
+  // };
 
-  // ✅ Callback to update reducer
-  const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
-    await cartReducerDispatch({
-      type: "WS_OPE_ROW",
-      payload: {
-        rows: cart_ws_updatedRows.rows,
-        totalCount: cart_ws_updatedRows.totalCount,
-      },
-    });
-  };
+  // // 📨 WebSocket message handler
+  // useEffect(() => {
+  //   console.log("cart ws");
+  //   if (!_wsMessageCart) return;
 
-  // 📨 WebSocket message handler
-  useEffect(() => {
-    if (!cartState.rows) return;
-    if (!_wsMessageCart) return;
+  //   const handlerCartWSMessage = new WSMessageHandler({
+  //     _WSsetMessage: _wsMessageCart, // match param name
+  //     fieldsType: cartFieldsType,
+  //     rows: cartRows,
+  //     totalCount: cartTotalCount,
+  //     callbackReducerUpdate: cartCallbackReducerUpdate,
+  //   });
+  //   handlerCartWSMessage.process();
+  // }, [_wsMessageCart, cartState.rows]);
 
-    const handlerCartWSMessage = new WSMessageHandler({
-      _WSsetMessage: _wsMessageCart, // match param name
-      fieldsType: cartFieldsType,
-      rows: cartRows,
-      totalCount: cartTotalCount,
-      callbackReducerUpdate: cartCallbackReducerUpdate,
-    });
-    handlerCartWSMessage.process();
-  }, [_wsMessageCart, cartState.rows]);
+  // const cartDataSourceAPI = (query, skip, take) => {
+  //   SetReoute(CartSchema.projectProxyRoute);
+  //   return buildApiUrl(query, {
+  //     pageIndex: skip + 1,
+  //     pageSize: take,
+  //     // ...row,
+  //   });
+  // };
+  // const getCustomerCartAction =
+  //   CartSchemaActions &&
+  //   CartSchemaActions.find(
+  //     (action) => action.dashboardFormActionMethodType === "Get"
+  //   );
+  // const reduxSelectedLocation = useSelector(
+  //   (state: any) => state.location?.selectedLocation
+  // );
+  // const reduxSelectedNode = useSelector(
+  //   (state: any) => state.location?.selectedNode
+  // );
 
-  const cartDataSourceAPI = (query, skip, take) => {
-    SetReoute(CartSchema.projectProxyRoute);
-    return buildApiUrl(query, {
-      pageIndex: skip + 1,
-      pageSize: take,
-      // ...row,
-    });
-  };
-  const getCustomerCartAction =
-    CartSchemaActions &&
-    CartSchemaActions.find(
-      (action) => action.dashboardFormActionMethodType === "Get"
-    );
-  const reduxSelectedLocation = useSelector(
-    (state: any) => state.location?.selectedLocation
-  );
-  const reduxSelectedNode = useSelector(
-    (state: any) => state.location?.selectedNode
-  );
+  // const [selectedLocation, setSelectedLocation] = useState(
+  //   reduxSelectedLocation || null
+  // );
+  // const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
+  // const loadData = useCallback(() => {
+  //   prepareLoad({
+  //     state: cartState,
+  //     dataSourceAPI: cartDataSourceAPI,
+  //     getAction: getCustomerCartAction,
+  //     cache: createRowCache(4000),
+  //     reducerDispatch: cartReducerDispatch,
+  //     abortController: false,
+  //     reRequest: true,
+  //   });
+  // }, [
+  //   cartDataSourceAPI,
+  //   getCustomerCartAction,
+  //   cartReducerDispatch,
+  //   cartState,
+  //   selectedNode,
+  // ]);
+  // useEffect(() => {
+  //   if (isOnline) {
+  //     resetAndReload(); // Reload only when back online
+  //   }
+  // }, [isOnline]);
 
-  const [selectedLocation, setSelectedLocation] = useState(
-    reduxSelectedLocation || null
-  );
-  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
-
-  useEffect(() => {
-    SetReoute(CartSchema.projectProxyRoute);
-    prepareLoad({
-      state: cartState,
-      dataSourceAPI: cartDataSourceAPI,
-      getAction: getCustomerCartAction,
-      cache: createRowCache(4000),
-      reducerDispatch: cartReducerDispatch,
-    });
-  }, [selectedLocation, selectedNode]);
-
+  // const resetAndReload = useCallback(() => {
+  //   cartReducerDispatch({
+  //     type: "RESET_QUERY",
+  //     payload: { lastQuery: "" },
+  //   });
+  //   setTimeout(() => {
+  //     loadData();
+  //   }, 0);
+  // }, [loadData]);
+  //////////!end
   // Fetch old customer cart
   //const { data: GetOldCustomerCart, isLoading } = useFetch("/ShopNode/GetOldCustomerCart", GetProjectUrl());
   //const oldCartCount = GetOldCustomerCart?.count ?? 0;
@@ -254,6 +287,33 @@ const CartPage = () => {
       </View>
     );
   };
+  const handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const visibleHeight = event.nativeEvent.layoutMeasurement.height;
+
+    const startIndex = Math.floor(offsetY / ITEM_HEIGHT);
+    const endIndex = Math.min(
+      cartRows.length - 1,
+      Math.floor((offsetY + visibleHeight) / ITEM_HEIGHT)
+    );
+
+    const currentlyVisible = cartRows.slice(startIndex, endIndex + 1);
+    console.log(
+      currentlyVisible.map((item) => item[cartFieldsType.nodeMenuItemID]),
+      "setShownNodeMenuItemIDs"
+    );
+
+    setShownNodeMenuItemIDs(
+      currentlyVisible.map((item) => item[cartFieldsType.nodeMenuItemID])
+    );
+  };
+  useEffect(() => {
+    if (shownNodeMenuItemIDs.length === 0 && cartRows.length > 0) {
+      setShownNodeMenuItemIDs([cartRows[0][cartFieldsType.nodeMenuItemID]]);
+    }
+  }, [shownNodeMenuItemIDs, cartRows]);
+  console.log("rootRow", row);
+
   return (
     <View className="flex-1 bg-body">
       <GoBackHeader
@@ -262,39 +322,62 @@ const CartPage = () => {
         rightComponent={<OldCartButton projectUrl={GetProjectUrl()} />}
       />
 
-      {/* Main layout */}
+      {/* Main layout
+
+      <GoBackHeader
+        title={localization.Hum_screens.cart.header.title}
+        subTitle={localization.Hum_screens.cart.header.subTitle}
+        rightComponent={<OldCartButton projectUrl={GetProjectUrl()} />}
+      />
+      */}
       <ScrollView className="flex-1 py-2 px-2">
         <View className="w-full flex flex-col md:!flex-row gap-4">
           {/* LEFT COLUMN - CART + SUGGESTIONS */}
 
           {/* RIGHT COLUMN - PAYMENT */}
-          <View className="flex-1 h-fit md:!order-5">
-            {cartRows.length > 0 ? (
-              cartRows.map((item) => (
-                <View className="mb-2" key={item[cartFieldsType.idField]}>
-                  <CardCartItem
-                    schemaActions={CartSchemaActions}
-                    fieldsType={cartFieldsType}
-                    item={item}
-                  />
-                </View>
-              ))
-            ) : (
-              <View className="items-center justify-center py-10">
-                <Text className="font-semibold text-lg text-accent">
-                  {localization.Hum_screens.cart.emptyCart}
-                </Text>
+          <View className="flex-1 md:!order-5">
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              onScroll={handleScroll}
+            >
+              <View className="overflow-y-auto" style={{ maxHeight: 690 }}>
+                {cartRows.length > 0 ? (
+                  cartRows.map((item, index) => {
+                    return (
+                      <View className="mb-2" key={item[cartFieldsType.idField]}>
+                        <CardCartItem
+                          schemaActions={CartSchemaActions}
+                          fieldsType={cartFieldsType}
+                          item={item}
+                        />
+                      </View>
+                    );
+                  })
+                ) : (
+                  <View className="items-center justify-center py-10">
+                    <Text className="font-semibold text-lg text-accent">
+                      {localization.Hum_screens.cart.emptyCart}
+                    </Text>
+                  </View>
+                )}
               </View>
-            )}
+            </ScrollView>
 
             {/* Suggestions */}
-            <Text
-              className="text-lg font-bold mt-6 mb-2"
-              style={{ direction: isRTL() ? "rtl" : "ltr" }}
-            >
-              {localization.Hum_screens.cart.suggests}
-            </Text>
-            <SuggestCardContainer suggestContainerType={0} />
+            <View>
+              <Text
+                className="text-lg font-bold mt-6 mb-2"
+                style={{ direction: isRTL() ? "rtl" : "ltr" }}
+              >
+                {localization.Hum_screens.cart.suggests}
+              </Text>
+
+              <SuggestCardContainer
+                suggestContainerType={0}
+                schemaActions={RecommendedSchemaActions}
+                shownNodeMenuItemIDs={shownNodeMenuItemIDs}
+              />
+            </View>
           </View>
           <View className="md:!w-[40%] lg:!w-[30%] md:!order-1">
             <View>
@@ -309,16 +392,12 @@ const CartPage = () => {
                 { id: "3", name: "Cash on Delivery" },
               ]}
               selected={""}
-              onSelect={(id) => {
-                console.log("Payment method selected:", id);
-              }}
-              onAddPaymentMethod={() => {
-                console.log("Add payment method");
-              }}
+              onSelect={(id) => {}}
+              onAddPaymentMethod={() => {}}
             />
 
             {/* <ShippingOptions /> */}
-            <PaymentOptions row={row} setRow={setRow} />
+            <PaymentOptions rootRow={row} setRootRow={setRow} />
             <View className="my-2">
               <PrivacyCheckbox row={row} setRow={setRow} />
             </View>

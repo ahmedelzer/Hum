@@ -13,9 +13,10 @@ export default function SuggestCard({
   imageStyle = { width: scale(120), height: scale(120) },
   boxScale = 400,
   showPrice = true,
+  schemaActions,
 }) {
   const dynamicScale = boxScale / 100;
-  const schemaActions = useSelector((state) => state.menuItem.schemaActions);
+  // const schemaActions = useSelector((state) => state.menuItem.schemaActions);
   const parameters = SuggestCardSchema?.dashboardFormSchemaParameters ?? [];
   const localization = useSelector((state) => state.localization.localization);
   const fieldsType = useSelector((state) => state.menuItem.fieldsType);
@@ -36,7 +37,7 @@ export default function SuggestCard({
           className="!size-40"
         />
 
-        {item[fieldsType.text] && (
+        {fieldsType.text && item[fieldsType.text] && (
           <View
             style={{
               position: "absolute",
@@ -66,15 +67,18 @@ export default function SuggestCard({
         </View>
       )}
 
-      {item[fieldsType.imageView] && (
-        <View className="w-full mt-2">
-          <AddToCartPrimaryButton
-            item={item}
-            fieldsType={fieldsType}
-            isSuggest
-          />
-        </View>
-      )}
+      {fieldsType.cardAction &&
+        fieldsType.isAvailable &&
+        item[fieldsType.isAvailable] && (
+          <View className="w-full mt-2">
+            <AddToCartPrimaryButton
+              itemPackage={item}
+              fieldsType={fieldsType}
+              schemaActions={schemaActions}
+              isSuggest
+            />
+          </View>
+        )}
     </View>
   );
 }

@@ -28,8 +28,8 @@
       "parameterField": "usingCredit",
       "parameterTitel": "Credit",
       "parameterLookupTitel": "Credit",
-      "lookupID": null,
-      "lookupReturnField": null,
+      "lookupID": "9e49c792-9b64-4d15-8c47-90a21c560e95",
+      "lookupReturnField": "accountCredit",
       "lookupDisplayField": "accountCredit",
       "isIDField": false,
       "indexNumber": 1

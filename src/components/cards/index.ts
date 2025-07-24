@@ -6,4 +6,3 @@ export * from "./GetCartByType";
 export * from "./InfoCard";
 export * from "./MenuCard";
 export * from "./MenuCard.web";
-export * from "./OrderCard";

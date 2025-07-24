@@ -24,6 +24,7 @@ import {
 import { WSMessageHandler } from "../src/utils/WS/handleWSMessage";
 import { ConnectToWS } from "../src/utils/WS/ConnectToWS";
 import { initializeLocalization } from "../src/reducers/localizationReducer";
+import { useNetwork } from "./NetworkContext";
 
 // Define the shape of the WebSocket context
 interface WSContextType {
@@ -43,7 +44,7 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const dispatch = useDispatch();
-
+ const { status: { isConnected: isOnline } } = useNetwork();
   // Address Location state with reducer
   const [addressLocationState, addressLocationReducerDispatch] = useReducer(
     reducer,
@@ -101,11 +102,10 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
     });
 
     if (addressLocationState.rows.length > 0) {
-      //!make shure if SelectedLocation do not select before
       dispatch(updateSelectedLocation(addressLocationState.rows[0]));
       setSelectedLocation(addressLocationState.rows[0]);
     }
-  }, [addressLocationGetAction, addressLocationState.rows.length, dispatch]);
+  }, [addressLocationGetAction, addressLocationState.rows.length, dispatch,isOnline]);
 
   // Nearest Branches state with reducer
   const [nodeState, nodeReducerDispatch] = useReducer(
@@ -146,25 +146,28 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
     });
 
     if (nodeState.rows.length > 0) {
-      //!make shure if SelectedNode do not select before
       const firstNode = nodeState.rows[0];
       dispatch(updateSelectedNode(firstNode));
       setSelectedNode(firstNode);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLocation, nodeGetAction]);
+  }, [selectedLocation, nodeGetAction,isOnline]);
 
   // 🔌 WebSocket handler effect on selectedNode change
   useEffect(() => {
     if (!selectedNode || WS_Connected) return;
 
     SetReoute(NodeMenuItemsSchema.projectProxyRoute);
-    //!we do not need to connect to WS of NodeMenuItems here we want it only in menu page
-    //!instead of that connect to WS of Cart
+let cleanup;
     ConnectToWS(setWSsetMessage, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => console.error("❌ WebSocket setup error", e));
-  }, [selectedNode, WS_Connected]);
+
+       return () => {
+    if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+    console.log("🧹 Cleaned up WebSocket handler");
+  };
+  }, [selectedNode, WS_Connected,isOnline]);
   const callbackReducerUpdate = async (ws_updatedRows) => {
     await nodeMenuItemReducerDispatch({
       type: "WS_OPE_ROW",
@@ -189,7 +192,7 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
   }, [_WSsetMessage]);
   useEffect(() => {
     dispatch(initializeLocalization());
-  }, []);
+  }, [isOnline]);
 
   // If useWebSocketHandler returns cleanup function (unsubscribe), call it on unmount
 

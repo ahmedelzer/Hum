@@ -1,42 +1,62 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { theme } from "../../Theme";
-import { Text } from "react-native";
+
 export default function CardPriceDiscount({
   item,
   fieldsType,
   colorOfPriceAfterDiscount = theme.body,
-  style, // don't set default here because it depends on colorOfPriceAfterDiscount
+  style,
 }) {
   const localization = useSelector((state) => state.localization.localization);
 
-  // Compose final style merging the passed style and colorOfPriceAfterDiscount
+  const price = item?.[fieldsType.price];
+  const priceAfterDiscount = item?.[fieldsType.priceAfterDiscount];
+  const hasDiscount = item?.[fieldsType.discount];
+
+  // Compose final style
   const finalStyle = [
-    { fontSize: 18, fontWeight: "bold", color: colorOfPriceAfterDiscount },
+    styles.discountedPrice,
+    { color: colorOfPriceAfterDiscount },
     style,
   ];
 
   return (
-    <View
-      className={
-        item[fieldsType.discount]
-          ? "justify-center flex-row flex-wrap items-center mt-2"
-          : "justify-center flex-row flex-wrap items-center mt-2"
-      }
-      // If you don't use nativewind, convert these to style object
-    >
-      {item[fieldsType.priceAfterDiscount] >= 0 && (
+    <View style={styles.container}>
+      {priceAfterDiscount >= 0 && (
         <Text style={finalStyle}>
-          {localization.menu.currency}{" "}
-          {item[fieldsType.priceAfterDiscount].toFixed(2)}
+          {localization.menu.currency} {priceAfterDiscount.toFixed(2)}
         </Text>
       )}
-      {item[fieldsType.discount] && (
-        <Text className="text-lg font-bold text-red-500 line-through">
-          {localization.menu.currency} {item[fieldsType.price].toFixed(2)}
+      {hasDiscount && (
+        <Text style={styles.originalPrice}>
+          {localization.menu.currency} {price.toFixed(2)}
         </Text>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
+    marginTop: 8,
+  },
+  discountedPrice: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginRight: 8, // spacing between prices when discount exists
+    textAlign: "center",
+  },
+  originalPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "red",
+    textDecorationLine: "line-through",
+    textAlign: "center",
+  },
+});

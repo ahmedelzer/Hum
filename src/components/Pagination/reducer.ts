@@ -1,4 +1,5 @@
 function reducer(state, { type, payload }) {
+  
   switch (type) {
     case "UPDATE_ROWS":
       return {
@@ -15,12 +16,15 @@ function reducer(state, { type, payload }) {
         loading: false,
       };
     case "WS_OPE_ROW":
-      return {
+      
+      const result =  {
         ...state,
         rows: [...payload.rows],
         totalCount: payload.totalCount,
         loading: false,
       };
+
+      return result;
     case "START_LOADING":
       return {
         ...state,

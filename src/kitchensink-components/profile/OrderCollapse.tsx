@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { default as React, useEffect, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import {
@@ -19,6 +19,8 @@ import DynamicTable from "../../components/table/DynamicTable";
 import CustomerSaleInvoicesActions from "../../Schemas/Profile/CustomerSaleInvoicesActions.json";
 import SaleInvoiceSchema from "../../Schemas/Profile/SaleInvoiceSchema.json";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
+import { FlatList } from "react-native-gesture-handler";
+import CardSchema from "../../components/cards/CardSchema";
 const VIRTUAL_PAGE_SIZE = 4;
 
 // Example data
@@ -29,6 +31,7 @@ const orders = [
     invoiceTaxAmount: 0.0,
     totalTaxAmount: 0.0,
     feesAmount: 1375.0,
+    saleInvoiceID: "0",
     invoiceItemsDiscountAmount: 198.0,
     invoiceDiscountAmount: 0.0,
     totalDiscountAmount: 198.0,
@@ -39,6 +42,8 @@ const orders = [
     invoiceItemsTaxAmount: 0.0,
     invoiceTaxAmount: 0.0,
     totalTaxAmount: 0.0,
+    saleInvoiceID: "1",
+
     feesAmount: 1375.0,
     invoiceItemsDiscountAmount: 0.0,
     invoiceDiscountAmount: 0.0,
@@ -51,94 +56,8 @@ const orders = [
     invoiceTaxAmount: 0.0,
     totalTaxAmount: 0.0,
     feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 198.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 198.0,
-    netAmount: 3657.0,
-  },
-  {
-    totalAmount: 500.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 0.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 0.0,
-    netAmount: 1875.0,
-  },
-  {
-    totalAmount: 2480.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 198.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 198.0,
-    netAmount: 3657.0,
-  },
-  {
-    totalAmount: 500.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 0.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 0.0,
-    netAmount: 1875.0,
-  },
-  {
-    totalAmount: 2480.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 198.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 198.0,
-    netAmount: 3657.0,
-  },
-  {
-    totalAmount: 500.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 0.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 0.0,
-    netAmount: 1875.0,
-  },
-  {
-    totalAmount: 2480.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 198.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 198.0,
-    netAmount: 3657.0,
-  },
-  {
-    totalAmount: 2480.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
-    invoiceItemsDiscountAmount: 198.0,
-    invoiceDiscountAmount: 0.0,
-    totalDiscountAmount: 198.0,
-    netAmount: 3657.0,
-  },
-  {
-    totalAmount: 2480.0,
-    invoiceItemsTaxAmount: 0.0,
-    invoiceTaxAmount: 0.0,
-    totalTaxAmount: 0.0,
-    feesAmount: 1375.0,
+    saleInvoiceID: "2",
+
     invoiceItemsDiscountAmount: 198.0,
     invoiceDiscountAmount: 0.0,
     totalDiscountAmount: 198.0,
@@ -211,11 +130,53 @@ const OrderCollapse = ({ schemas = SaleInvoiceSchema }) => {
           </HStack>
         </AccordionHeader>
         <AccordionContent>
-          <DynamicTable schemas={schemas} data={orders} />
+          {/* <DynamicTable schemas={schemas} data={orders} /> */}
+          <FlatList
+            data={orders}
+            keyExtractor={(item) => item[schemas[0].idField]}
+            renderItem={({ item }) => (
+              <CardSchema schema={schemas[0]} row={item} />
+            )}
+            contentContainerStyle={{ padding: 16 }}
+          />
         </AccordionContent>
       </AccordionItem>
     </Accordion>
   );
 };
-
+const OrderCard = ({ order, index }) => (
+  <View className="bg-white p-4 rounded-2xl mb-4 shadow">
+    <Text className="text-lg font-bold mb-2">Order #{index + 1}</Text>
+    <View className="space-y-1">
+      <Text className="text-base text-gray-800">
+        Total:{" "}
+        <Text className="font-semibold text-green-600">
+          ${order.totalAmount.toFixed(2)}
+        </Text>
+      </Text>
+      <Text className="text-base text-gray-800">
+        Fees:{" "}
+        <Text className="font-semibold">${order.feesAmount.toFixed(2)}</Text>
+      </Text>
+      <Text className="text-base text-gray-800">
+        Discount:{" "}
+        <Text className="font-semibold text-red-500">
+          ${order.totalDiscountAmount.toFixed(2)}
+        </Text>
+      </Text>
+      <Text className="text-base text-gray-800">
+        Tax:{" "}
+        <Text className="font-semibold">
+          ${order.totalTaxAmount.toFixed(2)}
+        </Text>
+      </Text>
+      <Text className="text-base text-gray-800">
+        Net Amount:{" "}
+        <Text className="font-semibold text-blue-600">
+          ${order.netAmount.toFixed(2)}
+        </Text>
+      </Text>
+    </View>
+  </View>
+);
 export default OrderCollapse;

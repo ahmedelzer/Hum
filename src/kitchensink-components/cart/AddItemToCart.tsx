@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { SetReoute } from "../../../request";
 import { onApply } from "../../components/form-container/OnApply";
-import { addToCart } from "../../reducers/CartReducer";
+import { addToCart, setItemQuantity } from "../../reducers/CartReducer";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import DeleteItem from "../../utils/operation/DeleteItem";
 
@@ -10,8 +10,7 @@ export const AddItemToCart = async (
   setLoading,
   fieldsType,
   schemaActions,
-  quantity,
-  dispatch
+  quantity
 ) => {
   SetReoute(NodeMenuItemsSchema.projectProxyRoute);
   setLoading(true);
@@ -31,7 +30,8 @@ export const AddItemToCart = async (
           NodeMenuItemsSchema.projectProxyRoute
         )
       ) {
-        dispatch(addToCart({ item: item, fieldsType: fieldsType }));
+        // dispatch(setItemQuantity(-1));
+        //dispatch(addToCart({ item: item, fieldsType: fieldsType }));
       }
       //dispatch(addToCart({ item: item, fieldsType: fieldsType })),
       //DeleteItem();
@@ -52,7 +52,8 @@ export const AddItemToCart = async (
       );
 
       if (apply?.success) {
-        dispatch(addToCart({ item, fieldsType }));
+        //dispatch(addToCart({ item, fieldsType }));
+        // dispatch(setItemQuantity(1));
       }
     }
   } finally {

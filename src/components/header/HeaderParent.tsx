@@ -11,16 +11,18 @@ import RedCounter from "../../utils/component/RedCounter";
 import { useDeviceInfo } from "../../utils/component/useDeviceInfo";
 import Notification from "../notification/Notification";
 import CategoryNavMobile from "./CategoryNavMobile.web";
-// import { styled } from "nativewind";
 import { TabsHeader } from "./Tabs.web";
-import TransitionComponent from "../../utils/component/TransitionComponent";
-// const AnimatedView = styled(View);
-
+import { useCart } from "../../../context/CartProvider";
 export default function HeaderParent() {
   const navigation = useNavigation();
   const { os } = useDeviceInfo();
   const { userGust } = useAuth();
-  const cart = useSelector((state) => state.cart.cart);
+  const { cartState, cartReducerDispatch, cartFieldsType } = useCart();
+  const {
+    rows: cartRows,
+    totalCount: cartTotalCount,
+    loading: cartLoading,
+  } = cartState;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   return (
     <View className="w-full">
@@ -28,7 +30,7 @@ export default function HeaderParent() {
         {os === "web" && (
           <View className="block md:hidden">
             <TouchableOpacity
-              onPress={() => setMobileNavOpen(true)}
+              onPress={() => setMobileNavOpen(!mobileNavOpen)}
               className="me-16 max-300:me-0 cursor-pointer"
             >
               <Feather name="menu" size={24} color="black" />
@@ -65,7 +67,7 @@ export default function HeaderParent() {
                   size={22}
                   className="!text-body"
                 />
-                {cart.length > 0 && <RedCounter count={cart.length} />}
+                {cartRows.length > 0 && <RedCounter count={cartRows.length} />}
               </TouchableOpacity>
               <Notification />
             </>
@@ -81,22 +83,7 @@ export default function HeaderParent() {
         {/* Cart Icon */}
       </View>
       {os === "web" && mobileNavOpen && (
-        <TransitionComponent
-          animation={mobileNavOpen ? "slideUp" : "fadeIn"} // choose what fits
-          duration={300}
-          style={{
-            position: "fixed",
-            top: 0,
-            bottom: 0,
-            right: 0,
-            zIndex: 500,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "white",
-          }}
-        >
-          <CategoryNavMobile setCatNavMobile={setMobileNavOpen} />
-        </TransitionComponent>
+        <CategoryNavMobile setCatNavMobile={setMobileNavOpen} />
       )}
     </View>
   );
