@@ -1,33 +1,64 @@
 import { WSclass } from "../../../components/hooks/ws/WS_Class";
+import {
+  addInstance,
+  addInstanceStateHandlingMessage,
+  changeInstanceState,
+} from "../../reducers/WS_Reducer";
+import { store } from "../../store/reduxStore";
 
+export function getWSInstance(baseUrl, url, onMessageCallback) {
+  const wsInstances = store.getState().ws.wsInstances;
 
-const wsMemoryInstances = {};
+  let instance = wsInstances.find((instance) => instance.key === baseUrl);
 
-export function getWSInstance(url, onMessageCallback) {
-  let instance = wsMemoryInstances[url];
-  const isClosed = !instance || 
-                  instance.readyState === WebSocket.CLOSING || 
-                  instance.readyState === WebSocket.CLOSED;
-
+  let isClosed =
+    !instance ||
+    instance.ws.readyState === WebSocket.CLOSING ||
+    instance.ws.readyState === WebSocket.CLOSED;
+  if (!isClosed) {
+    const haveSemParams = instance.url === url;
+    if (!haveSemParams) {
+      disconnectWS(baseUrl);
+      isClosed = true;
+    }
+  }
   if (isClosed) {
     console.log("🆕 Creating new WebSocket instance", url);
     instance = new WSclass(url);
-    wsMemoryInstances[url] = instance;
-    
+
     instance.connect(() => {
       if (typeof onMessageCallback === "function") {
         const removeHandler = instance.addMessageHandler(onMessageCallback);
         return { instance, removeHandler };
       }
     });
-  } else {
+    store.dispatch(
+      addInstance({
+        key: baseUrl,
+        url: url,
+        ws: instance,
+        handlingMessages: [onMessageCallback],
+        connected: true,
+      })
+    );
+  } else if (
+    instance.handlingMessages.find(
+      (handlingMessage) => handlingMessage !== onMessageCallback
+    )
+  ) {
     console.log("♻️ Reusing existing WebSocket instance", url);
-    
+
     if (typeof onMessageCallback === "function") {
-      const removeHandler = instance.addMessageHandler(onMessageCallback);
+      const removeHandler = instance.ws.addMessageHandler(onMessageCallback);
+      store.dispatch(
+        addInstanceStateHandlingMessage({
+          key: url,
+          handlingMessage: onMessageCallback,
+        })
+      );
       return { instance, removeHandler };
     }
-    
+
     if (instance.readyState !== WebSocket.OPEN) {
       instance.connect();
     }
@@ -36,21 +67,30 @@ export function getWSInstance(url, onMessageCallback) {
   return { instance };
 }
 
-export function disconnectWS(url) {
-  const instance = wsMemoryInstances[url];
+export function disconnectWS(baseURL) {
+  const wsInstances = store.getState().ws.wsInstances;
+  let instance = wsInstances.find((instance) => instance.key === baseURL);
   if (instance) {
     // Only disconnect if no more message handlers
-    if (instance.messageCallbacks.length === 0) {
-      instance.disconnect();
-      delete wsMemoryInstances[url];
-      console.log("🔌 WebSocket disconnected:", url);
-    } else {
-      console.log("⚠️ Keeping connection alive - active handlers:", instance.messageCallbacks.length);
-    }
+    instance.ws.disconnect();
+    // if (instance.ws.messageCallbacks.length === 0) {
+    //   // store.dispatch(
+    //   //   addInstanceStateHandlingMessage({
+    //   //     key: url,
+    //   //     handlingMessage: onMessageCallback,
+    //   //   }))
+    //   console.log("🔌 WebSocket disconnected:", baseURL);
+    // } else {
+    //   console.log(
+    //     "⚠️ Keeping connection alive - active handlers:",
+    //     instance.messageCallbacks.length
+    //   );
+    // }
   }
 }
 
 export function isWSConnected(url) {
-  const instance = wsMemoryInstances[url];
-  return instance?.readyState === WebSocket.OPEN;
+  const wsInstances = store.getState().ws.wsInstances;
+  let instance = wsInstances.find((instance) => instance.key === url);
+  return instance.ws?.readyState === WebSocket.OPEN;
 }

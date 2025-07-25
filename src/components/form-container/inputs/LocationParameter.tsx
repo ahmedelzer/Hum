@@ -5,7 +5,7 @@ import { Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 import { CollapsibleSection } from "../../../utils/component/Collapsible";
 import { Text } from "react-native";
-import LocationMap from "../../maps/LocationMap";
+import LocationMap from "../../maps/LocationMap.web";
 // Lazy import only the correct component
 export default function LocationParameter({ ...props }) {
   // const LocationMap = React.lazy(() =>

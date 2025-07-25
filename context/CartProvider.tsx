@@ -40,7 +40,22 @@ export const CartProvider = ({ children }) => {
     loading: cartLoading,
   } = cartState;
   const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
+  const getCustomerCartAction =
+    CartSchemaActions &&
+    CartSchemaActions.find(
+      (action) => action.dashboardFormActionMethodType === "Get"
+    );
+  const reduxSelectedLocation = useSelector(
+    (state: any) => state.location?.selectedLocation
+  );
+  const reduxSelectedNode = useSelector(
+    (state: any) => state.location?.selectedNode
+  );
 
+  const [selectedLocation, setSelectedLocation] = useState(
+    reduxSelectedLocation || null
+  );
+  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
   const cartFieldsType = {
     imageView: getField(parameters, "menuItemImage"),
     text: getField(parameters, "menuItemName"),
@@ -65,7 +80,7 @@ export const CartProvider = ({ children }) => {
 
   // 🌐 WebSocket connect effect
   useEffect(() => {
-    if (cart_WS_Connected) return;
+    // if (cart_WS_Connected) return;
 
     SetReoute(CartSchema.projectProxyRoute);
     let cleanup;
@@ -76,7 +91,7 @@ export const CartProvider = ({ children }) => {
       if (cleanup) cleanup(); // Clean up when component unmounts or deps change
       console.log("🧹 Cleaned up WebSocket handler");
     };
-  }, [cart_WS_Connected, isOnline]);
+  }, [cart_WS_Connected, selectedNode, isOnline]);
 
   // ✅ Callback to update reducer
   const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
@@ -102,7 +117,7 @@ export const CartProvider = ({ children }) => {
       callbackReducerUpdate: cartCallbackReducerUpdate,
     });
     handlerCartWSMessage.process();
-  }, [_wsMessageCart, cartState.rows]);
+  }, [_wsMessageCart]);
 
   const cartDataSourceAPI = (query, skip, take) => {
     SetReoute(CartSchema.projectProxyRoute);
@@ -112,22 +127,6 @@ export const CartProvider = ({ children }) => {
       // ...row,
     });
   };
-  const getCustomerCartAction =
-    CartSchemaActions &&
-    CartSchemaActions.find(
-      (action) => action.dashboardFormActionMethodType === "Get"
-    );
-  const reduxSelectedLocation = useSelector(
-    (state: any) => state.location?.selectedLocation
-  );
-  const reduxSelectedNode = useSelector(
-    (state: any) => state.location?.selectedNode
-  );
-
-  const [selectedLocation, setSelectedLocation] = useState(
-    reduxSelectedLocation || null
-  );
-  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
   const loadData = useCallback(() => {
     prepareLoad({
       state: cartState,

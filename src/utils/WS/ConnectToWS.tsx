@@ -9,12 +9,12 @@ import {
 import defWSSchemaAction from "../../Schemas/WSSchema/WSSchemaAction.json";
 import { disconnectWS, getWSInstance } from "./WSManager";
 
-
 export async function ConnectToWS(
   setWSsetMessage,
   setWS_Connected,
   row = {},
-  wS_SchemaAction = defWSSchemaAction,proxyRoute=projectProxyRoute
+  wS_SchemaAction = defWSSchemaAction,
+  proxyRoute = projectProxyRoute
 ) {
   const token = await GetToken();
 
@@ -44,17 +44,22 @@ export async function ConnectToWS(
     }
   };
 
- // Get instance and handler remover
-  const { removeHandler } = getWSInstance(buildUrl, handleMessage);
+  // Get instance and handler remover
+  const { removeHandler } = getWSInstance(
+    websocketBaseURI + "/" + proxyRoute + "/" + wS_SchemaAction.routeAdderss,
+    buildUrl,
+    handleMessage
+  );
   setWS_Connected(true);
 
   // Return cleanup function
   return () => {
     removeHandler(); // Remove this specific handler
     disconnectWS(buildUrl); // Will only disconnect if no handlers left
-    
+
     // Optional: Store last received message
-    AsyncStorage.setItem('lastWSMessage', JSON.stringify(WSMessage))
-      .catch(err => console.error("Failed to store last message:", err));
+    AsyncStorage.setItem("lastWSMessage", JSON.stringify(WSMessage)).catch(
+      (err) => console.error("Failed to store last message:", err)
+    );
   };
 }
