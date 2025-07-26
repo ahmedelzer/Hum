@@ -21,6 +21,7 @@ import { prepareLoad } from "../src/utils/operation/loadHelpers";
 import { createRowCache } from "../src/components/Pagination/createRowCache";
 import CartSchema from "../src/Schemas/MenuSchema/CartSchema.json";
 import CartSchemaActions from "../src/Schemas/MenuSchema/CartSchemaActions.json";
+import { useShopNode } from "./ShopNodeProvider";
 // Create context
 export const CartContext = createContext(null);
 
@@ -55,7 +56,8 @@ export const CartProvider = ({ children }) => {
   const [selectedLocation, setSelectedLocation] = useState(
     reduxSelectedLocation || null
   );
-  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
+  //const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
+  const { selectedNode, setSelectedNode } = useShopNode();
   const cartFieldsType = {
     imageView: getField(parameters, "menuItemImage"),
     text: getField(parameters, "menuItemName"),
@@ -77,10 +79,14 @@ export const CartProvider = ({ children }) => {
     note: getField(parameters, "note"),
     proxyRoute: CartSchema.projectProxyRoute,
   };
-
-  // 🌐 WebSocket connect effect
   useEffect(() => {
-    // if (cart_WS_Connected) return;
+    if (!selectedNode) return;
+    setCartWS_Connected(false);
+  }, [selectedNode, isOnline]);
+  useEffect(() => {
+    // 🌐 WebSocket connect effect
+
+    if (cart_WS_Connected) return;
 
     SetReoute(CartSchema.projectProxyRoute);
     let cleanup;
@@ -91,7 +97,7 @@ export const CartProvider = ({ children }) => {
       if (cleanup) cleanup(); // Clean up when component unmounts or deps change
       console.log("🧹 Cleaned up WebSocket handler");
     };
-  }, [cart_WS_Connected, selectedNode, isOnline]);
+  }, [cart_WS_Connected]);
 
   // ✅ Callback to update reducer
   const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {

@@ -4,8 +4,8 @@ import * as SecureStore from "expo-secure-store";
 export const paymentSlice = createSlice({
   name: "payment",
   initialState: {
-    paymentValueIndex: "0",
-    paymentRow: {}, //payment like paypal
+    paymentValueIndex: "",
+    paymentRow: "", //payment like paypal
   },
   reducers: {
     updatePayment: (state, action) => {

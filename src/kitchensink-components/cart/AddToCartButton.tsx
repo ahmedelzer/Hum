@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../../context/auth";
@@ -121,10 +121,13 @@ const AddToCartPrimaryButton = ({
           setIsAdded(true);
         }}
         disabled={!user || isAdded}
-        className="mt-2 px-2 py-1 rounded-lg bg-accent items-center justify-center flex flex-row"
+        className="mt-2 px-2 py-1 text-body rounded-lg bg-accent items-center justify-center flex flex-row"
       >
-        {isAdded && "item is added"}
-        {!isAdded && <Feather name="plus" size={24} className="!text-body" />}
+        {isAdded ? (
+          <Ionicons name="checkmark-done" size={24} color="white" />
+        ) : (
+          <Feather name="plus" size={24} className="!text-body" />
+        )}
       </TouchableOpacity>
     );
   }

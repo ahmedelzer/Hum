@@ -11,12 +11,12 @@ import { useSelector } from "react-redux";
 //!make shema for that filed name :isFastWay type:cheackBox
 export default function PrivacyCheckbox({ row, setRow }) {
   const [showHint, setShowHint] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(row.isFastWay | false);
   const selectedTab = useSelector((state: any) => state.location?.selectedTab);
   if (selectedTab !== 1) {
     return null;
   }
-  console.log("PrivacyCheckbox")
+  console.log("PrivacyCheckbox");
   return (
     <View className="flex-row items-center space-x-2 relative">
       {/* Gluestack Checkbox */}

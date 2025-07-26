@@ -15,6 +15,7 @@ import { createRowCache } from "../Pagination/createRowCache";
 import { getRemoteRows } from "../Pagination/getRemoteRows";
 import { initialState } from "../Pagination/initialState";
 import reducer from "../Pagination/reducer";
+import { useShopNode } from "../../../context/ShopNodeProvider";
 const VIRTUAL_PAGE_SIZE = 4;
 export default function NearestBranches() {
   const selectedLocation = useSelector(
@@ -31,6 +32,7 @@ export default function NearestBranches() {
       (pram) => pram.parameterType == "displayLookup"
     );
   const localization = useSelector((state) => state.localization.localization);
+  const { selectedNode, setSelectedNode } = useShopNode();
   const [state, reducerDispatch] = useReducer(
     reducer,
     initialState(10, NearestBranchesSchema.idField)
@@ -74,6 +76,7 @@ export default function NearestBranches() {
   };
   useEffect(() => {
     if (!loading && !Object.keys(node).length > 0 && rows.length > 0) {
+      setSelectedNode(rows[0]);
       dispatch(updateSelectedNode(rows[0]));
     }
   }, [loading, selectedTab]);
@@ -84,6 +87,7 @@ export default function NearestBranches() {
         labelField={displayLookupParam.lookupDisplayField}
         mapData={rows}
         onValueChange={(selected) => {
+          setSelectedNode(selected);
           dispatch(updateSelectedNode(selected)); // store full object
         }}
         selectedValue={node?.[displayLookupParam.lookupDisplayField]}

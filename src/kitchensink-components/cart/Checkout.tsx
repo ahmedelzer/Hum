@@ -1,44 +1,27 @@
-import React, {
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
 import {
-  Heading,
-  HStack,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  VStack,
-} from "../../../components/ui";
-import { onApply } from "../../components/form-container/OnApply";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+  FontAwesome,
+  FontAwesome5,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import React, { useRef, useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
-import { getField } from "../../utils/operation/getField";
-import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
-import CreditsSchema from "../../Schemas/Profile/CreditsSchema.json";
-import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
-import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
-import PopupModal from "../../utils/component/PopupModal";
-import { theme } from "../../Theme";
-import { formatCount } from "../../utils/operation/formatCount";
-import { useWS } from "../../../context/WSProvider";
-import { useNavigation } from "@react-navigation/native";
-import { initialState } from "../../components/Pagination/initialState";
-import reducer from "../../components/Pagination/reducer";
-import { useNetwork } from "../../../context/NetworkContext";
-import { SetReoute } from "../../../request";
-import { ConnectToWS } from "../../utils/WS/ConnectToWS";
-import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
-import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import { prepareLoad } from "../../utils/operation/loadHelpers";
-import { createRowCache } from "../../components/Pagination/createRowCache";
+import { HStack, VStack } from "../../../components/ui";
 import { useCart } from "../../../context/CartProvider";
+import { onApply } from "../../components/form-container/OnApply";
+import NearestBranches from "../../Schemas/AddressLocation/NearestBranches.json";
+import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
+import CustomerInfoSchema from "../../Schemas/MenuSchema/CartInfoSchema.json";
+import PaymentOptionsSchema from "../../Schemas/MenuSchema/PaymentOptions.json";
+import { theme } from "../../Theme";
+import PopupModal from "../../utils/component/PopupModal";
+import { formatCount } from "../../utils/operation/formatCount";
+import { getField } from "../../utils/operation/getField";
+import PrivacyCheckbox from "../../utils/component/PrivacyCheckbox";
+import { covertPointsToCredits } from "../../utils/operation/covertPointsToCredits";
+
 export default function Checkout({
   postAction,
   row,
@@ -56,25 +39,48 @@ export default function Checkout({
   const selectedLocation = useSelector(
     (state) => state.location.selectedLocation
   );
+  const selectedNode = useSelector(
+    (state) => state.location.selectedNodePickup
+  );
+
   const { cartState, cartFieldsType } = useCart();
 
   const [selectedMethod, setSelectedMethod] = useState("card");
+  const paymentRow = useSelector((state) => state.payment.paymentRow);
 
   const creditField = getField(
-    CreditsSchema.dashboardFormSchemaParameters,
-    "credit",
+    PaymentOptionsSchema.dashboardFormSchemaParameters,
+    "inputWithLabel",
     false
   );
 
   const pointsField = getField(
-    CreditsSchema.dashboardFormSchemaParameters,
-    "points",
+    PaymentOptionsSchema.dashboardFormSchemaParameters,
+    "additionalInputWithLabel",
     false
   );
-  const displayLookupParam =
+  const displayLookupParamAddress =
     AddressLocationSchema.dashboardFormSchemaParameters.find(
       (pram) => pram.parameterType == "displayLookup"
     );
+  const displayLookupParamNode =
+    NearestBranches.dashboardFormSchemaParameters.find(
+      (pram) => pram.parameterType == "displayLookup"
+    );
+  const {
+    rows: cartRows,
+    totalCount: cartTotalCount,
+    loading: cartLoading,
+  } = cartState;
+  const params = CustomerInfoSchema?.dashboardFormSchemaParameters ?? [];
+
+  const cartInfoFieldsType = {
+    netAmount: getField(params, "netAmount", false),
+  };
+  const requiredAmount =
+    row[cartInfoFieldsType.netAmount.parameterField] -
+    row[creditField.parameterField] -
+    covertPointsToCredits(row[pointsField.parameterField]);
   // Helper: Get formatted address
   const getAddress = () => {
     if (selectedTab === 0)
@@ -82,7 +88,7 @@ export default function Checkout({
     if (!selectedLocation) return "No address selected";
     console.log(selectedLocation);
 
-    return `${selectedLocation[displayLookupParam.lookupDisplayField]}`;
+    return `${selectedLocation[displayLookupParamAddress.lookupDisplayField]}`;
   };
   const handleUrlChange = (url) => {
     try {
@@ -149,6 +155,7 @@ export default function Checkout({
     setModalVisible(false);
     setCheckoutFiring(false);
   };
+  console.log(row, creditField, selectedNode, "creditField");
 
   if (!timeAllowed) {
     return (
@@ -162,16 +169,37 @@ export default function Checkout({
   return (
     <PopupModal
       isOpen={true}
-      haveFooter={false}
-      onClose={() => {}}
+      haveFooter={true}
+      footer={
+        <TouchableOpacity className="bg-green-600 mt-5 py-3 px-5 rounded-xl">
+          <Text className="text-body text-center font-semibold">
+            Confirm & Pay
+          </Text>
+        </TouchableOpacity>
+      }
+      onClose={() => setCheckoutFiring(false)}
       onSubmit={() => {}}
       control={{}}
       isFormModal={false}
-      haderTitle="Invoice Summary"
+      headerTitle="🧾 Invoice Summary"
     >
-      <View className="bg-body p-4 rounded-2xl shadow-md w-full max-w-md">
-        {/* 🧾 Order Items */}
-        <Text className="text-base font-semibold mb-2">Order Items</Text>
+      <View className="bg-body p-4 rounded-lg w-full max-w-md">
+        <View className="flex-row justify-between">
+          <View>
+            <Text className="text-base font-semibold mt-5 mb-2">Branch</Text>
+            <Text className="text-sm text-primary-custom">
+              {selectedNode[displayLookupParamNode.lookupDisplayField]}
+            </Text>
+          </View>
+          <View>
+            <Text className="text-base font-semibold mt-5 mb-2">Address</Text>
+            <Text className="text-sm text-primary-custom">{getAddress()}</Text>
+          </View>
+        </View>
+
+        <View className="my-2">
+          <PrivacyCheckbox row={row} setRow={() => {}} />
+        </View>
         <FlatList
           data={cartRows}
           keyExtractor={(item) => item[fieldsType.idField]}
@@ -203,9 +231,27 @@ export default function Checkout({
             </View>
           )}
         />
-        e{/* 🧮 Summary */}
-        <Text className="text-base font-semibold mt-5 mb-2">Summary</Text>
-        {/* <InvoiceSummary row={row} setRow={() => {}} /> */}
+        {/* 🧮 Summary */}
+        <View className="mt-6 space-y-2">
+          <View className="flex-row items-center space-x-2">
+            <MaterialCommunityIcons
+              name="clipboard-list-outline"
+              size={20}
+              color="#6b7280"
+            />
+            <Text className="text-lg font-bold text-gray-800">Summary</Text>
+          </View>
+
+          <View className="flex-row justify-between items-center bg-gray-100 p-3 rounded-xl">
+            <Text className="text-base text-gray-700 font-medium">
+              {cartInfoFieldsType.netAmount.parameterTitel}
+            </Text>
+            <Text className="text-xl font-bold text-green-600">
+              {localization.menu.currency}{" "}
+              {row[cartInfoFieldsType.netAmount.parameterField]}
+            </Text>
+          </View>
+        </View>
         {/* 💳 Payment Method */}
         <Text className="text-base font-semibold mt-5 mb-2">
           Payment Method
@@ -219,29 +265,42 @@ export default function Checkout({
             />
             <Text className="text-primary-custom text-sm">
               {creditField.parameterTitel}:{" "}
-              {formatCount(row[creditField.lookupDisplayField])}
+              {formatCount(row[creditField.parameterField])}
             </Text>
           </HStack>
           <HStack space="xs" className="items-center mt-1">
             <FontAwesome name="star" size={14} color="#facc15" />
             <Text className="text-primary-custom text-sm">
               {pointsField.parameterTitel}:{" "}
-              {formatCount(row[pointsField.lookupDisplayField])}
+              {formatCount(row[pointsField.parameterField])}
             </Text>
           </HStack>
+          <TouchableOpacity
+            className={`flex-row items-center mt-2 justify-between p-4 rounded-xl border ${"border-green-500 bg-green-50"}`}
+          >
+            <View className="flex-row items-center">
+              <FontAwesome5 size={18} color={"#22c55e"} />
+              <Text className="text-base text-gray-700">{paymentRow}</Text>
+            </View>
+            {/* {isSelected && ( */}
+            <MaterialIcons name="check-circle" size={20} color="#22c55e" />
+            {/* )} */}
+          </TouchableOpacity>
         </VStack>
-        {/* 🏠 Address */}
-        <Text className="text-base font-semibold mt-5 mb-2">Address</Text>
-        <Text className="text-sm text-primary-custom">{getAddress()}</Text>
-        {/* 🧾 Debug Info (Optional) */}
-        {/* <Text>isFastWay: {row.isFastWay?.toString()}</Text> */}
-        {/* <Text>Selected Tab: {selectedTab}</Text> */}
-        {/* ✅ Confirm Button */}
-        <TouchableOpacity className="bg-green-600 mt-5 py-3 rounded-xl">
-          <Text className="text-body text-center font-semibold">
-            Confirm & Pay
+        <View className="mt-6 space-y-2">
+          <Text className="text-lg font-bold text-gray-800">
+            Required Amount
           </Text>
-        </TouchableOpacity>
+
+          <View className="flex-row justify-between items-center bg-yellow-50 border border-yellow-300 p-4 rounded-xl">
+            <Text className="text-base font-medium text-yellow-800">
+              You will pay
+            </Text>
+            <Text className="text-xl font-bold text-yellow-700">
+              {localization.menu.currency} {requiredAmount.toFixed(2)}
+            </Text>
+          </View>
+        </View>
       </View>
     </PopupModal>
   );

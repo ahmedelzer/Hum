@@ -222,7 +222,7 @@ export default function SuggestCardContainer({
 
   const resetAndReload = useCallback(() => {
     suggestReducerDispatch({
-      type: "RESET_QUERY",
+      type: "RESET_SERVICE_LIST",
       payload: { lastQuery: "" },
     });
     setTimeout(() => {

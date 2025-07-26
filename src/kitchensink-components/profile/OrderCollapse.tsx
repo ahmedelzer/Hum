@@ -135,7 +135,7 @@ const OrderCollapse = ({ schemas = SaleInvoiceSchema }) => {
             data={orders}
             keyExtractor={(item) => item[schemas[0].idField]}
             renderItem={({ item }) => (
-              <CardSchema schema={schemas[0]} row={item} />
+              <CardSchema schemas={schemas} row={item} />
             )}
             contentContainerStyle={{ padding: 16 }}
           />
@@ -144,39 +144,4 @@ const OrderCollapse = ({ schemas = SaleInvoiceSchema }) => {
     </Accordion>
   );
 };
-const OrderCard = ({ order, index }) => (
-  <View className="bg-white p-4 rounded-2xl mb-4 shadow">
-    <Text className="text-lg font-bold mb-2">Order #{index + 1}</Text>
-    <View className="space-y-1">
-      <Text className="text-base text-gray-800">
-        Total:{" "}
-        <Text className="font-semibold text-green-600">
-          ${order.totalAmount.toFixed(2)}
-        </Text>
-      </Text>
-      <Text className="text-base text-gray-800">
-        Fees:{" "}
-        <Text className="font-semibold">${order.feesAmount.toFixed(2)}</Text>
-      </Text>
-      <Text className="text-base text-gray-800">
-        Discount:{" "}
-        <Text className="font-semibold text-red-500">
-          ${order.totalDiscountAmount.toFixed(2)}
-        </Text>
-      </Text>
-      <Text className="text-base text-gray-800">
-        Tax:{" "}
-        <Text className="font-semibold">
-          ${order.totalTaxAmount.toFixed(2)}
-        </Text>
-      </Text>
-      <Text className="text-base text-gray-800">
-        Net Amount:{" "}
-        <Text className="font-semibold text-blue-600">
-          ${order.netAmount.toFixed(2)}
-        </Text>
-      </Text>
-    </View>
-  </View>
-);
 export default OrderCollapse;

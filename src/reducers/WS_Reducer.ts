@@ -3,14 +3,17 @@ import { createSlice } from "@reduxjs/toolkit";
 export const wsSlice = createSlice({
   name: "ws",
   initialState: {
-    wsInstances: [], // [{key,ws, queryParams, handlingMessages, connected}]
+    wsInstances: [], // [{key, ws, url, handlingMessages, connected}]
   },
   reducers: {
     addInstance(state, action) {
+      // Remove existing instance with the same key to prevent duplicates
+      state.wsInstances = state.wsInstances.filter(
+        (ins) => ins.key !== action.payload.key
+      );
       state.wsInstances.push(action.payload);
     },
 
-    // ✅ Overwrites the instance by key
     changeInstanceState(state, action) {
       const { key } = action.payload;
       const index = state.wsInstances.findIndex((ins) => ins.key === key);
@@ -19,7 +22,6 @@ export const wsSlice = createSlice({
       }
     },
 
-    // ✅ Adds a handling message function to the handlingMessages array
     addInstanceStateHandlingMessage(state, action) {
       const { key, handlingMessage } = action.payload;
       const wsInstance = state.wsInstances.find((ins) => ins.key === key);
@@ -30,14 +32,12 @@ export const wsSlice = createSlice({
         wsInstance.handlingMessages.push(handlingMessage);
       }
     },
-    // ✅ Adds a handling message function to the handlingMessages array
-    // 🆕 Removes an entire instance by key
+
     removeInstance(state, action) {
       const { key } = action.payload;
       state.wsInstances = state.wsInstances.filter((ins) => ins.key !== key);
     },
 
-    // 🆕 Removes a specific handlingMessage function by reference
     removeStateHandlingMessage(state, action) {
       const { key, handlingMessage } = action.payload;
       const wsInstance = state.wsInstances.find((ins) => ins.key === key);
@@ -54,6 +54,8 @@ export const {
   addInstance,
   changeInstanceState,
   addInstanceStateHandlingMessage,
+  removeInstance,
+  removeStateHandlingMessage,
 } = wsSlice.actions;
 
 export default wsSlice.reducer;

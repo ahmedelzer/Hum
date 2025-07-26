@@ -101,8 +101,6 @@ export default function PaymentMethods({
   paymentMethods = [],
   onAddPaymentMethod,
   selected,
-  row,
-  setRow,
   label = "Select Payment Method",
 }) {
   const paymentValueIndex =
@@ -133,20 +131,34 @@ export default function PaymentMethods({
   });
   const values = ["cache", "visa"];
   useEffect(() => {
-    dispatch(updatePayment({ index: watch().payment }));
-  }, [watch()]);
+    const subscription = watch((formValues) => {
+      dispatch(
+        updatePayment({
+          index: formValues.payment,
+          paymentRow: formValues.payment === "0" && values[0],
+        })
+      );
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
   useEffect(() => {
-    // console.log("====================================");
-    // console.log(payment);
-    // console.log("====================================");
-    // !loading &&
-    // rows.length > 0
-    // if (!Object.keys(payment).length > 0) {
-    dispatch(
-      updatePayment({ index: watch().payment, payment: paymentMethods[0] })
-    );
-    // }
-  }, []); //set loading here
+    if (!paymentRow) {
+      dispatch(
+        updatePayment({
+          paymentRow: values[0],
+        })
+      );
+    }
+  }, []);
+  // useEffect(() => {
+  //   dispatch(
+  //     updatePayment({ index: watch().payment, payment: paymentMethods[0] })
+  //   );
+
+  // }, []);
+  console.log(paymentRow, paymentValueIndex, "paymentRow");
+
   return (
     <View className="mt-6 border border-border bg-body rounded-xl p-2 w-full">
       <CollapsibleSection
@@ -184,6 +196,8 @@ export default function PaymentMethods({
                 labelField={"name"}
                 mapData={paymentMethods}
                 onValueChange={(selected) => {
+                  console.log("selected", selected, control._formValues);
+
                   dispatch(
                     updatePayment({
                       index: control._formValues.payment,
@@ -191,7 +205,7 @@ export default function PaymentMethods({
                     })
                   );
                 }}
-                selectedValue={paymentRow}
+                selectedValue={paymentRow || paymentMethods[0].name}
                 valueField="name"
               />
 

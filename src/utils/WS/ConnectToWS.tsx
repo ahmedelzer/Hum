@@ -43,23 +43,26 @@ export async function ConnectToWS(
       console.error("❌ Failed to decode WebSocket message:", err);
     }
   };
-
+  const baseURL =
+    websocketBaseURI + "/" + proxyRoute + "/" + wS_SchemaAction.routeAdderss;
   // Get instance and handler remover
-  const { removeHandler } = getWSInstance(
-    websocketBaseURI + "/" + proxyRoute + "/" + wS_SchemaAction.routeAdderss,
-    buildUrl,
-    handleMessage
-  );
+  const { removeHandler } = getWSInstance(baseURL, buildUrl, handleMessage);
+
   setWS_Connected(true);
 
   // Return cleanup function
   return () => {
-    removeHandler(); // Remove this specific handler
-    disconnectWS(buildUrl); // Will only disconnect if no handlers left
-
-    // Optional: Store last received message
-    AsyncStorage.setItem("lastWSMessage", JSON.stringify(WSMessage)).catch(
-      (err) => console.error("Failed to store last message:", err)
-    );
+    try {
+      removeHandler(); // Remove this specific handler
+      disconnectWS(baseURL); // Use baseUrl
+      setWS_Connected(false);
+    } catch (err) {
+      console.error("❌ Failed to cleanup WebSocket:", err);
+    }
+    // Store last received message
+    // if (decodedString) {
+    //   AsyncStorage.setItem("lastWSMessage", JSON.stringify(decodedString)).catch(
+    //     (err) => console.error("Failed to store last message:", err)
+    //   );
   };
 }

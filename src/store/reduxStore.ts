@@ -35,10 +35,10 @@ const persistConfig = {
     "product",
     "filter",
     "menuItem",
+    "payment",
     "location",
     "ws",
     "localization",
-    "payment",
     "schemas",
   ],
 };

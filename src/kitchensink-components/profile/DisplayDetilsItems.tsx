@@ -56,6 +56,9 @@ const orders = [
     isReturnable: true,
     netAmount: 500,
     totalNetAmount: 500,
+    image:
+      "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
+
     preparingTimeAmountPerMinute: 10,
     totalPreparingTimeForItems: 10,
     itemState: 0,

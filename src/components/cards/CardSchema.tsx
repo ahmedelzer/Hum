@@ -1,12 +1,14 @@
 // components/CardSchema.jsx
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import avoidColsTypes from "../form-container/avoidColsTypes.json";
 import { Button } from "../../../components/ui";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { theme } from "../../Theme";
+import DisplayDetilsItems from "../../kitchensink-components/profile/DisplayDetilsItems";
 
-const CardSchema = ({ schema, row }) => {
+const CardSchema = ({ schemas, row }) => {
+  var schema = schemas[0];
   const title = schema.dashboardFormSchemaInfoDTOView?.schemaHeader;
   const [child, setChild] = useState(null);
   const [expandedRow, setExpandedRow] = useState({});
@@ -30,14 +32,48 @@ const CardSchema = ({ schema, row }) => {
               //     {typeof value === "number" ? `${value.toFixed(2)}` : `${value}`}
               //   </Text>
               // </Text>
-              <DisplayItem param={param} value={value} />
+              <View>
+                <DisplayItem
+                  child={child}
+                  setChild={setChild}
+                  setExpandedRow={setExpandedRow}
+                  schemas={schemas}
+                  param={param}
+                  value={value}
+                />
+                {child && expandedRow === param && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      borderWidth: 1,
+                      borderColor: "#c8e1ff",
+                    }}
+                  >
+                    <ScrollView horizontal>
+                      <View style={{ flexDirection: "row" }}>
+                        {/** Optional: match child layout width with column widths if needed */}
+                        {child}
+                      </View>
+                    </ScrollView>
+                  </View>
+                )}
+              </View>
             );
           })}
       </View>
     </View>
   );
 };
-const DisplayItem = ({ param, value, setExpandedRow, setChild, child }) => {
+const DisplayItem = ({
+  schemas,
+  param,
+  value,
+  setExpandedRow,
+  setChild,
+  child,
+}) => {
+  const subSchemas = schemas.filter((schema, index) => index !== 0);
+
   console.log(param.parameterType === "detailsCell", "parameterType");
 
   switch (param.parameterType) {
@@ -55,25 +91,27 @@ const DisplayItem = ({ param, value, setExpandedRow, setChild, child }) => {
       );
     case "detailsCell":
       return (
-        <Button
-          // onPress={() => {
-          //   // DetilsItemClick();
-          //   setExpandedRow(row);
+        <View>
+          <Button
+            onPress={() => {
+              // DetilsItemClick();
+              setExpandedRow(param);
 
-          //   setChild(
-          //     child ? null : (
-          //       <DisplayDetilsItems
-          //         col={col}
-          //         schemas={schemas}
-          //         // setIsModalVisible={setIsModalVisible}
-          //       />
-          //     )
-          //   );
-          // }}
-          style={{ backgroundColor: theme.accentHover }}
-        >
-          <FontAwesome5 name="sitemap" size={24} color={theme.body} />
-        </Button>
+              setChild(
+                child ? null : (
+                  <DisplayDetilsItems
+                    col={param}
+                    schemas={subSchemas}
+                    // setIsModalVisible={setIsModalVisible}
+                  />
+                )
+              );
+            }}
+            style={{ backgroundColor: theme.accentHover }}
+          >
+            <FontAwesome5 name="sitemap" size={24} color={theme.body} />
+          </Button>
+        </View>
       );
     default:
       return (

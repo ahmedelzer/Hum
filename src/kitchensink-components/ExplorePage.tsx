@@ -8,6 +8,7 @@ import HomeCarouselWeb from "./main-content/HomeCarousel.web";
 import AddressLocationCollapsible from "../utils/component/AddressLocationCollapsible";
 import { theme } from "../Theme";
 import SuggestCardContainer from "../utils/component/SuggestCardContainer";
+import RecommendedSchemaActions from "./../Schemas/MenuSchema/RecommendedSchemaActions.json";
 
 const Explorepage = () => {
   const { os } = useDeviceInfo();
@@ -30,8 +31,16 @@ const Explorepage = () => {
             </View>
             {os === "web" && <HomeCarouselWeb />}
             {os !== "web" && <HomeCarousel />}
-            <SuggestCardContainer suggestContainerType={0} Schema={{}} />
-            <SuggestCardContainer suggestContainerType={1} Schema={{}} />
+            <SuggestCardContainer
+              suggestContainerType={0}
+              schemaActions={RecommendedSchemaActions}
+              shownNodeMenuItemIDs={[]}
+            />
+            <SuggestCardContainer
+              suggestContainerType={1}
+              schemaActions={RecommendedSchemaActions}
+              shownNodeMenuItemIDs={[]}
+            />
 
             {/* <HomeContent /> */}
             {/* <FaovertMenuItems /> */}

@@ -28,6 +28,7 @@ import { getRemoteRows } from "../src/components/Pagination/getRemoteRows";
 import ActionBar from "../src/components/cards/ActionBar";
 import { SetResponsiveContainer } from "../src/utils/component/SetResponsiveContainer";
 import HeaderParent from "../src/components/header/HeaderParent";
+import { useShopNode } from "./ShopNodeProvider";
 // Create context
 export const MenuContext = createContext(null);
 const VIRTUAL_PAGE_SIZE = 1;
@@ -50,7 +51,7 @@ export const MenuProvider = ({ children }) => {
   const [selectedLocation, setSelectedLocation] = useState(
     reduxSelectedLocation || null
   );
-  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
+  //const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
   console.log("row MenuProvider", row);
 
   // const selectedNode = selectSelectedNode(store.getState());
@@ -81,7 +82,7 @@ export const MenuProvider = ({ children }) => {
     status: { isConnected: isOnline },
   } = useNetwork();
   useEffect(() => {
-    if (!selectedNode) return;
+    //if (!selectedNode) return;
     const controller = new AbortController();
     prepareLoad({
       state,
@@ -93,10 +94,15 @@ export const MenuProvider = ({ children }) => {
     setReRequest(false);
     previousControllerRef.current = controller;
     // Call LoadData with the controller
-  });
+  }, []);
+  const { selectedNode, setSelectedNode } = useShopNode();
+  useEffect(() => {
+    if (!selectedNode) return;
+    setWS_Connected(false);
+  }, [selectedNode, isOnline]);
   // 🌐 Setup WebSocket connection on mount or WS_Connected change
   useEffect(() => {
-    // if (WS_Connected) return;
+    if (WS_Connected) return;
 
     SetReoute(NodeMenuItemsSchema.projectProxyRoute);
     let cleanup;
@@ -107,7 +113,7 @@ export const MenuProvider = ({ children }) => {
       if (cleanup) cleanup(); // Clean up when component unmounts or deps change
       console.log("🧹 Cleaned up WebSocket handler");
     };
-  }, [WS_Connected, selectedNode]);
+  }, [WS_Connected]);
 
   // 🧠 Reducer callback to update rows
   const callbackReducerUpdate = async (ws_updatedRows) => {
