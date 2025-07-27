@@ -60,7 +60,7 @@ const PopupModal = ({
             {footer ? (
               footer
             ) : (
-              <View>
+              <View className="flex-row justify-between gap-2">
                 <Button
                   isDisabled={disable}
                   variant="outline"

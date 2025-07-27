@@ -352,7 +352,7 @@
     "VerifyButton": "Verify",
     "otpToast": {
       "title": "Invalid OTP",
-      "des": "Please enter the full 6-digit code."
+      "des": "Please enter the correct 6-digit code."
     }
   },
   "menu": {

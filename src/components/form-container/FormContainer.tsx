@@ -52,11 +52,16 @@ function FormContainer({
   // Show toast on global errors
   // Show the first global error as toast
 
+  const lastShownErrorRef = useRef<string | null>(null); // track last error shown
+
   useEffect(() => {
-    if (globalErrorMessages.length > 0) {
-      showErrorToast("Error", `${globalErrorMessages[0]}`);
+    const currentError = globalErrorMessages[0];
+
+    if (currentError && lastShownErrorRef.current !== currentError) {
+      lastShownErrorRef.current = currentError; // store the last shown error
+      showErrorToast("Error", currentError);
     }
-  }, [errorResult, globalErrorMessages]);
+  }, [globalErrorMessages, showErrorToast]);
 
   function SetValue(param: any | undefined) {
     if (

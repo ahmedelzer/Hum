@@ -15,6 +15,7 @@ import { getField } from "../../../utils/operation/getField";
 import PersonalInfo from "../../../Schemas/PersonalInfo.json";
 import { useSelector } from "react-redux";
 import { useErrorToast } from "../../../components/form-container/ShowErrorToast";
+import { useNetwork } from "../../../../context/NetworkContext";
 
 const VerifyScreen = ({ route }) => {
   const [otpCode, setOtpCode] = useState("");
@@ -27,6 +28,7 @@ const VerifyScreen = ({ route }) => {
     PersonalInfo.dashboardFormSchemaParameters,
     "phoneNumber"
   );
+  const { isOnline } = useNetwork();
   const { [phoneNumberField]: phoneNumber, VerifySchemaAction } =
     route.params || {}; // if passed from previous screen
   const { os } = useDeviceInfo();
@@ -63,6 +65,11 @@ const VerifyScreen = ({ route }) => {
 
         if (request.data === true && request.success === true) {
           navigation.navigate("SignIn"); // or any other screen
+        } else {
+          showErrorToast(
+            localization.verify.otpToast.title,
+            localization.verify.otpToast.des
+          );
         }
       } catch (error) {
         console.error("API call failed:", error);

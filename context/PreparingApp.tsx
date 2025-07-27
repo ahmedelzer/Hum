@@ -25,6 +25,8 @@ import { WSMessageHandler } from "../src/utils/WS/handleWSMessage";
 import { ConnectToWS } from "../src/utils/WS/ConnectToWS";
 import { initializeLocalization } from "../src/reducers/localizationReducer";
 import { useNetwork } from "./NetworkContext";
+import { useErrorToast } from "../src/components/form-container/ShowErrorToast";
+import { useShopNode } from "./ShopNodeProvider";
 
 // Define the shape of the WebSocket context
 interface WSContextType {
@@ -44,7 +46,11 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const dispatch = useDispatch();
- const { status: { isConnected: isOnline } } = useNetwork();
+  const {
+    status: { isConnected: isOnline },
+  } = useNetwork();
+  const { selectedNode, setSelectedNode } = useShopNode();
+  const { showErrorToast } = useErrorToast();
   // Address Location state with reducer
   const [addressLocationState, addressLocationReducerDispatch] = useReducer(
     reducer,
@@ -61,9 +67,6 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
   const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
   const reduxSelectedLocation = useSelector(
     (state: any) => state.location?.selectedLocation
-  );
-  const reduxSelectedNode = useSelector(
-    (state: any) => state.location?.selectedNode
   );
 
   // Address location API
@@ -105,7 +108,12 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
       dispatch(updateSelectedLocation(addressLocationState.rows[0]));
       setSelectedLocation(addressLocationState.rows[0]);
     }
-  }, [addressLocationGetAction, addressLocationState.rows.length, dispatch,isOnline]);
+  }, [
+    addressLocationGetAction,
+    addressLocationState.rows.length,
+    dispatch,
+    isOnline,
+  ]);
 
   // Nearest Branches state with reducer
   const [nodeState, nodeReducerDispatch] = useReducer(
@@ -129,13 +137,14 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
   const nodeGetAction = NearestBranchesActions?.find(
     (action) => action.dashboardFormActionMethodType === "Get"
   );
-
-  // Local state for selected node
-  const [selectedNode, setSelectedNode] = useState(reduxSelectedNode);
-
   // Load Nearest Branches when location is selected and nodeGetAction is ready
   useEffect(() => {
-    if (!selectedLocation || !nodeGetAction) return;
+    if (
+      !selectedLocation ||
+      !nodeGetAction ||
+      Object.keys(selectedNode).length > 0
+    )
+      return;
 
     prepareLoad({
       state: nodeState,
@@ -151,23 +160,31 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
       setSelectedNode(firstNode);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLocation, nodeGetAction,isOnline]);
+  }, [selectedLocation, nodeGetAction, isOnline]);
 
   // 🔌 WebSocket handler effect on selectedNode change
   useEffect(() => {
     if (!selectedNode || WS_Connected) return;
 
     SetReoute(NodeMenuItemsSchema.projectProxyRoute);
-let cleanup;
+    let cleanup;
     ConnectToWS(setWSsetMessage, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
-      .catch((e) => console.error("❌ WebSocket setup error", e));
+      .catch((e) => {
+        console.log(isOnline, "connection Error");
+        if (!isOnline) {
+          showErrorToast("connection Error", "please connect to internet ");
+        } else {
+          showErrorToast("Error", e);
+        }
+        console.error("❌ Cart WebSocket error", e);
+      });
 
-       return () => {
-    if (cleanup) cleanup(); // Clean up when component unmounts or deps change
-    console.log("🧹 Cleaned up WebSocket handler");
-  };
-  }, [selectedNode, WS_Connected,isOnline]);
+    return () => {
+      if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+      console.log("🧹 Cleaned up WebSocket handler");
+    };
+  }, [selectedNode, WS_Connected, isOnline]);
   const callbackReducerUpdate = async (ws_updatedRows) => {
     await nodeMenuItemReducerDispatch({
       type: "WS_OPE_ROW",

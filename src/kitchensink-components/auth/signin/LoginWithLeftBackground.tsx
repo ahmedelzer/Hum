@@ -28,21 +28,14 @@ import { saveSecureValue } from "../../../store/secureStore";
 import LoadingButton from "../../../utils/component/LoadingButton";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 import { getField } from "../../../utils/operation/getField";
-const ACTION_SCHEMA = [
-  {
-    dashboardFormSchemaActionID: "46ac8869-4745-41c8-8839-d02dfe9999f0",
-    dashboardFormActionMethodType: "Post",
-    routeAdderss: "User/Login",
-    body: "",
-    returnPropertyName: "",
-    dashboardFormSchemaActionQueryParams: [],
-  },
-];
+import { useNetwork } from "../../../../context/NetworkContext";
+import { useErrorToast } from "../../../components/form-container/ShowErrorToast";
 
 export const LoginWithLeftBackground = () => {
   const localization = useSelector((state) => state.localization.localization);
   const { os } = useDeviceInfo();
-
+  const { isOnline } = useNetwork();
+  const { showErrorToast } = useErrorToast();
   const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
@@ -56,11 +49,6 @@ export const LoginWithLeftBackground = () => {
     username: "testAhmed12",
     rememberme: false,
   };
-  const postAction =
-    ACTION_SCHEMA &&
-    ACTION_SCHEMA.find(
-      (action) => action.dashboardFormActionMethodType === "Post"
-    );
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   const handleState = () => {
@@ -80,6 +68,9 @@ export const LoginWithLeftBackground = () => {
     control._formValues;
   const onSubmit = async (data: any) => {
     // Destructure to remove confirmPassword from the sent data
+    const date = new Date();
+    const timeZoneOffset = date.getTimezoneOffset();
+
     const { rememberme, ...sanitizedData } = data;
     SetReoute(loginFormSchema.projectProxyRoute);
     const postAction =
@@ -89,7 +80,7 @@ export const LoginWithLeftBackground = () => {
       );
     setLoading(true);
     const apply = await onApply(
-      sanitizedData,
+      { ...sanitizedData, timeZoneConvert: timeZoneOffset },
       "",
       true,
       postAction,
@@ -122,6 +113,7 @@ export const LoginWithLeftBackground = () => {
         // RNRestart.Restart();
         // DevSettings.reload();
       } catch (error) {
+        console.log(isOnline, "connection Error");
         console.error("Failed to decode token:", error.message);
       }
     } else if (!apply.success) {

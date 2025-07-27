@@ -4,6 +4,8 @@ import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../../context/auth";
 import { AddItemToCart } from "./AddItemToCart";
 import { useSelector } from "react-redux";
+import { useErrorToast } from "../../components/form-container/ShowErrorToast";
+import { useNetwork } from "../../../context/NetworkContext";
 
 const AddToCartSecondaryButton = ({
   itemPackage,
@@ -13,17 +15,28 @@ const AddToCartSecondaryButton = ({
   // const { quantity, updateCart } = useCartItemHandler(itemPackage, fieldsType);
   const [item, setItem] = useState(itemPackage);
   const [loading, setLoading] = useState(false);
+  const { showErrorToast } = useErrorToast();
+  const { isOnline, checkNetwork } = useNetwork();
+
   const updateCart = useCallback(
     async (quantityChange) => {
       if (!itemPackage || !fieldsType?.cardAction) return;
+      console.log(isOnline, "isOnline");
 
+      if (!isOnline) {
+        showErrorToast("connection Error", "please connect to internet ");
+        return;
+      }
       setLoading(true);
       try {
         const newQuantity =
           (itemPackage?.[fieldsType.cardAction] ?? 0) + quantityChange;
+
         if (newQuantity < 0) {
           setLoading(false);
           return; // Prevent negative quantity
+        } else if (!isOnline) {
+          showErrorToast("connection Error", "please connect to internet ");
         }
 
         await AddItemToCart(
@@ -74,7 +87,8 @@ const AddToCartPrimaryButton = ({
   const [loading, setLoading] = useState(false);
   const [item, setItem] = useState(itemPackage);
   const localization = useSelector((state) => state.localization.localization);
-
+  const { showErrorToast } = useErrorToast();
+  const { isOnline, checkNetwork } = useNetwork();
   // Update local item state whenever itemPackage changes (e.g. from WS update)
 
   // Current quantity based on cardAction field
@@ -83,7 +97,12 @@ const AddToCartPrimaryButton = ({
   const updateCart = useCallback(
     async (quantityChange) => {
       if (!itemPackage || !fieldsType?.cardAction) return;
+      console.log(isOnline, "isOnline");
 
+      if (!isOnline) {
+        showErrorToast("connection Error", "please connect to internet ");
+        return;
+      }
       setLoading(true);
       try {
         const newQuantity =

@@ -14,6 +14,7 @@ import { prepareLoad } from "../src/utils/operation/loadHelpers";
 import { initialState } from "../src/components/Pagination/initialState";
 import reducer from "../src/components/Pagination/reducer";
 import { useNetwork } from "./NetworkContext";
+import { useErrorToast } from "../src/components/form-container/ShowErrorToast";
 
 const VIRTUAL_PAGE_SIZE = 4000;
 const UserProviderLayer = (
@@ -22,7 +23,10 @@ const UserProviderLayer = (
     // selectedNode,
   }
 ) => {
-   const { status: { isConnected: isOnline } } = useNetwork();
+  const {
+    status: { isConnected: isOnline },
+  } = useNetwork();
+  const { showErrorToast } = useErrorToast();
   const reduxSelectedLocation = useSelector(
     (state: any) => state.location?.selectedLocation
   );
@@ -68,16 +72,24 @@ const UserProviderLayer = (
     if (cart_WS_Connected) return;
 
     SetReoute(CartSchema.projectProxyRoute);
-let cleanup;
+    let cleanup;
     ConnectToWS(setCartWSsetMessage, setCartWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
-      .catch((e) => console.error("❌ Cart WebSocket error", e));
+      .catch((e) => {
+        console.log(isOnline, "connection Error");
+        if (!isOnline) {
+          showErrorToast("connection Error", "please connect to internet ");
+        } else {
+          showErrorToast("Error", e);
+        }
+        console.error("❌ Cart WebSocket error", e);
+      });
 
-       return () => {
-    if (cleanup) cleanup(); // Clean up when component unmounts or deps change
-    console.log("🧹 Cleaned up WebSocket handler");
-  };
-  }, [cart_WS_Connected,isOnline]);
+    return () => {
+      if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+      console.log("🧹 Cleaned up WebSocket handler");
+    };
+  }, [cart_WS_Connected, isOnline]);
 
   // ✅ Callback to update reducer
   const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
@@ -102,7 +114,7 @@ let cleanup;
       callbackReducerUpdate: cartCallbackReducerUpdate,
     });
     _handleWSMessage.process();
-  }, [cart_WSsetMessage, cartState.rows,isOnline]);
+  }, [cart_WSsetMessage, cartState.rows, isOnline]);
 
   const dataSourceAPI = (query, skip, take) => {
     SetReoute(CartSchema.projectProxyRoute);

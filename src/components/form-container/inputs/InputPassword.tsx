@@ -73,6 +73,7 @@ function InputPassword({ ...props }) {
               defaultValue={defaultValue}
               editable={enable}
               placeholder={placeholder}
+              style={props.style}
             />
             <InputSlot
               onPress={togglePasswordVisibility}
@@ -108,6 +109,7 @@ function InputPassword({ ...props }) {
                 secureTextEntry={!passwordVisible}
                 editable={enable}
                 placeholder={placeholder} //!localiztion
+                style={props.style}
               />
               <InputSlot
                 onPress={togglePasswordVisibility}

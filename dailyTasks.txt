@@ -7,24 +7,17 @@
 
 //need to be fished tasks
 1-make on click on any row of orders open popup and display cart and refined
+2-make text alighn in pasword pram like text pram to be use in rtl //done
 3-show why storage is deleted after reload
-4-handle code duplicated and make cartInfo run 
-5-make delete cart run and solve WS problems
-2-set project name famuous app&& logo &&icon tap 
-6-make setCorrectNumber to set numbers length or search in git repo to get
-
-//style
-1-invoice summary set it by the coorect line
-2-menu item card image and discount 
-3-disable card in cart and market places 
-4-align center header of grid
+4-handle code duplicated
+5-run items in orders like Purchases and set spasific icons appear the state of order && use the same api of Purchases and test//done
+6-set convirt zone in login and language//done but need schema and how send it when change language
+7-make text pram type with text and numeric//done
+8-run pagtion
+9-set selected node right and if node is found do not send the request//done
+10-display popup error when is not online when set POST DELETE PUT request //need a better way 
 
 //features added
 1-card insted of table
 2-cart page add row and set
 3-schemaProvider orders localization profile schema remmaneded
-
-
-//
-1-make suggest like menu item
-2-make menuProvider

@@ -79,8 +79,8 @@ export default function Checkout({
   };
   const requiredAmount =
     row[cartInfoFieldsType.netAmount.parameterField] -
-    row[creditField.parameterField] -
-    covertPointsToCredits(row[pointsField.parameterField]);
+    parseFloat(row[creditField.parameterField]) -
+    covertPointsToCredits(parseFloat(row[pointsField.parameterField]));
   // Helper: Get formatted address
   const getAddress = () => {
     if (selectedTab === 0)

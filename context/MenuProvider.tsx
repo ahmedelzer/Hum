@@ -29,6 +29,7 @@ import ActionBar from "../src/components/cards/ActionBar";
 import { SetResponsiveContainer } from "../src/utils/component/SetResponsiveContainer";
 import HeaderParent from "../src/components/header/HeaderParent";
 import { useShopNode } from "./ShopNodeProvider";
+import { useErrorToast } from "../src/components/form-container/ShowErrorToast";
 // Create context
 export const MenuContext = createContext(null);
 const VIRTUAL_PAGE_SIZE = 1;
@@ -40,6 +41,7 @@ export const MenuProvider = ({ children }) => {
   const { _wsMessageMenuItem, setWSMessageMenuItem } = useWS();
   const [WS_Connected, setWS_Connected] = useState(false);
   const previousRowRef = useRef({});
+  const { showErrorToast } = useErrorToast();
   const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
   const reduxSelectedLocation = useSelector(
     (state: any) => state.location?.selectedLocation
@@ -59,7 +61,7 @@ export const MenuProvider = ({ children }) => {
   const previousControllerRef = useRef(null);
   const [state, reducerDispatch] = useReducer(
     reducer,
-    initialState(10, NodeMenuItemsSchema.idField)
+    initialState(VIRTUAL_PAGE_SIZE, NodeMenuItemsSchema.idField)
   );
   const [currentSkip, setCurrentSkip] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
@@ -94,7 +96,7 @@ export const MenuProvider = ({ children }) => {
     setReRequest(false);
     previousControllerRef.current = controller;
     // Call LoadData with the controller
-  }, []);
+  });
   const { selectedNode, setSelectedNode } = useShopNode();
   useEffect(() => {
     if (!selectedNode) return;
@@ -108,7 +110,15 @@ export const MenuProvider = ({ children }) => {
     let cleanup;
     ConnectToWS(setWSMessageMenuItem, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
-      .catch((e) => console.error("❌ WebSocket setup error", e));
+      .catch((e) => {
+        console.log(isOnline, "connection Error");
+        if (!isOnline) {
+          showErrorToast("connection Error", "please connect to internet ");
+        } else {
+          showErrorToast("Error", e);
+        }
+        console.error("❌ Cart WebSocket error", e);
+      });
     return () => {
       if (cleanup) cleanup(); // Clean up when component unmounts or deps change
       console.log("🧹 Cleaned up WebSocket handler");

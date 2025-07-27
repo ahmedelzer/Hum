@@ -35,70 +35,71 @@ export default function OrderCard({ order, schemas }) {
   };
   const labels = getStepLabels(order[ordersFieldsType.orderType]);
   return (
-        <View
-      className="rounded-xl overflow-hidden !bg-error mb-4 shadow-md mx-1"
+    <View
+      className="rounded-xl overflow-hidden !bg-error mb-4 shadow-md mx-1 !h-fit"
       style={{ backgroundColor: theme.error }}
     >
-      
-    <Swipeable
-      renderRightActions={
-        !isRTL()
-          ? (progress, dragX) =>
-              RenderDeleteAction(progress, dragX, () => setIsOpenAlert(true))
-          : null
-      }
-      renderLeftActions={
-        isRTL()
-          ? (progress, dragX) =>
-              RenderDeleteAction(progress, dragX, () => setIsOpenAlert(true))
-          : null
-      }
-    >
-      <View
-        key={order[ordersFieldsType.idField]}
-        className="bg-body p-4 rounded-xl"
+      <Swipeable
+        renderRightActions={
+          !isRTL()
+            ? (progress, dragX) =>
+                RenderDeleteAction(progress, dragX, () => setIsOpenAlert(true))
+            : null
+        }
+        renderLeftActions={
+          isRTL()
+            ? (progress, dragX) =>
+                RenderDeleteAction(progress, dragX, () => setIsOpenAlert(true))
+            : null
+        }
       >
-        <Text className="text-lg font-semibold mb-2">
-          {localization.Hum_screens.orders.order} #
-          {order[ordersFieldsType.invoiceNumber]}
-        </Text>
+        <View
+          key={order[ordersFieldsType.idField]}
+          className="bg-body p-4 rounded-xl"
+        >
+          <Text className="text-lg font-semibold mb-2">
+            {localization.Hum_screens.orders.order} #
+            {order[ordersFieldsType.invoiceNumber]}
+          </Text>
 
-        <StepHeader
-          currentPosition={order[ordersFieldsType.orderState]}
-          labels={labels}
-        />
-        <View className=" justify-center items-center flex-row">
-          <TouchableOpacity
-            onPress={() =>
-              setChild(
-                child ? null : (
-                  <DisplayDetilsItems
-                    col={ordersFieldsType.details}
-                    schemas={subSchemas}
-                    // setIsModalVisible={setIsModalVisible}
-                  />
+          <StepHeader
+            currentPosition={order[ordersFieldsType.orderState]}
+            labels={labels}
+          />
+          <View className=" justify-center items-center flex-row">
+            <TouchableOpacity
+              onPress={() =>
+                setChild(
+                  child ? null : (
+                    <DisplayDetilsItems
+                      col={ordersFieldsType.details}
+                      schemas={subSchemas}
+                      // setIsModalVisible={setIsModalVisible}
+                    />
+                  )
                 )
-              )
+              }
+              className="mt-3 bg-accentHover px-4 py-2 rounded-lg self-start"
+            >
+              <Text className="text-body font-medium">
+                {localization.Hum_screens.orders.showDetails}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {child && child}
+          <WarningPop
+            bodyText={localization.Hum_screens.orders.cancelConfirmationMessage}
+            confirmText={localization.Hum_screens.orders.yes}
+            handleClose={() => setIsOpenAlert(false)}
+            handleConfirm={() => setIsOpenAlert(true)}
+            headingText={
+              localization.Hum_screens.orders.cancelConfirmationTitle
             }
-            className="mt-3 bg-accentHover px-4 py-2 rounded-lg self-start"
-          >
-            <Text className="text-body font-medium">
-              {localization.Hum_screens.orders.showDetails}
-            </Text>
-          </TouchableOpacity>
+            cancelText={localization.Hum_screens.orders.no}
+            isOpen={isOpenAlert}
+          />
         </View>
-        {child && child}
-        <WarningPop
-          bodyText={localization.Hum_screens.orders.cancelConfirmationMessage}
-          confirmText={localization.Hum_screens.orders.yes}
-          handleClose={() => setIsOpenAlert(false)}
-          handleConfirm={() => setIsOpenAlert(true)}
-          headingText={localization.Hum_screens.orders.cancelConfirmationTitle}
-          cancelText={localization.Hum_screens.orders.no}
-          isOpen={isOpenAlert}
-        />
-      </View>
-    </Swipeable>
+      </Swipeable>
     </View>
   );
 }

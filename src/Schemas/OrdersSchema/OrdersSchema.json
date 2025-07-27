@@ -73,7 +73,7 @@
   },
   {
     "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f5",
-    "schemaType": "TableOpeningInPopup",
+    "schemaType": "Table",
     "idField": "saleInvoiceItemID",
     "dashboardFormSchemaInfoDTOView": {
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
@@ -301,7 +301,7 @@
   },
   {
     "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f6",
-    "schemaType": "Form",
+    "schemaType": "FormOpeningInPopup",
     "idField": "saleInvoiceItemID",
     "dashboardFormSchemaInfoDTOView": {
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",

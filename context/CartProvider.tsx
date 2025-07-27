@@ -22,6 +22,7 @@ import { createRowCache } from "../src/components/Pagination/createRowCache";
 import CartSchema from "../src/Schemas/MenuSchema/CartSchema.json";
 import CartSchemaActions from "../src/Schemas/MenuSchema/CartSchemaActions.json";
 import { useShopNode } from "./ShopNodeProvider";
+import { useErrorToast } from "../src/components/form-container/ShowErrorToast";
 // Create context
 export const CartContext = createContext(null);
 
@@ -29,7 +30,7 @@ export const CartContext = createContext(null);
 export const CartProvider = ({ children }) => {
   const { status, isOnline } = useNetwork();
   const { _wsMessageCart, setWSMessageCart } = useWS();
-
+  const { showErrorToast } = useErrorToast();
   const [cartState, cartReducerDispatch] = useReducer(
     reducer,
     initialState(4000, CartSchema.idField)
@@ -92,7 +93,15 @@ export const CartProvider = ({ children }) => {
     let cleanup;
     ConnectToWS(setWSMessageCart, setCartWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
-      .catch((e) => console.error("❌ Cart WebSocket error", e));
+      .catch((e) => {
+        console.log(isOnline, "connection Error");
+        if (!isOnline) {
+          showErrorToast("connection Error", "please connect to internet ");
+        } else {
+          showErrorToast("Error", e);
+        }
+        console.error("❌ Cart WebSocket error", e);
+      });
     return () => {
       if (cleanup) cleanup(); // Clean up when component unmounts or deps change
       console.log("🧹 Cleaned up WebSocket handler");

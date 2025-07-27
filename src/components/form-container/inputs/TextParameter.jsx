@@ -21,6 +21,7 @@ class TextParameter extends BaseInput {
     switch (parameterType) {
       case "float":
       case "numeric":
+      case "integer":
         return "number";
       default:
         return parameterType;

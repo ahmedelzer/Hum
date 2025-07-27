@@ -1,11 +1,21 @@
-// components/StepHeader.js
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import StepIndicator from "react-native-step-indicator";
-import { useSelector } from "react-redux";
 import { theme } from "../../Theme";
 
-const labels = ["Welcome", "Language", "Intro"];
+// You can customize these icons based on each label
+const statusIcons = {
+  // Order flow
+  Preparing: "🛠️",
+  Prepared: "📦",
+  "Picked Up": "🚗",
+  "Out for Delivery": "🚚",
+  Delivered: "✅",
+  // Header flow
+  Welcome: "👋",
+  Language: "🌐",
+  Intro: "📖",
+};
 
 const customStyles = {
   stepIndicatorSize: 30,
@@ -31,8 +41,13 @@ const customStyles = {
   currentStepLabelColor: theme.accentHover,
 };
 
-const StepHeader = ({ currentPosition = 0 }) => {
-  const localization = useSelector((state) => state.localization.localization);
+const StepHeader = ({ currentPosition = 0, labels }) => {
+  const renderStepIndicator = ({ position, stepStatus }) => {
+    const label = labels[position];
+    const icon = statusIcons[label] || "❓"; // fallback icon
+
+    return <Text style={{ fontSize: 16 }}>{icon}</Text>;
+  };
 
   return (
     <View style={styles.container}>
@@ -40,8 +55,9 @@ const StepHeader = ({ currentPosition = 0 }) => {
         customStyles={customStyles}
         direction="horizontal"
         currentPosition={currentPosition}
-        labels={localization.Hum_screens.splash.headerLabels}
+        labels={labels}
         stepCount={labels.length}
+        renderStepIndicator={renderStepIndicator}
       />
     </View>
   );

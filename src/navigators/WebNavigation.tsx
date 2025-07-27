@@ -162,7 +162,7 @@ const WebNavigator = () => {
         <Stack.Screen name="ForgetPassword" component={ForgotPassword} />
       </Stack.Navigator>
       {/* Show connection status at the top layer */}
-      <ConnectionStatusOverlay />
+      {/* <ConnectionStatusOverlay /> */}
     </View>
   );
 };
