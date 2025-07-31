@@ -57,7 +57,7 @@ export default function LocationParameter({ ...props }) {
           />
         </Suspense> */}
       </CollapsibleSection>
-      {/* {props.formSchemaParameters
+      {props.formSchemaParameters
         .filter(
           (i) =>
             i.parameterType.startsWith("areaMap") ||
@@ -78,7 +78,7 @@ export default function LocationParameter({ ...props }) {
               return null; // No need to render hidden InputField if just syncing values
             }}
           />
-        ))} */}
+        ))}
     </View>
   );
 }

@@ -17,7 +17,7 @@ export default {
     ios: {
       supportsTablet: true,
       config: {
-        googleMapsApiKey: "AIzaSyBnbW28h-CIL5EjCvEKwekTIc46WmIFk6Y",
+        googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
       },
       bundleIdentifier: "com.HumApp",
     },
@@ -28,7 +28,7 @@ export default {
       },
       config: {
         googleMaps: {
-          apiKey: "AIzaSyBnbW28h-CIL5EjCvEKwekTIc46WmIFk6Y",
+          apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
         },
       },
       permissions: [
@@ -46,7 +46,7 @@ export default {
     },
     web: {
       bundler: "metro",
-      favicon: "./assets/favicon.png",
+      favicon: "./assets/adaptive-icon.png",
     },
     plugins: [
       // [

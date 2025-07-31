@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Slider, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import MapView, {
   Callout,
   Circle,
@@ -141,7 +141,7 @@ const LocationMap = ({
         </MapView>
       </View>
 
-      {radiusField && clickable && haveRadius && (
+      {/* {radiusField && clickable && haveRadius && (
         <View style={styles.sliderContainer}>
           <Text style={styles.sliderLabel}>
             {localization.inputs.locationMap.radius.replace("{radius}", radius)}
@@ -155,7 +155,7 @@ const LocationMap = ({
             style={styles.slider}
           />
         </View>
-      )}
+      )} */}
     </View>
   );
 };

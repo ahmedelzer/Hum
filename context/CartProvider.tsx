@@ -121,7 +121,6 @@ export const CartProvider = ({ children }) => {
 
   // 📨 WebSocket message handler
   useEffect(() => {
-    console.log("cart ws");
     if (!_wsMessageCart) return;
 
     const handlerCartWSMessage = new WSMessageHandler({
@@ -167,7 +166,7 @@ export const CartProvider = ({ children }) => {
 
   const resetAndReload = useCallback(() => {
     cartReducerDispatch({
-      type: "RESET_QUERY",
+      type: "RESET_SERVICE_LIST",
       payload: { lastQuery: "" },
     });
     setTimeout(() => {

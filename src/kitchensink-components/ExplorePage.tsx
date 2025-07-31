@@ -7,7 +7,7 @@ import HomeCarousel from "./main-content/HomeCarousel";
 import HomeCarouselWeb from "./main-content/HomeCarousel.web";
 import AddressLocationCollapsible from "../utils/component/AddressLocationCollapsible";
 import { theme } from "../Theme";
-import SuggestCardContainer from "../utils/component/SuggestCardContainer";
+import SuggestCardContainer from "../components/suggest/SuggestCardContainer";
 import RecommendedSchemaActions from "./../Schemas/MenuSchema/RecommendedSchemaActions.json";
 
 const Explorepage = () => {

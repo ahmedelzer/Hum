@@ -28,7 +28,7 @@ import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
 import AddressLocationCollapsible from "../../utils/component/AddressLocationCollapsible";
 import PrivacyCheckbox from "../../utils/component/PrivacyCheckbox";
-import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
+import SuggestCardContainer from "../../components/suggest/SuggestCardContainer";
 import { getField } from "../../utils/operation/getField";
 import { isRTL } from "../../utils/operation/isRTL";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
@@ -46,12 +46,11 @@ const ITEM_HEIGHT = 330;
 const CartPage = () => {
   const [shownNodeMenuItemIDs, setShownNodeMenuItemIDs] = useState([]);
   const { cartState, cartReducerDispatch, cartFieldsType } = useCart();
-
-  //const [_wsMessageCart, setWSMessageCart] = useState();
+  const [openCheckout, setOpenCheckout] = useState(false);
   const navigation = useNavigation();
   const localization = useSelector((state) => state.localization.localization);
   const [row, setRow] = useState({});
-  const [checkoutFiring, setCheckoutFiring] = useState(false);
+
   // Get schema parameters
   ////cart
   const {
@@ -59,160 +58,6 @@ const CartPage = () => {
     totalCount: cartTotalCount,
     loading: cartLoading,
   } = cartState;
-  // const [cart_WS_Connected, setCartWS_Connected] = useState(false);
-
-  // const parameters = CartSchema?.dashboardFormSchemaParameters ?? [];
-
-  // const cartFieldsType = {
-  //   imageView: getField(parameters, "menuItemImage"),
-  //   text: getField(parameters, "menuItemName"),
-  //   description: getField(parameters, "menuItemDescription"),
-  //   price: getField(parameters, "price"),
-  //   rate: getField(parameters, "rate"),
-  //   likes: getField(parameters, "likes"),
-  //   dislikes: getField(parameters, "dislikes"),
-  //   orders: getField(parameters, "orders"),
-  //   reviews: getField(parameters, "reviews"),
-  //   isAvailable: getField(parameters, "isAvailable"),
-  //   nodeMenuItemID: getField(parameters, "nodeMenuItemID"),
-  //   menuCategoryID: getField(parameters, "menuCategoryID"),
-  //   idField: CartSchema.idField,
-  //   dataSourceName: CartSchema.dataSourceName,
-  //   cardAction: getField(parameters, "cardAction"),
-  //   discount: getField(parameters, "discount"),
-  //   priceAfterDiscount: getField(parameters, "priceAfterDiscount"),
-  //   note: getField(parameters, "note"),
-  //   proxyRoute: CartSchema.projectProxyRoute,
-  // };
-
-  // // 🌐 WebSocket connect effect
-  // useEffect(() => {
-  //   if (cart_WS_Connected) return;
-
-  //   SetReoute(CartSchema.projectProxyRoute);
-  //   let cleanup;
-  //   ConnectToWS(setWSMessageCart, setCartWS_Connected)
-  //     .then(() => console.log("🔌 Cart WebSocket connected"))
-  //     .catch((e) => console.error("❌ Cart WebSocket error", e));
-  //   return () => {
-  //     if (cleanup) cleanup(); // Clean up when component unmounts or deps change
-  //     console.log("🧹 Cleaned up WebSocket handler");
-  //   };
-  // }, [cart_WS_Connected, isOnline]);
-
-  // // ✅ Callback to update reducer
-  // const cartCallbackReducerUpdate = async (cart_ws_updatedRows) => {
-  //   await cartReducerDispatch({
-  //     type: "WS_OPE_ROW",
-  //     payload: {
-  //       rows: cart_ws_updatedRows.rows,
-  //       totalCount: cart_ws_updatedRows.totalCount,
-  //     },
-  //   });
-  // };
-
-  // // 📨 WebSocket message handler
-  // useEffect(() => {
-  //   console.log("cart ws");
-  //   if (!_wsMessageCart) return;
-
-  //   const handlerCartWSMessage = new WSMessageHandler({
-  //     _WSsetMessage: _wsMessageCart, // match param name
-  //     fieldsType: cartFieldsType,
-  //     rows: cartRows,
-  //     totalCount: cartTotalCount,
-  //     callbackReducerUpdate: cartCallbackReducerUpdate,
-  //   });
-  //   handlerCartWSMessage.process();
-  // }, [_wsMessageCart, cartState.rows]);
-
-  // const cartDataSourceAPI = (query, skip, take) => {
-  //   SetReoute(CartSchema.projectProxyRoute);
-  //   return buildApiUrl(query, {
-  //     pageIndex: skip + 1,
-  //     pageSize: take,
-  //     // ...row,
-  //   });
-  // };
-  // const getCustomerCartAction =
-  //   CartSchemaActions &&
-  //   CartSchemaActions.find(
-  //     (action) => action.dashboardFormActionMethodType === "Get"
-  //   );
-  // const reduxSelectedLocation = useSelector(
-  //   (state: any) => state.location?.selectedLocation
-  // );
-  // const reduxSelectedNode = useSelector(
-  //   (state: any) => state.location?.selectedNode
-  // );
-
-  // const [selectedLocation, setSelectedLocation] = useState(
-  //   reduxSelectedLocation || null
-  // );
-  // const [selectedNode, setSelectedNode] = useState(reduxSelectedNode || null);
-  // const loadData = useCallback(() => {
-  //   prepareLoad({
-  //     state: cartState,
-  //     dataSourceAPI: cartDataSourceAPI,
-  //     getAction: getCustomerCartAction,
-  //     cache: createRowCache(4000),
-  //     reducerDispatch: cartReducerDispatch,
-  //     abortController: false,
-  //     reRequest: true,
-  //   });
-  // }, [
-  //   cartDataSourceAPI,
-  //   getCustomerCartAction,
-  //   cartReducerDispatch,
-  //   cartState,
-  //   selectedNode,
-  // ]);
-  // useEffect(() => {
-  //   if (isOnline) {
-  //     resetAndReload(); // Reload only when back online
-  //   }
-  // }, [isOnline]);
-
-  // const resetAndReload = useCallback(() => {
-  //   cartReducerDispatch({
-  //     type: "RESET_QUERY",
-  //     payload: { lastQuery: "" },
-  //   });
-  //   setTimeout(() => {
-  //     loadData();
-  //   }, 0);
-  // }, [loadData]);
-  //////////!end
-  // Fetch old customer cart
-  //const { data: GetOldCustomerCart, isLoading } = useFetch("/ShopNode/GetOldCustomerCart", GetProjectUrl());
-  //const oldCartCount = GetOldCustomerCart?.count ?? 0;
-
-  // Initialize reducer state
-  // const [state, reducerDispatch] = useReducer(
-  //   reducer,
-  //   initialState(10, CartSchema.idField)
-  // );
-
-  // // WebSocket setup
-
-  // // Load cart data
-  // useEffect(() => {
-  //   const loadCartData = async () => {
-  //     await LoadData(
-  //       state,
-  //       CartSchema.dataSourceName,
-  //       CartSchemaActions,
-  //       false, // cache flag
-  //       updateRows(reducerDispatch, false, state),
-  //       reducerDispatch,
-  //       null, // no controller
-  //       reRequest
-  //     );
-  //     setReRequest(false);
-  //   };
-
-  //   loadCartData();
-  // }, [reRequest]);
 
   const pressHandler = () => {
     if (Platform.OS === "web") {
@@ -266,7 +111,7 @@ const CartPage = () => {
             cartRows.length < 1 ? "bg-card" : "bg-accent"
           } flex-1 py-3 rounded-lg`}
           disabled={cartRows.length < 1}
-          onPress={() => setCheckoutFiring(true)}
+          onPress={() => setOpenCheckout(true)}
         >
           <Text
             className={`text-center ${
@@ -276,14 +121,6 @@ const CartPage = () => {
             {localization.Hum_screens.cart.checkoutButton}
           </Text>
         </TouchableOpacity>
-        {checkoutFiring && (
-          <Checkout
-            postAction={postCheckoutAction}
-            setCheckoutFiring={setCheckoutFiring}
-            proxyRoute={cartFieldsType.proxyRoute}
-            row={row}
-          />
-        )}
       </View>
     );
   };
@@ -311,11 +148,16 @@ const CartPage = () => {
     if (shownNodeMenuItemIDs.length === 0 && cartRows.length > 0) {
       setShownNodeMenuItemIDs([cartRows[0][cartFieldsType.nodeMenuItemID]]);
     }
-  }, [shownNodeMenuItemIDs, cartRows]);
-  console.log("rootRow", row);
-
+  }, [cartRows, cartLoading]);
   return (
     <View className="flex-1 bg-body">
+      <Checkout
+        postAction={postCheckoutAction}
+        openCheckout={openCheckout}
+        proxyRoute={cartFieldsType.proxyRoute}
+        setOpenCheckout={setOpenCheckout}
+        row={row}
+      />
       <GoBackHeader
         title={localization.Hum_screens.cart.header.title}
         subTitle={localization.Hum_screens.cart.header.subTitle}
@@ -330,15 +172,17 @@ const CartPage = () => {
         rightComponent={<OldCartButton projectUrl={GetProjectUrl()} />}
       />
       */}
-      <ScrollView className="flex-1 py-2 px-2">
+      <ScrollView className="flex-1 py-2 px-2 !overflow-scroll">
         <View className="w-full flex flex-col md:!flex-row gap-4">
           {/* LEFT COLUMN - CART + SUGGESTIONS */}
 
           {/* RIGHT COLUMN - PAYMENT */}
           <View className="flex-1 md:!order-5">
             <ScrollView
-              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{}}
+              className="!overflow-scroll"
               onScroll={handleScroll}
+              scrollEventThrottle={16}
             >
               <View className="overflow-y-auto" style={{ maxHeight: 690 }}>
                 {cartRows.length > 0 ? (
@@ -371,12 +215,14 @@ const CartPage = () => {
               >
                 {localization.Hum_screens.cart.suggests}
               </Text>
-
-              <SuggestCardContainer
-                suggestContainerType={0}
-                schemaActions={RecommendedSchemaActions}
-                shownNodeMenuItemIDs={shownNodeMenuItemIDs}
-              />
+              <View key={shownNodeMenuItemIDs}>
+                <SuggestCardContainer
+                  suggestContainerType={0}
+                  schemaActions={RecommendedSchemaActions}
+                  shownNodeMenuItemIDs={shownNodeMenuItemIDs}
+                  key={shownNodeMenuItemIDs}
+                />
+              </View>
             </View>
           </View>
           <View className="md:!w-[40%] lg:!w-[30%] md:!order-1">

@@ -15,33 +15,38 @@ export class WSclass {
     this.socket = new WebSocket(this.url);
 
     this.socket.onopen = () => {
-      this.connectionCallbacks.forEach(cb => cb(true));
+      this.connectionCallbacks.forEach((cb) => cb(true));
       if (onConnect) onConnect();
     };
 
     this.socket.onclose = () => {
-      this.connectionCallbacks.forEach(cb => cb(false));
+      this.connectionCallbacks.forEach((cb) => cb(false));
     };
 
     this.socket.onmessage = (event) => {
-      this.messageCallbacks.forEach(cb => cb(event.data));
+      this.messageCallbacks.forEach((cb) => cb(event.data));
     };
 
     this.socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error("WebSocket error:", error);
     };
   }
 
   addMessageHandler(callback) {
-    console.log("this.messageCallbacks",this.messageCallbacks.length);
-    if (typeof callback === 'function' && !this.messageCallbacks.includes(callback)) {
+    console.log("this.messageCallbacks", this.messageCallbacks.length);
+    if (
+      typeof callback === "function" &&
+      !this.messageCallbacks.includes(callback)
+    ) {
       this.messageCallbacks.push(callback);
     }
     return () => this.removeMessageHandler(callback); // Return cleanup function
   }
 
   removeMessageHandler(callback) {
-    this.messageCallbacks = this.messageCallbacks.filter(cb => cb !== callback);
+    this.messageCallbacks = this.messageCallbacks.filter(
+      (cb) => cb !== callback
+    );
   }
 
   disconnect() {

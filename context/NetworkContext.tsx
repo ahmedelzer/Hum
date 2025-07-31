@@ -6,9 +6,10 @@ import React, {
   useCallback,
 } from "react";
 import NetInfo from "@react-native-community/netinfo";
-import { AppState, View } from "react-native";
+import { AppState, Platform, View } from "react-native";
 import { Text } from "../components/ui";
 import { useErrorToast } from "../src/components/form-container/ShowErrorToast";
+import { SetIsOnline } from "../request";
 
 type ConnectionType =
   | "wifi"
@@ -57,6 +58,7 @@ export const NetworkProvider = ({
   });
 
   const [isOnline, setIsOnline] = useState(true);
+  const [lastChecked, setLastChecked] = useState(Date.now());
   const { showErrorToast } = useErrorToast();
   const checkNetwork = useCallback(async () => {
     try {
@@ -87,12 +89,24 @@ export const NetworkProvider = ({
 
       if (!netState.isConnected || !netState.isInternetReachable) {
         console.log("🔴 No network or unreachable");
+        SetIsOnline(false);
+
         // showErrorToast("connection Error", "please connect to internet ");
         setIsOnline(false);
         return;
       }
       setIsOnline(true);
-      console.log("🟢 Connected to API");
+      SetIsOnline(true);
+      console.log("🟢 Connected to API", new Date().toLocaleString());
+      // Only reload if enough time has passed since the last check (e.g., 5 minutes)
+      const now = Date.now();
+      const minutesSinceLast = (now - lastChecked) / 1000;
+      if (minutesSinceLast > 5 && Platform.OS === "web") {
+        console.log("🔄 Reloading due to network change");
+        window.location.reload();
+      }
+
+      setLastChecked(now);
       // Optional: log type of connection
       console.log(`📡 Network Type: ${netState.type}`);
 
@@ -112,6 +126,7 @@ export const NetworkProvider = ({
     } catch (error) {
       console.log("🔴 Error during API check", error);
       setIsOnline(false);
+      SetIsOnline(false);
     }
   };
 

@@ -1,5 +1,6 @@
-import { SetHeaders } from "../../../request";
+import { isOnline, SetHeaders } from "../../../request";
 export default async function APIHandling(url, methodType, sendBody) {
+  if (!isOnline) return {};
   var myHeaders = new Headers();
 
   for (const [key, value] of Object.entries(await SetHeaders())) {

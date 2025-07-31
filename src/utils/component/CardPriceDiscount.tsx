@@ -13,7 +13,7 @@ export default function CardPriceDiscount({
 
   const price = item?.[fieldsType.price];
   const priceAfterDiscount = item?.[fieldsType.priceAfterDiscount];
-  const hasDiscount = item?.[fieldsType.discount];
+  const hasDiscount = item?.[fieldsType.discount] > 0;
 
   // Compose final style
   const finalStyle = [

@@ -26,7 +26,8 @@ export default function Checkout({
   postAction,
   row,
   proxyRoute,
-  setCheckoutFiring,
+  setOpenCheckout,
+  openCheckout,
 }) {
   const [isPaid, setIsPaid] = useState(false);
   const [result, setResult] = useState(null);
@@ -77,10 +78,13 @@ export default function Checkout({
   const cartInfoFieldsType = {
     netAmount: getField(params, "netAmount", false),
   };
+  const usingCredits = parseFloat(row[creditField.parameterField]) || 0;
+  const usingPoints =
+    covertPointsToCredits(parseFloat(row[pointsField.parameterField])) || 0;
   const requiredAmount =
     row[cartInfoFieldsType.netAmount.parameterField] -
-    parseFloat(row[creditField.parameterField]) -
-    covertPointsToCredits(parseFloat(row[pointsField.parameterField]));
+    usingCredits -
+    usingPoints;
   // Helper: Get formatted address
   const getAddress = () => {
     if (selectedTab === 0)
@@ -99,7 +103,7 @@ export default function Checkout({
       if (paymentStatus === "true") {
         setIsPaid(true);
         setModalVisible(false);
-        setCheckoutFiring(false);
+        setOpenCheckout(false);
       }
     } catch (err) {
       console.warn("Invalid URL:", err);
@@ -107,7 +111,10 @@ export default function Checkout({
   };
 
   const handleCheckoutClick = async () => {
-    if (callCount.current >= 2 || isPaid) return;
+    if (callCount.current >= 2 || isPaid) {
+      setOpenCheckout(false);
+      return;
+    }
 
     callCount.current += 1;
 
@@ -125,7 +132,7 @@ export default function Checkout({
 
     if (res?.data?.isDone === true) {
       setIsPaid(true);
-      setCheckoutFiring(false);
+      setOpenCheckout(false);
       return;
     }
 
@@ -140,7 +147,7 @@ export default function Checkout({
         setTimeAllowed(true);
       } else {
         setTimeAllowed(false);
-        setCheckoutFiring(false);
+        setOpenCheckout(false);
         return;
       }
     }
@@ -153,46 +160,52 @@ export default function Checkout({
   const onPayPress = () => {
     setIsPaid(true);
     setModalVisible(false);
-    setCheckoutFiring(false);
+    setOpenCheckout(false);
   };
-  console.log(row, creditField, selectedNode, "creditField");
 
   if (!timeAllowed) {
     return (
       <View className="p-4">
         <Text className="text-red-600 text-center font-semibold">
-          Checkout time window has expired.
+          {localization.checkout.checkoutExpired}
         </Text>
       </View>
     );
   }
   return (
     <PopupModal
-      isOpen={true}
+      isOpen={openCheckout}
       haveFooter={true}
       footer={
-        <TouchableOpacity className="bg-green-600 mt-5 py-3 px-5 rounded-xl">
+        <TouchableOpacity
+          className="bg-green-600 mt-5 py-3 px-5 rounded-xl"
+          onPress={handleCheckoutClick}
+        >
           <Text className="text-body text-center font-semibold">
-            Confirm & Pay
+            {localization.checkout.confirmAndPay}
           </Text>
         </TouchableOpacity>
       }
-      onClose={() => setCheckoutFiring(false)}
+      onClose={() => setOpenCheckout(false)}
       onSubmit={() => {}}
       control={{}}
       isFormModal={false}
-      headerTitle="🧾 Invoice Summary"
+      headerTitle={localization.checkout.invoiceSummary}
     >
       <View className="bg-body p-4 rounded-lg w-full max-w-md">
         <View className="flex-row justify-between">
           <View>
-            <Text className="text-base font-semibold mt-5 mb-2">Branch</Text>
+            <Text className="text-base font-semibold mt-5 mb-2">
+              {localization.checkout.branch}
+            </Text>
             <Text className="text-sm text-primary-custom">
               {selectedNode[displayLookupParamNode.lookupDisplayField]}
             </Text>
           </View>
           <View>
-            <Text className="text-base font-semibold mt-5 mb-2">Address</Text>
+            <Text className="text-base font-semibold mt-5 mb-2">
+              {localization.checkout.address}
+            </Text>
             <Text className="text-sm text-primary-custom">{getAddress()}</Text>
           </View>
         </View>
@@ -200,6 +213,7 @@ export default function Checkout({
         <View className="my-2">
           <PrivacyCheckbox row={row} setRow={() => {}} />
         </View>
+
         <FlatList
           data={cartRows}
           keyExtractor={(item) => item[fieldsType.idField]}
@@ -211,7 +225,8 @@ export default function Checkout({
                   {item[fieldsType.description]}
                 </Text>
                 <Text className="text-sm">
-                  Qty: {item[fieldsType.cardAction]}
+                  {localization.checkout.quantity}:{" "}
+                  {item[fieldsType.cardAction]}
                 </Text>
               </View>
               <View className="items-end">
@@ -231,7 +246,8 @@ export default function Checkout({
             </View>
           )}
         />
-        {/* 🧮 Summary */}
+
+        {/* Summary */}
         <View className="mt-6 space-y-2">
           <View className="flex-row items-center space-x-2">
             <MaterialCommunityIcons
@@ -239,7 +255,9 @@ export default function Checkout({
               size={20}
               color="#6b7280"
             />
-            <Text className="text-lg font-bold text-gray-800">Summary</Text>
+            <Text className="text-lg font-bold text-gray-800">
+              {localization.checkout.summary}
+            </Text>
           </View>
 
           <View className="flex-row justify-between items-center bg-gray-100 p-3 rounded-xl">
@@ -252,49 +270,61 @@ export default function Checkout({
             </Text>
           </View>
         </View>
-        {/* 💳 Payment Method */}
-        <Text className="text-base font-semibold mt-5 mb-2">
-          Payment Method
-        </Text>
-        <VStack>
-          <HStack space="xs" className="items-center">
-            <FontAwesome
-              name="credit-card"
-              size={14}
-              color={theme.accentHover}
-            />
-            <Text className="text-primary-custom text-sm">
-              {creditField.parameterTitel}:{" "}
-              {formatCount(row[creditField.parameterField])}
+
+        {/* Payment Options */}
+        {(usingCredits > 0 || usingPoints > 0) && (
+          <View>
+            <Text className="text-base font-semibold mt-5 mb-2">
+              {localization.checkout.paymentOptions}
             </Text>
-          </HStack>
-          <HStack space="xs" className="items-center mt-1">
-            <FontAwesome name="star" size={14} color="#facc15" />
-            <Text className="text-primary-custom text-sm">
-              {pointsField.parameterTitel}:{" "}
-              {formatCount(row[pointsField.parameterField])}
-            </Text>
-          </HStack>
-          <TouchableOpacity
-            className={`flex-row items-center mt-2 justify-between p-4 rounded-xl border ${"border-green-500 bg-green-50"}`}
-          >
-            <View className="flex-row items-center">
-              <FontAwesome5 size={18} color={"#22c55e"} />
-              <Text className="text-base text-gray-700">{paymentRow}</Text>
-            </View>
-            {/* {isSelected && ( */}
-            <MaterialIcons name="check-circle" size={20} color="#22c55e" />
-            {/* )} */}
-          </TouchableOpacity>
-        </VStack>
+            <VStack>
+              {usingCredits > 0 && (
+                <HStack space="xs" className="items-center">
+                  <FontAwesome
+                    name="credit-card"
+                    size={14}
+                    color={theme.accentHover}
+                  />
+                  <Text className="text-primary-custom text-sm">
+                    {creditField.parameterTitel}: {formatCount(usingCredits)}
+                  </Text>
+                </HStack>
+              )}
+              {usingPoints > 0 && (
+                <HStack space="xs" className="items-center mt-1">
+                  <FontAwesome name="star" size={14} color="#facc15" />
+                  <Text className="text-primary-custom text-sm">
+                    {pointsField.parameterTitel}:{" "}
+                    {formatCount(row[pointsField.parameterField])}
+                  </Text>
+                  <Text>
+                    {"=> "}
+                    {formatCount(usingPoints)}
+                  </Text>
+                </HStack>
+              )}
+              <TouchableOpacity
+                className={`flex-row items-center mt-2 justify-between p-4 rounded-xl border ${"border-green-500 bg-green-50"}`}
+              >
+                <View className="flex-row items-center">
+                  <FontAwesome5 size={18} color={"#22c55e"} />
+                  <Text className="text-base text-gray-700">{paymentRow}</Text>
+                </View>
+                <MaterialIcons name="check-circle" size={20} color="#22c55e" />
+              </TouchableOpacity>
+            </VStack>
+          </View>
+        )}
+
+        {/* Required Amount */}
         <View className="mt-6 space-y-2">
           <Text className="text-lg font-bold text-gray-800">
-            Required Amount
+            {localization.checkout.requiredAmount}
           </Text>
 
           <View className="flex-row justify-between items-center bg-yellow-50 border border-yellow-300 p-4 rounded-xl">
             <Text className="text-base font-medium text-yellow-800">
-              You will pay
+              {localization.checkout.youWillPay}
             </Text>
             <Text className="text-xl font-bold text-yellow-700">
               {localization.menu.currency} {requiredAmount.toFixed(2)}
@@ -306,7 +336,7 @@ export default function Checkout({
   );
 }
 /*
-
+//{localization.menu.currency}
 
 ////////////<PopupModal
       isOpen={true}

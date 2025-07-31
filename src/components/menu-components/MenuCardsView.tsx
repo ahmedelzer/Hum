@@ -61,7 +61,7 @@ const MenuCardsView = ({ isRefreshed }: any) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       onScroll={handleScroll}
-      contentContainerStyle={{ paddingBottom: 20 }}
+      // contentContainerStyle={{ paddingBottom: 20 }}
     >
       <VStack className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
         {/*!for web*/}

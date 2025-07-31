@@ -459,6 +459,20 @@
     "specialRequest": "Special request",
     "submitButton": "Submit",
     "addItemsButton": "Add items",
-    "checkoutButton": "Checkout"
+    "checkoutButton": "Checkout",
+    "checkoutExpired": "Checkout time window has expired.",
+    "confirmAndPay": "Confirm & Pay",
+    "invoiceSummary": "🧾 Invoice Summary",
+    "branch": "Branch",
+    "address": "Address",
+    "quantity": "Qty",
+    "summary": "Summary",
+    "paymentOptions": "Payment options",
+    "youWillPay": "You will pay",
+    "requiredAmount": "Required Amount",
+    "currency": "USD"
+  },
+  "navbar": {
+    "language": "Language"
   }
 }

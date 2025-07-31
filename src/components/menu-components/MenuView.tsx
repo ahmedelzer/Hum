@@ -33,13 +33,8 @@ const MenuView = ({ schemas }: any) => {
   const menuCardItem = schemas?.find(
     (schema: any) => schema.schemaType === "menuItemCards"
   );
-  return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      {/* <AddressLocationCollapsible /> */}
+  const Content = (
+    <>
       <HStack space="2xl" className="items-center md:my-2 !bg-surface">
         <View style={{ flex: 1 }}>
           <Searchbar schema={searchBarSchema} setRow={setRow} row={row} />
@@ -60,6 +55,18 @@ const MenuView = ({ schemas }: any) => {
         </View>
         <MenuCardsView isRefreshed={key} />
       </Box>
+    </>
+  );
+
+  return os === "web" ? (
+    <>{Content}</>
+  ) : (
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      {Content}
     </ScrollView>
   );
 };

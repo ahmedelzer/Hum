@@ -12,7 +12,7 @@ import AnimatedDotsCarousel from "react-native-animated-dots-carousel";
 import { Image } from "../../../components/ui";
 import AddCard from "../../components/cards/AddCard";
 import { theme } from "../../Theme";
-import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
+import SuggestCardContainer from "../../components/suggest/SuggestCardContainer";
 import AddressLocationCollapsible from "../../utils/component/AddressLocationCollapsible";
 
 const { width } = Dimensions.get("window");

@@ -50,7 +50,7 @@ export default function App() {
                 <ShopNodeProvider>
                   <PreparingApp>
                     <AuthProvider>
-                      <SafeAreaView style={{ flex: 1 }}>
+                      <SafeAreaView style={{ flex: 1, overflow: "scroll" }}>
                         <UserProviderLayer />
                         <SchemaProvider>
                           <WSProvider>

@@ -32,7 +32,7 @@ import { useShopNode } from "./ShopNodeProvider";
 import { useErrorToast } from "../src/components/form-container/ShowErrorToast";
 // Create context
 export const MenuContext = createContext(null);
-const VIRTUAL_PAGE_SIZE = 1;
+const VIRTUAL_PAGE_SIZE = 10;
 
 // Context provider component
 export const MenuProvider = ({ children }) => {
@@ -176,17 +176,50 @@ export const MenuProvider = ({ children }) => {
     reducerDispatch({ type: "RESET_SERVICE_LIST" });
     setCurrentSkip(1);
   }, [row]);
-
   const handleScroll = (event) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    console.log("scrolling");
+
     const isScrolledToBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    console.log(
+      isScrolledToBottom,
+      layoutMeasurement,
+      contentOffset,
+      contentSize
+    );
 
     if (isScrolledToBottom && rows.length < totalCount && !loading) {
       getRemoteRows(currentSkip, VIRTUAL_PAGE_SIZE * 2, reducerDispatch); //todo change dispatch by reducerDispatch
       setCurrentSkip(currentSkip + 1);
     }
   };
+  const loadData = useCallback(() => {
+    prepareLoad({
+      state: state,
+      dataSourceAPI: dataSourceAPI,
+      getAction: getAction,
+      cache: createRowCache(4000),
+      reducerDispatch: reducerDispatch,
+      abortController: false,
+      reRequest: true,
+    });
+  }, [dataSourceAPI, getAction, reducerDispatch, state, selectedNode]);
+  useEffect(() => {
+    if (isOnline) {
+      resetAndReload(); // Reload only when back online
+    }
+  }, [isOnline]);
+
+  const resetAndReload = useCallback(() => {
+    reducerDispatch({
+      type: "RESET_QUERY",
+      payload: { lastQuery: "" },
+    });
+    setTimeout(() => {
+      loadData();
+    }, 0);
+  }, [loadData]);
   return (
     <MenuContext.Provider
       value={{

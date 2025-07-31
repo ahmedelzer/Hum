@@ -23,7 +23,7 @@ export default function AddLocation({
     );
   const [location, setLocation] = useState(null);
   const [reqError, setReqError] = useState(null);
-  const [disable, setDisable] = useState(null);
+  const [disable, setDisable] = useState(false);
   const selectedLocation = useSelector(
     (state) => state.location.selectedLocation
   );
@@ -44,6 +44,8 @@ export default function AddLocation({
       (action) => action.dashboardFormActionMethodType === "Post"
     );
   const onSubmit = async (data: any) => {
+    console.log("clicked", data);
+
     await handleSubmitWithCallback({
       data,
       setDisable,
@@ -66,6 +68,7 @@ export default function AddLocation({
       dispatch(updateSelectedLocation(rows[0]));
     }
   }, [loading]);
+  console.log(reqError, errors, "aaaaa");
   return (
     <View>
       <PopupModal
@@ -74,13 +77,15 @@ export default function AddLocation({
           setIsModalVisible(false);
           Platform.OS !== "web" && reset();
         }}
-        onSubmit={async () => {
-          await handleSubmit(onSubmit);
-        }}
+        // onSubmit={async () => {
+        //   handleSubmit(onSubmit);
+        // }}
+        onSubmit={handleSubmit(onSubmit)}
         control={control}
         headerTitle={
           AddressLocationSchema.dashboardFormSchemaInfoDTOView.addingHeader
         }
+        row={{}}
         schema={AddressLocationSchema}
         errors={reqError || errors}
         disable={disable}

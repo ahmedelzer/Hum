@@ -145,7 +145,7 @@ export const MenuCardWeb = ({ item, fieldsType, schemaActions }) => {
         >
           {fieldsType.cardAction &&
             fieldsType.isAvailable &&
-            item[fieldsType.isAvailable] &&
+            (item[fieldsType.isAvailable] || item[fieldsType.cardAction] > 0) &&
             !userGust && (
               <AddToCartPrimaryButton
                 itemPackage={item}

@@ -18,9 +18,6 @@ export function getItemPackage(
     const normalizedCartItem = cartItem;
     return normalizedCartItem?.[idField] === item?.[idField];
   });
-
-  console.log("fieldsType", fieldsType);
-
   const result = {
     ...item,
     ...(fieldsType?.cardAction &&

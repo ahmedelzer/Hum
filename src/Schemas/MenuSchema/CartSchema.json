@@ -83,6 +83,20 @@
       "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
       "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
       "isEnable": false,
+      "parameterType": "isAvailable",
+      "parameterField": "isAvailable",
+      "parameterTitel": "isAvailable",
+      "parameterLookupTitel": "isAvailable",
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 9
+    },
+    {
+      "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": false,
       "parameterType": "cardAction",
       "parameterField": "quantity",
       "parameterTitel": "quantity",
@@ -135,7 +149,6 @@
       "lookupDisplayField": null,
       "indexNumber": 9
     },
-
 
     {
       "dashboardFormSchemaParameterID": "86833423-e4b8-44af-9fdf-96cd4aa541dd",

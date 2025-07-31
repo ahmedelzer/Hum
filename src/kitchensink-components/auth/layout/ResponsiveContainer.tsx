@@ -59,6 +59,6 @@ const styles = StyleSheet.create({
   },
   setMargin: {
     marginTop: verticalScale(16),
-    marginBottom: verticalScale(16),
+    // marginBottom: verticalScale(16),
   },
 });

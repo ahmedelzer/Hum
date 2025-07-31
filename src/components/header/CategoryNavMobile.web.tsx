@@ -5,6 +5,7 @@ import { TouchableOpacity, Text, View } from "react-native";
 import LanguageSelector from "../language/LanguageSelector";
 import { TabsHeader } from "./Tabs.web";
 import { theme } from "../../Theme";
+import { useSelector } from "react-redux";
 
 const categoryNavMobileStyles = {
   container: "w-full h-full bg-card p-8",
@@ -15,6 +16,7 @@ const categoryNavMobileStyles = {
 
 const CategoryNavMobile = ({ setCatNavMobile }) => {
   const navigation = useNavigation();
+  const localization = useSelector((state) => state.localization.localization);
 
   const handleNavigate = (routeName) => {
     navigation.reset({
@@ -27,21 +29,19 @@ const CategoryNavMobile = ({ setCatNavMobile }) => {
   return (
     <View
       className={categoryNavMobileStyles.container}
-      style={ { backgroundColor: theme.body }}
+      style={{ backgroundColor: theme.body }}
     >
       {/* Close button */}
-     
 
       {/* Navigation Links via TabsHeader */}
       <View className={categoryNavMobileStyles.linkWrapper}>
-        <TabsHeader
-          direction="vertical"
-
-        />
+        <TabsHeader direction="vertical" />
 
         {/* Language Selector */}
         <View className="mt-6">
-          <Text className="uppercase mb-1 font-medium">Language</Text>
+          <Text className="uppercase mb-1 font-medium">
+            {localization.navbar.language}
+          </Text>
           <LanguageSelector />
         </View>
       </View>

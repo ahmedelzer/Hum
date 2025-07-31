@@ -8,8 +8,8 @@ export const WSContext = createContext(null);
 export const WSProvider = ({ children }) => {
   const [_wsMessageCart, setWSMessageCart] = useState("{}");
   const [_wsMessageMenuItem, setWSMessageMenuItem] = useState("{}");
+  const [_wsMessageSuggest, setWSMessageSuggest] = useState("{}");
   const [_wsMessageAccounting, setWSMessageAccounting] = useState("{}");
- 
 
   return (
     <WSContext.Provider
@@ -18,6 +18,8 @@ export const WSProvider = ({ children }) => {
         setWSMessageCart,
         _wsMessageMenuItem,
         setWSMessageMenuItem,
+        _wsMessageSuggest,
+        setWSMessageSuggest,
         _wsMessageAccounting,
         setWSMessageAccounting,
       }}

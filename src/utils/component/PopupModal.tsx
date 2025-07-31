@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -13,7 +13,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import FormContainer from "../../components/form-container/FormContainer";
 import { useSelector } from "react-redux";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ScrollView, Platform } from "react-native";
 
 const PopupModal = ({
   haveFooter = true,
@@ -28,13 +28,32 @@ const PopupModal = ({
   isFormModal = true,
   footer = null,
   row = {},
-
   children,
 }) => {
   const localization = useSelector((state) => state.localization.localization);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      const handleScroll = () => {
+        setScrollY(window.scrollY || 0);
+      };
+
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="md">
-      <ModalContent>
+      <ModalContent
+        style={[
+          {
+            position: "absolute",
+            transform: [{ translateX: -0.5 * window.innerWidth }],
+          },
+        ]}
+      >
         <ModalHeader>
           <Heading size="md" className="text-text">
             {headerTitle}
@@ -45,16 +64,22 @@ const PopupModal = ({
         </ModalHeader>
 
         <ModalBody>
-          {isFormModal && (
-            <FormContainer
-              tableSchema={schema}
-              row={row}
-              errorResult={errors}
-              control={control}
-            />
-          )}
-          {children && children}
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            style={{ maxHeight: 400, flex: 1 }}
+          >
+            {isFormModal && (
+              <FormContainer
+                tableSchema={schema}
+                row={row}
+                errorResult={errors}
+                control={control}
+              />
+            )}
+            {children && children}
+          </ScrollView>
         </ModalBody>
+
         {haveFooter && (
           <ModalFooter>
             {footer ? (
@@ -80,4 +105,5 @@ const PopupModal = ({
     </Modal>
   );
 };
+
 export default PopupModal;

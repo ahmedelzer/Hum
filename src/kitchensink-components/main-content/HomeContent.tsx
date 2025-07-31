@@ -3,7 +3,7 @@ import React from "react";
 import { Image } from "react-native";
 import { useSelector } from "react-redux";
 import { Card, HStack, Icon, Text, VStack } from "../../../components/ui";
-import SuggestCardContainer from "../../utils/component/SuggestCardContainer";
+import SuggestCardContainer from "../../components/suggest/SuggestCardContainer";
 
 const shortcuts = [
   {

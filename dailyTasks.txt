@@ -13,9 +13,16 @@
 5-run items in orders like Purchases and set spasific icons appear the state of order && use the same api of Purchases and test//done
 6-set convirt zone in login and language//done but need schema and how send it when change language
 7-make text pram type with text and numeric//done
-8-run pagtion
+8-run pagtion//done
 9-set selected node right and if node is found do not send the request//done
-10-display popup error when is not online when set POST DELETE PUT request //need a better way 
+10-display popup error when is not online when set POST DELETE PUT request&&WS //need a better way 
+10-display popup error when is not online when error 500 //need a better way 
+11-finish suggest provider//done
+12-test rerequest when ws run
+13-run favorite && and notification
+14-localization
+15-reconnect to WS in cases sleep and return online 
+16-make sure if remember me run correctly
 
 //features added
 1-card insted of table

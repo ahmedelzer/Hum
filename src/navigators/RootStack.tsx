@@ -12,11 +12,10 @@ import OutsideStack from "./OutSideStack";
 import SplashNavigation from "./SplashNavigation";
 import WebNavigator from "./WebNavigation";
 // import Toast from "react-native-toast-message";
+import { ToastProvider } from "@gluestack-ui/toast";
 import * as Linking from "expo-linking";
-import { Toast } from "../../components/ui";
 import { CartProvider } from "../../context/CartProvider";
 import { MenuProvider } from "../../context/MenuProvider";
-import { ToastProvider } from "@gluestack-ui/toast";
 // types
 export type RootStackParamList = {
   Home: undefined;

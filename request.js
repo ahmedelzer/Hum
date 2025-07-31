@@ -9,6 +9,8 @@ export const baseURL = "http://" + domainURL + ":8000";
 export const defaultProjectProxyRoute = `${baseURL}/BrandingMart/api/`;
 export const defaultProjectProxyRouteWithoutAPI = `${baseURL}/BrandingMart/`;
 export const publicImageURL = "http://" + domainURL + ":5056/";
+export let isOnline = true;
+
 //export const publicImageURL = "https://ihs-solutions.com:5055/";
 //export const websocketBaseURI =
 // "wss://maingatewayapi.ihs-solutions.com:8000/Chanels";
@@ -20,6 +22,9 @@ export const websocketBaseURI = "ws://" + domainURL + ":9000";
 export let projectProxyRoute = "BrandingMart";
 export function SetReoute(Route) {
   projectProxyRoute = Route;
+}
+export function SetIsOnline(state) {
+  isOnline = state;
 }
 
 // Add other methods as needed

@@ -112,7 +112,7 @@
 //           </>
 //         )}
 //       </MapContainer>
-//       {/*
+
 //       {radiusField && clickable && haveRadius && (
 //         <div className={locationMap.radiusContainer}>
 //           <label>
@@ -128,17 +128,28 @@
 //             />
 //           </label>
 //         </div>
-//       )} */}
+//       )}
 //     </div>
 //   );
 // };
 
 // export default LocationMap;
-import React, { useEffect, useRef, useState } from "react";
-import maplibregl from "maplibre-gl";
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  GoogleMap,
+  Marker,
+  Circle,
+  useLoadScript,
+} from "@react-google-maps/api";
 import { useSelector } from "react-redux";
-import "maplibre-gl/dist/maplibre-gl.css";
 import { locationMap } from "../form-container/inputs/styles";
+
+const mapContainerStyle = {
+  width: "100%",
+  height: "400px",
+};
+
+const defaultZoom = 13;
 
 const LocationMap = ({
   location,
@@ -147,9 +158,6 @@ const LocationMap = ({
   fields,
   haveRadius,
 }) => {
-  const mapContainerRef = useRef(null);
-  const mapRef = useRef(null);
-
   const localization = useSelector((state) => state.localization.localization);
 
   const latitudeField = fields.find(
@@ -174,103 +182,87 @@ const LocationMap = ({
   const lat = +location[latitudeField] || 20;
   const lng = +location[longitudeField] || 24;
 
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
+  const [mapRef, setMapRef] = useState(null);
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY, // Or use Constants.manifest.extra
+  });
 
-    // Initialize MapLibre GL map
-    mapRef.current = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: "https://demotiles.maplibre.org/style.json",
-      center: [lng, lat],
-      zoom: 13,
-    });
+  const handleMapClick = useCallback(
+    (e) => {
+      if (!clickable) return;
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+      console.log(lat, lng, "locations");
 
-    // Add marker
-    const marker = new maplibregl.Marker()
-      .setLngLat([lng, lat])
-      .addTo(mapRef.current);
-
-    // Add circle layer (only visual approximation using GeoJSON)
-    if (radiusField) {
-      const circleGeoJSON = {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [lng, lat],
-            },
-            properties: {},
-          },
-        ],
-      };
-
-      mapRef.current.on("load", () => {
-        mapRef.current.addSource("circle", {
-          type: "geojson",
-          data: circleGeoJSON,
-        });
-
-        mapRef.current.addLayer({
-          id: "circle-fill",
-          type: "circle",
-          source: "circle",
-          paint: {
-            "circle-radius": {
-              stops: [
-                [0, 0],
-                [20, radius / 2], // adjust based on zoom/radius
-              ],
-            },
-            "circle-color": "#007cbf",
-            "circle-opacity": 0.3,
-          },
-        });
+      onLocationChange({
+        [latitudeField]: lat,
+        [longitudeField]: lng,
+        ...(radiusField && { [radiusField]: radius }),
       });
-    }
-
-    // Add click handler
-    if (clickable) {
-      mapRef.current.on("click", (e) => {
-        const { lng, lat } = e.lngLat;
-
-        onLocationChange({
-          [latitudeField]: lat,
-          [longitudeField]: lng,
-          ...(radiusField && { [radiusField]: radius }),
-        });
-
-        marker.setLngLat([lng, lat]);
-      });
-    }
-
-    return () => {
-      mapRef.current.remove();
-    };
-  }, [clickable, radius]);
-
-  // Initial trigger
-  useEffect(() => {
-    const payload = {
-      [latitudeField]: lat,
-      [longitudeField]: lng,
-    };
-    if (radiusField) payload[radiusField] = radius;
-    onLocationChange(payload);
-  }, []);
+    },
+    [
+      clickable,
+      onLocationChange,
+      latitudeField,
+      longitudeField,
+      radiusField,
+      radius,
+    ]
+  );
 
   const handleRadiusChange = (e) => {
-    setRadius(Number(e.target.value));
+    const newRadius = Number(e.target.value);
+    setRadius(newRadius);
+    if (radiusField) {
+      onLocationChange({
+        [latitudeField]: lat,
+        [longitudeField]: lng,
+        [radiusField]: newRadius,
+      });
+    }
   };
+
+  useEffect(() => {
+    if (radiusField) {
+      onLocationChange({
+        [latitudeField]: lat,
+        [longitudeField]: lng,
+        [radiusField]: radius,
+      });
+    } else {
+      onLocationChange({
+        [latitudeField]: lat,
+        [longitudeField]: lng,
+      });
+    }
+  }, []);
+
+  if (!isLoaded) return <div>Loading map...</div>;
 
   return (
     <div className={locationMap.container}>
-      <div
-        ref={mapContainerRef}
-        className={locationMap.mapContainer}
-        style={{ height: "400px", borderRadius: "10px" }}
-      />
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        zoom={defaultZoom}
+        center={{ lat, lng }}
+        onClick={handleMapClick}
+        onLoad={(map) => setMapRef(map)}
+      >
+        <Marker position={{ lat, lng }} />
+        {radiusField && (
+          <Circle
+            center={{ lat, lng }}
+            radius={radius}
+            options={{
+              strokeColor: "#4285F4",
+              fillColor: "#4285F4",
+              fillOpacity: 0.2,
+              strokeWeight: 1,
+            }}
+          />
+        )}
+      </GoogleMap>
+
       {radiusField && clickable && haveRadius && (
         <div className={locationMap.radiusContainer}>
           <label>
