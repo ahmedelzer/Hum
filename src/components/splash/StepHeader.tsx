@@ -41,7 +41,7 @@ const customStyles = {
   currentStepLabelColor: theme.accentHover,
 };
 
-const StepHeader = ({ currentPosition = 0, labels }) => {
+const StepHeader = ({ currentPosition = 0, labels, customKey }) => {
   const renderStepIndicator = ({ position, stepStatus }) => {
     const label = labels[position];
     const icon = statusIcons[label] || "❓"; // fallback icon
@@ -50,7 +50,7 @@ const StepHeader = ({ currentPosition = 0, labels }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={customKey}>
       <StepIndicator
         customStyles={customStyles}
         direction="horizontal"

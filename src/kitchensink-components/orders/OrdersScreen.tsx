@@ -4,12 +4,12 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useReducer, useState } from "react";
 import StepHeader from "../../components/splash/StepHeader";
 import { useSelector } from "react-redux";
 import OrdersSchema from "../../Schemas/OrdersSchema/OrdersSchema.json";
-import reducer from "../../reducers/LocationReducer";
 import { initialState } from "../../components/Pagination/initialState";
 import { useForm } from "react-hook-form";
 import { SetReoute } from "../../../request";
@@ -19,6 +19,12 @@ import { prepareLoad } from "../../utils/operation/loadHelpers";
 import { VStack } from "../../../components/ui";
 import OrderCard from "../../components/cards/OrderCard";
 import OrdersSchemaActions from "../../Schemas/OrdersSchema/OrdersSchemaActions.json";
+import { useWS } from "../../../context/WSProvider";
+import { useShopNode } from "../../../context/ShopNodeProvider";
+import { ConnectToWS } from "../../utils/WS/ConnectToWS";
+import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
+import { useNetwork } from "../../../context/NetworkContext";
+import reducer from "../../components/Pagination/reducer";
 const VIRTUAL_PAGE_SIZE = 4;
 const orders = [
   {
@@ -331,10 +337,13 @@ const orders = [
   },
 ];
 export default function OrdersScreen({ schemas = OrdersSchema }) {
-  const [state, reducerDispatch] = useReducer(
-    reducer,
-    initialState(VIRTUAL_PAGE_SIZE, schemas[0].idField)
-  );
+  const {
+    status: { isConnected: isOnline },
+  } = useNetwork();
+  const localization = useSelector((state) => state.localization.localization);
+
+  const { _wsMessageOrders, setWSMessageOrders } = useWS();
+  const [WS_Connected, setWS_Connected] = useState(false);
   const {
     control,
     handleSubmit,
@@ -347,14 +356,17 @@ export default function OrdersScreen({ schemas = OrdersSchema }) {
   const [disable, setDisable] = useState(null);
   const [row, setRow] = useState(null);
   const [col, setCol] = useState({});
-
+  const [state, reducerDispatch] = useReducer(
+    reducer,
+    initialState(VIRTUAL_PAGE_SIZE, schemas[0].idField)
+  );
   const [currentSkip, setCurrentSkip] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
     SetReoute(schemas[0].projectProxyRoute);
     return buildApiUrl(query, {
-      pageIndex: skip + currentPage,
+      pageIndex: skip + 1,
       pageSize: take,
+      ...row,
     });
   };
   const cache = createRowCache(VIRTUAL_PAGE_SIZE);
@@ -375,8 +387,60 @@ export default function OrdersScreen({ schemas = OrdersSchema }) {
       cache,
       reducerDispatch,
     });
+    console.log("====================================");
+    console.log(state);
+    console.log("====================================");
     // Call LoadData with the controller
-  });
+  }, []);
+  //WS
+  useEffect(() => {
+    setWS_Connected(false);
+  }, [isOnline]);
+  // 🌐 Setup WebSocket connection on mount or WS_Connected change
+  useEffect(() => {
+    if (WS_Connected) return;
+
+    SetReoute(schemas[0].projectProxyRoute);
+    let cleanup;
+    ConnectToWS(setWSMessageOrders, setWS_Connected)
+      .then(() => console.log("🔌 WebSocket setup done"))
+      .catch((e) => {
+        console.error("❌ Cart WebSocket error", e);
+      });
+    return () => {
+      if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+      console.log("🧹 Cleaned up WebSocket handler");
+    };
+  }, [WS_Connected]);
+
+  // 🧠 Reducer callback to update rows
+  const callbackReducerUpdate = async (ws_updatedRows) => {
+    await reducerDispatch({
+      type: "WS_OPE_ROW",
+      payload: {
+        rows: ws_updatedRows.rows,
+        totalCount: ws_updatedRows.totalCount,
+      },
+    });
+  };
+  const fieldsType = {
+    idField: schemas[0].idField,
+    dataSourceName: schemas[0].dataSourceName,
+  };
+
+  // 📨 React to WebSocket messages only when valid
+  useEffect(() => {
+    if (!_wsMessageOrders) return;
+    const _handleWSMessage = new WSMessageHandler({
+      _WSsetMessage: _wsMessageOrders,
+      fieldsType,
+      rows,
+      totalCount,
+      callbackReducerUpdate,
+    });
+    _handleWSMessage.process();
+    //setWSMessageMenuItem(_wsMessageMenuItem);
+  }, [_wsMessageOrders]);
 
   return (
     <ScrollView
@@ -388,11 +452,23 @@ export default function OrdersScreen({ schemas = OrdersSchema }) {
       onScroll={() => console.log("scrolling")}
       scrollEventThrottle={16}
     >
+      {rows.length === 0 && !loading && (
+        <View className="w-full flex-row justify-center items-center">
+          <Text className="text-xl text-accent font-bold">
+            {localization.Hum_screens.orders.noOrders}
+          </Text>
+        </View>
+      )}
       <VStack className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:auto-rows-fr">
         {rows.map((order) => (
           <OrderCard order={order} schemas={schemas} />
         ))}
       </VStack>
+      {loading && (
+        <View style={{ padding: 20 }}>
+          <ActivityIndicator size="small" color="black" />
+        </View>
+      )}
     </ScrollView>
   );
 }

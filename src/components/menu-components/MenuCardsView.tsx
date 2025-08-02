@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 import { initialState } from "../Pagination/initialState";
 import reducer from "../Pagination/reducer";
@@ -43,6 +43,7 @@ const MenuCardsView = ({ isRefreshed }: any) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const fieldsType = useSelector((state: any) => state.menuItem.fieldsType);
   const navigation = useNavigation();
+  const localization = useSelector((state) => state.localization.localization);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -63,6 +64,13 @@ const MenuCardsView = ({ isRefreshed }: any) => {
       onScroll={handleScroll}
       // contentContainerStyle={{ paddingBottom: 20 }}
     >
+      {rows.length === 0 && !loading && (
+        <View className="w-full flex-row justify-center items-center">
+          <Text className="text-xl text-accent font-bold">
+            {localization.Hum_screens.menu.noItems}
+          </Text>
+        </View>
+      )}
       <VStack className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
         {/*!for web*/}
         {rows?.map((item: any, index: number) => (

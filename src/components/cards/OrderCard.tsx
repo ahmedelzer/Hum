@@ -12,6 +12,34 @@ import { isRTL } from "../../utils/operation/isRTL";
 import { theme } from "../../Theme";
 
 //!localization
+// {
+//     "saleInvoiceID": "a7ed0866-1972-4e25-b29b-cc75b7a919e6",
+//     "invoiceNumber": "133928486",
+//     "requestedDatetime": "2025-08-02T13:39:28.4863904",
+//     "shiftID": "607643ea-5230-45c3-aaad-37a7d3ee0d65",
+//     "orderStateTypeID": "00000000-0000-0000-0000-000000000000",
+//     "totalAmount": 550.00,
+//     "invoiceItemsTaxAmount": 0.00,
+//     "invoiceTaxAmount": 0.00,
+//     "totalTaxAmount": 0.00,
+//     "feesAmount": 0.00,
+//     "invoiceItemsDiscountAmount": 0.00,
+//     "invoiceDiscountAmount": 0.00,
+//     "totalDiscountAmount": 0.00,
+//     "netAmount": 550.00,
+//     "customerName": null,
+//     "customerContact": null,
+//     "otherCustomerContact": null,
+//     "orderState": null,
+//     "orderType": null,
+//     "orderTypeIndex": 0,
+//     "orderStateIndex": 0,
+//     "customerID": "303c1fd6-8036-4ae1-b2a0-fa08d76f4ce7",
+//     "customerContactID": "0626d7aa-a295-4f16-b069-dc64548ab36a",
+//     "otherCustomerContactID": null,
+//     "note": null,
+//     "isPaid": false
+// }
 export default function OrderCard({ order, schemas }) {
   const localization = useSelector((state) => state.localization.localization);
   const subSchemas = schemas.filter((schema, index) => index !== 0);
@@ -23,7 +51,7 @@ export default function OrderCard({ order, schemas }) {
     orderType: getField(parameters, "orderType"),
     orderState: getField(parameters, "orderState"),
     details: getField(parameters, "detailsCell", false),
-    invoiceNumber: getField(parameters, "text"),
+    invoiceNumber: getField(parameters, "invoiceNumber"),
     idField: schemas[0].idField,
     dataSourceName: schemas[0].dataSourceName,
   };
@@ -54,7 +82,7 @@ export default function OrderCard({ order, schemas }) {
         }
       >
         <View
-          key={order[ordersFieldsType.idField]}
+          // key={order[ordersFieldsType.idField]}
           className="bg-body p-4 rounded-xl"
         >
           <Text className="text-lg font-semibold mb-2">
@@ -65,6 +93,7 @@ export default function OrderCard({ order, schemas }) {
           <StepHeader
             currentPosition={order[ordersFieldsType.orderState]}
             labels={labels}
+            customKey={`${order[ordersFieldsType.idField]}-${ordersFieldsType.orderState}-${order[ordersFieldsType.orderState]}`}
           />
           <View className=" justify-center items-center flex-row">
             <TouchableOpacity

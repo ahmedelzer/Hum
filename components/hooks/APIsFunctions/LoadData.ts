@@ -44,7 +44,6 @@ export default async function LoadData(
           cache.setRows(requestedSkip, dataSource);
 
           updateRows(requestedSkip, take, count);
-          //console.log("state",dataSource)
         })
         .catch((error) => {
           dispatch({ type: "REQUEST_ERROR" });

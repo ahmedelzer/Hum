@@ -416,8 +416,9 @@
       "checkoutButton": "Checkout"
     },
     "orders": {
-      "pickupSteps": ["Preparing", "Prepared", "Picked Up"],
+      "pickupSteps": ["ordered", "Preparing", "Prepared", "Picked Up"],
       "deliverySteps": [
+        "ordered",
         "Preparing",
         "Prepared",
         "Out for Delivery",
@@ -428,7 +429,8 @@
       "cancelConfirmationTitle": "Cancel Order?",
       "cancelConfirmationMessage": "Are you sure you want to cancel this order? This action cannot be undone.",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "noOrders": "No Orders available."
     },
     "profile": {
       "collapses": [

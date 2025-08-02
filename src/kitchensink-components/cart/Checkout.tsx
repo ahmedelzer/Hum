@@ -112,8 +112,8 @@ export default function Checkout({
 
   const handleCheckoutClick = async () => {
     if (callCount.current >= 2 || isPaid) {
-      setOpenCheckout(false);
-      return;
+      // setOpenCheckout(false);
+      return false;
     }
 
     callCount.current += 1;
@@ -131,9 +131,12 @@ export default function Checkout({
     setResult(res);
 
     if (res?.data?.isDone === true) {
+      console.log("====================================");
+      console.log("setOpenCheckout by false");
+      console.log("====================================");
       setIsPaid(true);
-      setOpenCheckout(false);
-      return;
+      // setOpenCheckout(false);
+      return true;
     }
 
     const newTime = res?.data?.newCartItemsAddedTime;
@@ -145,10 +148,10 @@ export default function Checkout({
 
       if (now >= begin && now <= end) {
         setTimeAllowed(true);
-      } else {
+      } else if (res?.data?.isDone === false) {
         setTimeAllowed(false);
-        setOpenCheckout(false);
-        return;
+        // setOpenCheckout(false);
+        return true;
       }
     }
 
@@ -160,7 +163,7 @@ export default function Checkout({
   const onPayPress = () => {
     setIsPaid(true);
     setModalVisible(false);
-    setOpenCheckout(false);
+    // setOpenCheckout(false);
   };
 
   if (!timeAllowed) {
@@ -179,7 +182,10 @@ export default function Checkout({
       footer={
         <TouchableOpacity
           className="bg-green-600 mt-5 py-3 px-5 rounded-xl"
-          onPress={handleCheckoutClick}
+          onPress={async () => {
+            const runAction = await handleCheckoutClick();
+            setOpenCheckout(runAction && false);
+          }}
         >
           <Text className="text-body text-center font-semibold">
             {localization.checkout.confirmAndPay}

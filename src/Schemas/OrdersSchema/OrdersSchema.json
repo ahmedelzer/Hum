@@ -49,7 +49,7 @@
         "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
         "isEnable": false,
         "parameterType": "orderType",
-        "parameterField": "orderType",
+        "parameterField": "orderTypeIndex",
         "parameterTitel": "Order Type",
         "isIDField": false,
         "indexNumber": 3
@@ -59,15 +59,25 @@
         "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
         "isEnable": false,
         "parameterType": "orderState",
-        "parameterField": "orderState",
+        "parameterField": "orderStateIndex",
         "parameterTitel": "Order State",
+        "isIDField": false,
+        "indexNumber": 4
+      },
+      {
+        "dashboardFormSchemaParameterID": "id-004",
+        "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+        "isEnable": false,
+        "parameterType": "invoiceNumber",
+        "parameterField": "invoiceNumber",
+        "parameterTitel": "Invoice Number",
         "isIDField": false,
         "indexNumber": 4
       }
     ],
     "projectProxyRoute": "BrandingMartPOS",
     "isMainSchema": true,
-    "dataSourceName": "saleOrder",
+    "dataSourceName": "CustomerOrder",
     "propertyName": null,
     "indexNumber": 0
   },

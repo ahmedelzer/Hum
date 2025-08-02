@@ -9,6 +9,7 @@ export const WSProvider = ({ children }) => {
   const [_wsMessageCart, setWSMessageCart] = useState("{}");
   const [_wsMessageMenuItem, setWSMessageMenuItem] = useState("{}");
   const [_wsMessageSuggest, setWSMessageSuggest] = useState("{}");
+  const [_wsMessageOrders, setWSMessageOrders] = useState("{}");
   const [_wsMessageAccounting, setWSMessageAccounting] = useState("{}");
 
   return (
@@ -19,6 +20,8 @@ export const WSProvider = ({ children }) => {
         _wsMessageMenuItem,
         setWSMessageMenuItem,
         _wsMessageSuggest,
+        _wsMessageOrders,
+        setWSMessageOrders,
         setWSMessageSuggest,
         _wsMessageAccounting,
         setWSMessageAccounting,
