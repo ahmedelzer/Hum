@@ -46,7 +46,7 @@ export default {
     },
     web: {
       bundler: "metro",
-      favicon: "./assets/adaptive-icon.png",
+      favicon: "./assets/display/logo.jpeg",
     },
     plugins: [
       // [

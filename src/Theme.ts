@@ -5,7 +5,7 @@ export const theme = {
   dark_card: "rgb(10 50 60 )", // card and panel background
   card: "#e5e7eb",
   surface: "#FFFFFF", // for inputs, modals, inner surfaces
-  accent: "#FF6700", // primary brand color
+  accent: "#ef4444", // primary brand color
   accentHover: "#0098FF", // hover state for accent buttons
   border: "#E5E7EB", // borders, separators
   notification: "#FFF4E5", // notification background (light orange)
