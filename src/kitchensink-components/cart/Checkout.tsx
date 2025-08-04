@@ -166,15 +166,15 @@ export default function Checkout({
     // setOpenCheckout(false);
   };
 
-  if (!timeAllowed) {
-    return (
-      <View className="p-4">
-        <Text className="text-red-600 text-center font-semibold">
-          {localization.checkout.checkoutExpired}
-        </Text>
-      </View>
-    );
-  }
+  // if (!timeAllowed) {
+  //   return (
+  //     <View className="p-4">
+  //       <Text className="text-red-600 text-center font-semibold">
+  //         {localization.checkout.checkoutExpired}
+  //       </Text>
+  //     </View>
+  //   );
+  // }
   return (
     <PopupModal
       isOpen={openCheckout}

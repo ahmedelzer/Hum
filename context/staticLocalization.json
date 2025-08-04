@@ -374,6 +374,7 @@
       "shortcuts": "Shortcuts",
       "faovert": "Faovert Items",
       "MarketPlace": "Market Places",
+      "selectLocation": "Select the Location",
       "marketPlaceTaps": ["Pickup", "Address"]
     },
     "menu": {
@@ -416,14 +417,8 @@
       "checkoutButton": "Checkout"
     },
     "orders": {
-      "pickupSteps": ["ordered", "Preparing", "Prepared", "Picked Up"],
-      "deliverySteps": [
-        "ordered",
-        "Preparing",
-        "Prepared",
-        "Out for Delivery",
-        "Delivered"
-      ],
+      "pickupSteps": ["ordered", "Prepared", "", "Picked Up"],
+      "deliverySteps": ["ordered", "Prepared", "Out for Delivery", "Delivered"],
       "showDetails": "Show Details",
       "order": "Order",
       "cancelConfirmationTitle": "Cancel Order?",

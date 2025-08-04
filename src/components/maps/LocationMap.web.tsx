@@ -192,11 +192,10 @@ const LocationMap = ({
       if (!clickable) return;
       const lat = e.latLng.lat();
       const lng = e.latLng.lng();
-      console.log(lat, lng, "locations");
 
       onLocationChange({
-        [latitudeField]: lat,
-        [longitudeField]: lng,
+        [latitudeField]: `${lat}`,
+        [longitudeField]: `${lng}`,
         ...(radiusField && { [radiusField]: radius }),
       });
     },

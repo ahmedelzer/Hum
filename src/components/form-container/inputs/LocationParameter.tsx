@@ -17,16 +17,21 @@ export default function LocationParameter({ ...props }) {
   const currentLocation = useSelector(
     (state) => state.location.currentLocation
   );
+  const localization = useSelector((state) => state.localization.localization);
+
   const [location, setLocation] = useState(
-    props.value || currentLocation || {}
+    Object.keys(props.value).length > 0 || currentLocation || {}
   );
   const handleLocationChange = (newLocation) => {
     setLocation(newLocation);
   };
+  console.log("====================================");
+  console.log(currentLocation, location, "currentLocation");
+  console.log("====================================");
   return (
     <View>
       <CollapsibleSection
-        title="Current Location"
+        title={localization.Hum_screens.home.selectLocation}
         icon={() => <Entypo name="location-pin" size={24} />}
         setheader={true}
       >
@@ -72,7 +77,7 @@ export default function LocationParameter({ ...props }) {
             render={({ field: { onChange, onBlur, value } }) => {
               useEffect(() => {
                 if (location[pram.parameterField] !== undefined) {
-                  onChange(location[pram.parameterField]);
+                  onChange(`${location[pram.parameterField]}`);
                 }
               }, [location[pram.parameterField]]);
               return null; // No need to render hidden InputField if just syncing values

@@ -6,11 +6,13 @@ import { theme } from "../../Theme";
 // You can customize these icons based on each label
 const statusIcons = {
   // Order flow
+  ordered: "🧾", // You can change this to 🛒 or 📝 if preferred
   Preparing: "🛠️",
   Prepared: "📦",
   "Picked Up": "🚗",
   "Out for Delivery": "🚚",
   Delivered: "✅",
+
   // Header flow
   Welcome: "👋",
   Language: "🌐",
@@ -55,8 +57,8 @@ const StepHeader = ({ currentPosition = 0, labels, customKey }) => {
         customStyles={customStyles}
         direction="horizontal"
         currentPosition={currentPosition}
-        labels={labels}
-        stepCount={labels.length}
+        labels={labels.filter((item) => item.length > 0)}
+        stepCount={labels.filter((item) => item.length > 0).length}
         renderStepIndicator={renderStepIndicator}
       />
     </View>

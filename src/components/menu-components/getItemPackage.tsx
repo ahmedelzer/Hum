@@ -9,7 +9,7 @@ export function getItemPackage(
   const idField = nodeMenuItemsSchema?.idField;
 
   if (!idField || !item?.[idField] || cartItems.length === 0) {
-    console.warn("⚠️ getItemPackage: Missing idField or item[idField]");
+    // console.warn("⚠️ getItemPackage: Missing idField or item[idField]");
     return item;
   }
 

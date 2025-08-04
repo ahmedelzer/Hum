@@ -3,6 +3,7 @@ import { SmWeb } from "./Sm";
 import { Col, Container, Row as WebRow } from "reactstrap";
 import DataCellRender from "./DataCellRender";
 import "./cols.css";
+import avoidColsTypes from "./avoidColsTypes.json";
 export const WebContainer = ({
   tableSchema,
   SetValue,
@@ -17,7 +18,14 @@ export const WebContainer = ({
       <Container>
         <WebRow>
           {tableSchema?.dashboardFormSchemaParameters
-            ?.filter((column: any) => !column.isIDField && column.isEnable)
+            ?.filter(
+              (column: any) =>
+                !column.isIDField &&
+                column.isEnable &&
+                !avoidColsTypes.find(
+                  (columnType) => column.parameterType === columnType
+                )
+            )
             .map((param: any) => (
               <Col
                 sm={SmWeb(param)}

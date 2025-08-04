@@ -120,6 +120,13 @@ function FormContainer({
           },
         ]}
       />
+      {globalErrorMessages.length > 0 && (
+        <View className="flex-row justify-center items-center">
+          <Text className="text-error-500 text-xl font-bold">
+            {globalErrorMessages[0].join("")}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }

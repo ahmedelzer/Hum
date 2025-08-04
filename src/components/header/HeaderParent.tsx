@@ -69,7 +69,7 @@ export default function HeaderParent() {
                 />
                 {cartRows.length > 0 && <RedCounter count={cartRows.length} />}
               </TouchableOpacity>
-              <Notification />
+              {/* <Notification /> */}
             </>
           ) : (
             <TouchableOpacity
