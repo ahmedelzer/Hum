@@ -8,7 +8,6 @@ import { handleSubmitWithCallback } from "../../../utils/operation/handleSubmitW
 import ScratchVoucherCard from "../../../Schemas/MenuSchema/ScratchVoucherCard.json";
 import ScratchVoucherCardActions from "../../../Schemas/MenuSchema/ScratchVoucherCardActions.json";
 import PaymentOptions from "../../../Schemas/MenuSchema/PaymentOptions.json";
-import { SetReoute } from "../../../../request";
 import { formatCount } from "../../../utils/operation/formatCount";
 
 export default function InputWithLabel({

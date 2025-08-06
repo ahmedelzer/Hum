@@ -16,7 +16,6 @@ import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import { Flow } from "react-native-animated-spinkit";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import LoadData from "../../../components/hooks/APIsFunctions/LoadData";
-import { SetReoute } from "../../../request";
 import LoadingScreen from "../../kitchensink-components/loading/LoadingScreen";
 import NodeMenuCatSchema from "../../Schemas/MenuSchema/NodeMenuCatSchema.json";
 import NodeMenuCatSchemaActions from "../../Schemas/MenuSchema/NodeMenuCatSchemaActions.json";
@@ -42,10 +41,11 @@ export const HomestayInfoTabs = ({ tabs, row, setRow }: any) => {
   );
   const [currentSkip, setCurrentSkip] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(NodeMenuCatSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: NodeMenuCatSchema.projectProxyRoute,
+
       ...row,
     });
   };

@@ -1,8 +1,14 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { Button, ScrollView, Text, View, StyleSheet, Dimensions } from "react-native";
+import {
+  Button,
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import reducer from "../../components/Pagination/reducer";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import { SetReoute } from "../../../request";
 import ScratchVoucherCard from "../../Schemas/MenuSchema/ScratchVoucherCard.json";
 import ScratchVoucherCardActions from "../../Schemas/MenuSchema/ScratchVoucherCardActions.json";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
@@ -26,12 +32,12 @@ const VoucherCardList = () => {
 
   const [currentSkip, setCurrentSkip] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(ScratchVoucherCard.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + currentPage,
       pageSize: take,
+      projectRout: ScratchVoucherCard.projectProxyRoute,
     });
   };
 
@@ -62,13 +68,13 @@ const VoucherCardList = () => {
   if (!rows.length) return <Text>{voucherLocale.notFound}</Text>;
 
   // Get screen width for responsive layout
-  const screenWidth = Dimensions.get('window').width;
-  
+  const screenWidth = Dimensions.get("window").width;
+
   // Determine number of columns based on screen width
   const getColumns = () => {
-    if (screenWidth < 1460) return 1;   // Mobile (equivalent to sm:)
-    return 2;  // Tablet (equivalent to lg:)
-                         // Desktop
+    if (screenWidth < 1460) return 1; // Mobile (equivalent to sm:)
+    return 2; // Tablet (equivalent to lg:)
+    // Desktop
   };
 
   const numColumns = getColumns();
@@ -76,15 +82,23 @@ const VoucherCardList = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={[styles.gridContainer, { 
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-        }]}>
+        <View
+          style={[
+            styles.gridContainer,
+            {
+              flexDirection: "row",
+              flexWrap: "wrap",
+            },
+          ]}
+        >
           {rows.map((card, index) => (
-            <View key={index} style={{
-              width: `${100/numColumns}%`,
-              padding: 8, // Equivalent to gap-4 (16px total)
-            }}>
+            <View
+              key={index}
+              style={{
+                width: `${100 / numColumns}%`,
+                padding: 8, // Equivalent to gap-4 (16px total)
+              }}
+            >
               <VoucherCard item={card} />
             </View>
           ))}
@@ -112,7 +126,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   gridContainer: {
-    width: '100%',
+    width: "100%",
   },
   paginationContainer: {
     flexDirection: "row",

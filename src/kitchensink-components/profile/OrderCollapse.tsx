@@ -11,7 +11,6 @@ import {
   AccordionItem,
   HStack,
 } from "../../../components/ui";
-import { SetReoute } from "../../../request";
 import { createRowCache } from "../../components/Pagination/createRowCache";
 import { initialState } from "../../components/Pagination/initialState";
 import reducer from "../../components/Pagination/reducer";
@@ -91,10 +90,10 @@ const OrderCollapse = ({ schemas = SaleInvoiceSchema }) => {
   const [currentSkip, setCurrentSkip] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(schemas[0].projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + currentPage,
       pageSize: take,
+      projectRout: schemas[0].projectProxyRoute,
     });
   };
   const cache = createRowCache(VIRTUAL_PAGE_SIZE);

@@ -68,7 +68,8 @@ export default function CardInteraction({ item, fieldsType }) {
       field,
       item[fieldsType.idField],
       newIndex !== 0,
-      NodeMenuItemsSchemaActions
+      NodeMenuItemsSchemaActions,
+      fieldsType.proxyRoute
     );
 
     if (req) {

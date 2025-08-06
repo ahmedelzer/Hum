@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { buildApiUrl } from "../components/hooks/APIsFunctions/BuildApiUrl";
-import { SetReoute } from "../request";
 import { useErrorToast } from "../src/components/form-container/ShowErrorToast";
 import { createRowCache } from "../src/components/Pagination/createRowCache";
 import { getRemoteRows } from "../src/components/Pagination/getRemoteRows";
@@ -76,11 +75,11 @@ export const SuggestProvider = ({ children }) => {
 
   const [currentSkip, setCurrentSkip] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(SuggestCardSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
       shownNodeMenuItemIDs: shownNodeMenuItemIDs.join(","),
+      projectRout: SuggestCardSchema.projectProxyRoute,
     });
   };
   const cache = createRowCache(VIRTUAL_PAGE_SIZE);
@@ -102,8 +101,6 @@ export const SuggestProvider = ({ children }) => {
   // 🌐 Setup WebSocket connection on mount or WS_Connected change
   useEffect(() => {
     if (WS_Connected) return;
-
-    SetReoute(SuggestCardSchema.projectProxyRoute);
     let cleanup;
     ConnectToWS(setWSMessageMenuItem, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))

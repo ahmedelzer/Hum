@@ -21,7 +21,6 @@ import {
   CheckboxLabel,
 } from "../../../../components/ui";
 import { useAuth } from "../../../../context/auth";
-import { SetReoute } from "../../../../request";
 import loginFormSchema from "../../../Schemas/LoginSchema/LoginFormSchema.json";
 import schemaActions from "../../../Schemas/LoginSchema/LoginFormSchemaActions.json";
 import { saveSecureValue } from "../../../store/secureStore";
@@ -72,7 +71,6 @@ export const LoginWithLeftBackground = () => {
     const timeZoneOffset = date.getTimezoneOffset();
 
     const { rememberme, ...sanitizedData } = data;
-    SetReoute(loginFormSchema.projectProxyRoute);
     const postAction =
       schemaActions &&
       schemaActions.find(

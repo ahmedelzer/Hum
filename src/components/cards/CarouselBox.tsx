@@ -151,7 +151,8 @@ export const CarouselBox = ({ item, fieldsType }) => {
                   fieldsType.likes,
                   item[fieldsType.idField],
                   indexOfLike == 1 ? false : true,
-                  NodeMenuItemsSchemaActions
+                  NodeMenuItemsSchemaActions,
+                  fieldsType.proxyRoute
                 )
               }
               size={18}
@@ -165,7 +166,8 @@ export const CarouselBox = ({ item, fieldsType }) => {
                   fieldsType.likes,
                   item[fieldsType.idField],
                   indexOfLike == -1 ? false : true,
-                  NodeMenuItemsSchemaActions
+                  NodeMenuItemsSchemaActions,
+                  fieldsType.proxyRoute
                 )
               }
               iconName={indexOfLike == -1 ? "dislikes" : "dislikes2"}

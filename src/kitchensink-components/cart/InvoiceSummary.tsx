@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
-import { SetReoute } from "../../../request";
 import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import { getField } from "../../utils/operation/getField";
 import CartInfoSchemaAction from "../../Schemas/MenuSchema/CartInfoSchemaAction.json";
@@ -36,8 +35,9 @@ export default function InvoiceSummary({ row, setRow }) {
   const localization = useSelector((state) => state.localization.localization);
 
   const cartInfoDataSourceAPI = (query) => {
-    SetReoute(CustomerInfoSchema.projectProxyRoute);
-    return buildApiUrl(query);
+    return buildApiUrl(query, {
+      projectRout: CustomerInfoSchema.projectProxyRoute,
+    });
   };
 
   const getCustomerCartAction = CartInfoSchemaAction?.find(
@@ -49,8 +49,8 @@ export default function InvoiceSummary({ row, setRow }) {
   );
 
   useEffect(() => {
-     setCartInfo(GetCustomerCartInfo);
-  }, [ GetCustomerCartInfo]);
+    setCartInfo(GetCustomerCartInfo);
+  }, [GetCustomerCartInfo]);
 
   const params = CustomerInfoSchema?.dashboardFormSchemaParameters ?? [];
 
@@ -76,33 +76,31 @@ export default function InvoiceSummary({ row, setRow }) {
     shipmentFees: getField(params, "shipmentFees", false),
     otherFees: getField(params, "otherFees", false),
   };
- const { status: { isConnected: isOnline } } = useNetwork();
+  const {
+    status: { isConnected: isOnline },
+  } = useNetwork();
   // 🌐 WebSocket connect effect
   useEffect(() => {
     if (cartInfo_WS_Connected) return;
-
-    SetReoute(CustomerInfoSchema.projectProxyRoute);
-let cleanup;
+    let cleanup;
     ConnectToWS(setWSMessageCart, setCartInfoWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => console.error("❌ Cart WebSocket error", e));
-       return () => {
-    if (cleanup) cleanup(); // Clean up when component unmounts or deps change
-    console.log("🧹 Cleaned up WebSocket handler");
-  };
-  }, [cartInfo_WS_Connected,isOnline]);
+    return () => {
+      if (cleanup) cleanup(); // Clean up when component unmounts or deps change
+      console.log("🧹 Cleaned up WebSocket handler");
+    };
+  }, [cartInfo_WS_Connected, isOnline]);
 
   // ✅ Callback to update reducer
   const cartCallbackReducerUpdate = async (cartInfo_ws_updatedRows) => {
-   
-
     setCartInfo(cartInfo_ws_updatedRows.rows[0]);
   };
 
   // 📨 WebSocket message handler
   useEffect(() => {
     if (!_wsMessageCart) return;
- 
+
     const handlerCartWSMessage = new WSMessageHandler({
       _WSsetMessage: _wsMessageCart,
       fieldsType: cartInfoFieldsType,
@@ -118,12 +116,11 @@ let cleanup;
     setExpanded(!expanded);
   };
 
- const getValue = (field) => {
-  const key = field?.parameterField;
-  const value = key && cartInfo ? cartInfo[key] : 0;
-  return typeof value !== 'undefined' && value !== null ? value : 0;
-};
-
+  const getValue = (field) => {
+    const key = field?.parameterField;
+    const value = key && cartInfo ? cartInfo[key] : 0;
+    return typeof value !== "undefined" && value !== null ? value : 0;
+  };
 
   const isPositive = (value) => (value > 0 ? true : false);
   useEffect(() => {
@@ -269,7 +266,6 @@ let cleanup;
         activeOpacity={0.7}
         className="mt-1 mb-2 rounded-xl p-2 !bg-accent flex-row justify-between items-center"
       >
-        
         <Text className="text-lg font-bold text-body">
           {CustomerInfoSchema.dashboardFormSchemaInfoDTOView.schemaHeader}
         </Text>
@@ -279,7 +275,7 @@ let cleanup;
         >
           {localization.menu.currency}{" "}
           {Number(getValue(cartInfoFieldsType.netAmount)).toFixed(2) || "0.00"}
-        </Text> 
+        </Text>
       </TouchableOpacity>
     </View>
   );

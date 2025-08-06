@@ -5,7 +5,6 @@ import { useEffect, useReducer, useState } from "react";
 import { getField } from "../src/utils/operation/getField";
 import CartSchema from "../src/Schemas/MenuSchema/CartSchema.json";
 import CartSchemaActions from "../src/Schemas/MenuSchema/CartSchemaActions.json";
-import { SetReoute } from "../request";
 import { WSMessageHandler } from "../src/utils/WS/handleWSMessage";
 import { ConnectToWS } from "../src/utils/WS/ConnectToWS";
 import { createRowCache } from "../src/components/Pagination/createRowCache";
@@ -70,18 +69,10 @@ const UserProviderLayer = (
   // 🌐 WebSocket connect effect
   useEffect(() => {
     if (cart_WS_Connected) return;
-
-    SetReoute(CartSchema.projectProxyRoute);
     let cleanup;
     ConnectToWS(setCartWSsetMessage, setCartWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
       .catch((e) => {
-        console.log(isOnline, "connection Error");
-        if (!isOnline) {
-          showErrorToast("connection Error", "please connect to internet ");
-        } else {
-          showErrorToast("Error", e);
-        }
         console.error("❌ Cart WebSocket error", e);
       });
 
@@ -117,10 +108,11 @@ const UserProviderLayer = (
   }, [cart_WSsetMessage, cartState.rows, isOnline]);
 
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(CartSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: CartSchema.projectProxyRoute,
+
       // ...row,
     });
   };

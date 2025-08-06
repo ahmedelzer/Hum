@@ -7,10 +7,8 @@ import {
 } from "../../../request";
 import UseFetchWithoutBaseUrl from "./UseFetchWithoutBaseUrl";
 
-const useFetch = (url, base_URL) => {
-  const realurl = `${
-    base_URL !== GetProjectUrl() ? defaultProjectProxyRoute : base_URL
-  }${url}`;
+const useFetch = (url, projectRoute) => {
+  const realurl = `${GetProjectUrl(projectRoute)}${url}`;
 
   // console.log(base_URL, GetProjectUrl());
   return UseFetchWithoutBaseUrl(realurl);

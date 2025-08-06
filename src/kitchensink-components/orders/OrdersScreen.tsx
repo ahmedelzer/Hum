@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 import OrdersSchema from "../../Schemas/OrdersSchema/OrdersSchema.json";
 import { initialState } from "../../components/Pagination/initialState";
 import { useForm } from "react-hook-form";
-import { SetReoute } from "../../../request";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import { createRowCache } from "../../components/Pagination/createRowCache";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
@@ -362,10 +361,11 @@ export default function OrdersScreen({ schemas = OrdersSchema }) {
   );
   const [currentSkip, setCurrentSkip] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(schemas[0].projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: schemas[0].projectProxyRoute,
+
       ...row,
     });
   };
@@ -399,8 +399,6 @@ export default function OrdersScreen({ schemas = OrdersSchema }) {
   // 🌐 Setup WebSocket connection on mount or WS_Connected change
   useEffect(() => {
     if (WS_Connected) return;
-
-    SetReoute(schemas[0].projectProxyRoute);
     let cleanup;
     ConnectToWS(setWSMessageOrders, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))

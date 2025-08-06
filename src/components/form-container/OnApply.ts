@@ -1,7 +1,6 @@
 import APIHandling from "../../../components/hooks/APIsFunctions/APIHandling";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import { useNetwork } from "../../../context/NetworkContext";
-import { SetReoute } from "../../../request";
 import { SharedLists } from "./SharedLists";
 import { useErrorToast } from "./ShowErrorToast";
 
@@ -32,9 +31,8 @@ export const onApply = async (
         entityID: `${editedRow[iDField]}`,
         ...{ patchJSON: editedRow },
       };
-  proxyRoute && SetReoute(proxyRoute);
   const dataSourceAPI = (query) => {
-    return buildApiUrl(query, constants);
+    return buildApiUrl(query, { ...constants, projectRout: proxyRoute });
   };
 
   const res = await APIHandling(

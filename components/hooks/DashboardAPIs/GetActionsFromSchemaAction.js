@@ -1,6 +1,6 @@
 import useFetch from "../APIsFunctions/useFetch";
 import GetSchemaActionsUrl from "./GetSchemaActionsUrl";
-import { defaultProjectProxyRoute, SetReoute } from "../../../request";
+import { defaultProjectProxyRoute } from "../../../request";
 
 export function GetActionsFromSchemaAction(schemaActions) {
   const getAction = schemaActions?.find(

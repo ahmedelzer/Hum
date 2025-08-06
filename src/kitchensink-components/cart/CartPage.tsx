@@ -1,11 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, {
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Platform,
   ScrollView,
@@ -15,33 +9,22 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 // import { LocalizationContext } from "../../../context/LocalizationContext";
-import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import { useWS } from "../../../context/WSProvider";
-import { GetProjectUrl, SetReoute } from "../../../request";
-import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
+import { useCart } from "../../../context/CartProvider";
+import { GetProjectUrl } from "../../../request";
+import CartInfoSchemaAction from "../../Schemas/MenuSchema/CartInfoSchemaAction.json";
 import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
-import { createRowCache } from "../../components/Pagination/createRowCache";
-import { initialState } from "../../components/Pagination/initialState";
-import reducer from "../../components/Pagination/reducer";
+import RecommendedSchemaActions from "../../Schemas/MenuSchema/RecommendedSchemaActions.json";
 import GoBackHeader from "../../components/header/GoBackHeader";
-import { ConnectToWS } from "../../utils/WS/ConnectToWS";
-import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
+import SuggestCardContainer from "../../components/suggest/SuggestCardContainer";
 import AddressLocationCollapsible from "../../utils/component/AddressLocationCollapsible";
 import PrivacyCheckbox from "../../utils/component/PrivacyCheckbox";
-import SuggestCardContainer from "../../components/suggest/SuggestCardContainer";
-import { getField } from "../../utils/operation/getField";
 import { isRTL } from "../../utils/operation/isRTL";
-import { prepareLoad } from "../../utils/operation/loadHelpers";
 import CardCartItem from "./CardCartItem";
 import Checkout from "./Checkout";
 import InvoiceSummary from "./InvoiceSummary";
 import OldCartButton from "./OldCartButton";
 import PaymentMethods from "./PaymentMethods";
 import PaymentOptions from "./PaymentOptions";
-import CartInfoSchemaAction from "../../Schemas/MenuSchema/CartInfoSchemaAction.json";
-import { useNetwork } from "../../../context/NetworkContext";
-import RecommendedSchemaActions from "../../Schemas/MenuSchema/RecommendedSchemaActions.json";
-import { useCart } from "../../../context/CartProvider";
 const ITEM_HEIGHT = 330;
 const CartPage = () => {
   const [shownNodeMenuItemIDs, setShownNodeMenuItemIDs] = useState([]);
@@ -161,7 +144,7 @@ const CartPage = () => {
       <GoBackHeader
         title={localization.Hum_screens.cart.header.title}
         subTitle={localization.Hum_screens.cart.header.subTitle}
-        rightComponent={<OldCartButton projectUrl={GetProjectUrl()} />}
+        rightComponent={<OldCartButton projectUrl={GetProjectUrl("")} />}
       />
 
       {/* Main layout

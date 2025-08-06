@@ -1,7 +1,7 @@
 import { default as React, useEffect, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
-import { GetProjectUrl, SetReoute } from "../../../request";
+import { GetProjectUrl } from "../../../request";
 import { theme } from "../../Theme";
 import { initialState } from "../../components/Pagination/initialState";
 import reducer from "../../components/Pagination/reducer";
@@ -31,10 +31,9 @@ const PaymentOptions = ({ rootRow, setRootRow }) => {
     PaymentOptionsActions.find(
       (action) => action.dashboardFormActionMethodType.toLowerCase() === "get"
     );
-  SetReoute(PaymentOptionsSchema.projectProxyRoute);
   const { data, error, isLoading } = useFetch(
     `/${getAction.routeAdderss}`,
-    GetProjectUrl()
+    PaymentOptionsSchema.projectProxyRoute
   );
   useEffect(() => {
     if (!isLoading && data) {
@@ -61,8 +60,6 @@ const PaymentOptions = ({ rootRow, setRootRow }) => {
   // 🌐 WebSocket connect effect
   useEffect(() => {
     if (WS_Connected) return;
-
-    SetReoute(PaymentOptionsSchema.projectProxyRoute);
     let cleanup;
     ConnectToWS(
       setWSsetMessage,

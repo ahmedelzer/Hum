@@ -6,7 +6,6 @@ import React, {
   useReducer,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { SetReoute } from "../request";
 import NodeMenuItemsSchema from "../src/Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import { prepareLoad } from "../src/utils/operation/loadHelpers";
 import AddressLocationAction from "../src/Schemas/AddressLocation/AddressLocationAction.json";
@@ -75,10 +74,10 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
     skip: number,
     take: number
   ) => {
-    SetReoute(AddressLocationSchema.projectProxyRoute); // Make sure SetReoute is defined
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: AddressLocationSchema.projectProxyRoute,
     });
   };
 
@@ -125,10 +124,10 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
     initialState(10, NodeMenuItemsSchema.idField)
   );
   const nodeDataSourceAPI = (query: any, skip: number, take: number) => {
-    SetReoute(NearestBranchesSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: NearestBranchesSchema.projectProxyRoute,
       ...(selectedLocation || {}),
     });
   };
@@ -165,18 +164,10 @@ export const PreparingApp: React.FC<{ children: ReactNode }> = ({
   // 🔌 WebSocket handler effect on selectedNode change
   useEffect(() => {
     if (!selectedNode || WS_Connected) return;
-
-    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
     let cleanup;
     ConnectToWS(setWSsetMessage, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
       .catch((e) => {
-        console.log(isOnline, "connection Error");
-        if (!isOnline) {
-          showErrorToast("connection Error", "please connect to internet ");
-        } else {
-          showErrorToast("Error", e);
-        }
         console.error("❌ Cart WebSocket error", e);
       });
 

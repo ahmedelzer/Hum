@@ -1,7 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { ScrollView } from "react-native";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import { SetReoute } from "../../../request";
 import AddressLocationSchema from "../../Schemas/AddressLocation/AddressLocation.json";
 import AddressLocationAction from "../../Schemas/AddressLocation/AddressLocationAction.json";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
@@ -18,10 +17,11 @@ export default function AddressLocation() {
   );
   const [currentSkip, setCurrentSkip] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(AddressLocationSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: AddressLocationSchema.projectProxyRoute,
+
       // ...row,
     });
   };

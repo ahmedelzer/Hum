@@ -1,18 +1,16 @@
 import useFetch from "../APIsFunctions/useFetch";
 import GetSchemaActionsUrl from "./GetSchemaActionsUrl";
-import { GetProjectUrl, SetReoute } from "../../request";
+import { GetProjectUrl } from "../../request";
 import dashboardItemSchema from "../../Schemas/DashboardItemSchema/DashboardItemSchema.json";
 export function GetActionsFromSchema(schema) {
-  SetReoute(dashboardItemSchema.projectProxyRoute);
   const {
     data: schemaActions,
     error,
     isLoading,
   } = useFetch(
     GetSchemaActionsUrl(schema.dashboardFormSchemaID),
-    GetProjectUrl()
+    dashboardItemSchema.projectProxyRoute
   );
-  SetReoute(schema.projectProxyRoute);
 
   const getAction = schemaActions?.find(
     (action) => action.dashboardFormActionMethodType === "Get"

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
-import { GetProjectUrl, SetReoute } from "../../../request";
+import { GetProjectUrl } from "../../../request";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import MenuView from "../../components/menu-components/MenuView";
 import HomePage from "../../kitchensink-components/HomestayPage";
@@ -11,6 +11,7 @@ import { SetResponsiveContainer } from "../component/SetResponsiveContainer";
 import { GetCard } from "../operation/GetCard";
 import { requestLocationPermission } from "./requestLocationPermission";
 import CartSchemaActions from "../../Schemas/MenuSchema/CartSchemaActions.json";
+import CartSchema from "../../Schemas/MenuSchema/CartSchema.json";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
 import useFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
 import OrdersScreen from "../../kitchensink-components/orders/OrdersScreen";
@@ -22,8 +23,7 @@ const RenderItemsView = ({ dashboardItemId, routePath }: any) => {
     );
 
   const dataSourceAPI = (query) => {
-    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
-    return buildApiUrl(query);
+    return buildApiUrl(query, { projectRout: CartSchema.projectProxyRoute });
   };
   const {
     data: GetCustomerCart,

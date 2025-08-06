@@ -10,7 +10,6 @@ import React, {
 import reducer from "../src/components/Pagination/reducer";
 import { initialState } from "../src/components/Pagination/initialState";
 import { getField } from "../src/utils/operation/getField";
-import { SetReoute } from "../request";
 import { ConnectToWS } from "../src/utils/WS/ConnectToWS";
 import { useNetwork } from "./NetworkContext";
 import { useWS } from "./WSProvider";
@@ -88,8 +87,6 @@ export const CartProvider = ({ children }) => {
     // 🌐 WebSocket connect effect
 
     if (cart_WS_Connected) return;
-
-    SetReoute(CartSchema.projectProxyRoute);
     let cleanup;
     ConnectToWS(setWSMessageCart, setCartWS_Connected)
       .then(() => console.log("🔌 Cart WebSocket connected"))
@@ -134,10 +131,10 @@ export const CartProvider = ({ children }) => {
   }, [_wsMessageCart]);
 
   const cartDataSourceAPI = (query, skip, take) => {
-    SetReoute(CartSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: CartSchema.projectProxyRoute,
       // ...row,
     });
   };

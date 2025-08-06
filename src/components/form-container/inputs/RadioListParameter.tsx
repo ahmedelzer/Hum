@@ -15,7 +15,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useDeviceInfo } from "../../../utils/component/useDeviceInfo";
 import useFetch from "../../../../components/hooks/APIsFunctions/useFetch";
-import { defaultProjectProxyRoute, SetReoute } from "../../../../request";
+import { defaultProjectProxyRoute } from "../../../../request";
 import { buildApiUrl } from "../../../../components/hooks/APIsFunctions/BuildApiUrl";
 import useFetchWithoutBaseUrl from "../../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
 import ContactSchema from "../../../Schemas/ForgetSchema/ContactSchema.json";
@@ -48,9 +48,9 @@ const RadioListParameter = ({
       (action) => action.dashboardFormActionMethodType == "Get"
     );
   const dataSourceAPI = (query) => {
-    SetReoute(schema.projectProxyRoute);
     return buildApiUrl(query, {
       ...control._formValues,
+      projectRout: schema.projectProxyRoute,
     });
   };
 
@@ -60,7 +60,6 @@ const RadioListParameter = ({
   const [selectedValue, setSelectedValue] = useState(null);
   useEffect(() => {
     if (data?.dataSource?.length > 0 && !selectedValue && setValue) {
-
       const defaultVal = data.dataSource[0][lookupReturnField];
       setSelectedValue(defaultVal);
       props.onChange(defaultVal);

@@ -2,7 +2,6 @@ import { default as React, useEffect, useReducer, useState } from "react";
 import { View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import { SetReoute } from "../../../request";
 import {
   selectSelectedNode,
   updateSelectedNode,
@@ -39,10 +38,11 @@ export default function NearestBranches() {
   );
   const [currentSkip, setCurrentSkip] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(NearestBranchesSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: NearestBranchesSchema.projectProxyRoute,
+
       ...selectedLocation,
     });
   };

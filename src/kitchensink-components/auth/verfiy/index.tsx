@@ -57,7 +57,7 @@ const VerifyScreen = ({ route }) => {
           null,
           true,
           getAction,
-          "",
+          VerifySchemaPrams.projectProxyRoute,
           false,
           constants
         );

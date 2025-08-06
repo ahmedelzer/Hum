@@ -12,7 +12,6 @@ import React, {
 import reducer from "../src/components/Pagination/reducer";
 import { initialState } from "../src/components/Pagination/initialState";
 import { getField } from "../src/utils/operation/getField";
-import { SetReoute } from "../request";
 import { ConnectToWS } from "../src/utils/WS/ConnectToWS";
 import { useNetwork } from "./NetworkContext";
 import { useWS } from "./WSProvider";
@@ -65,10 +64,11 @@ export const MenuProvider = ({ children }) => {
   );
   const [currentSkip, setCurrentSkip] = useState(1);
   const dataSourceAPI = (query, skip, take) => {
-    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: NodeMenuItemsSchema.projectProxyRoute,
+
       ...row,
     });
   };
@@ -106,19 +106,10 @@ export const MenuProvider = ({ children }) => {
   useEffect(() => {
     if (WS_Connected) return;
 
-    SetReoute(NodeMenuItemsSchema.projectProxyRoute);
     let cleanup;
     ConnectToWS(setWSMessageMenuItem, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
-      .catch((e) => {
-        console.log(isOnline, "connection Error");
-        if (!isOnline) {
-          showErrorToast("connection Error", "please connect to internet ");
-        } else {
-          showErrorToast("Error", e);
-        }
-        console.error("❌ Cart WebSocket error", e);
-      });
+      .catch((e) => {});
     return () => {
       if (cleanup) cleanup(); // Clean up when component unmounts or deps change
       console.log("🧹 Cleaned up WebSocket handler");

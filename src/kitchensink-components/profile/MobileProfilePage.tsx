@@ -5,8 +5,10 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
+import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 import {
   Avatar,
   AvatarFallbackText,
@@ -14,37 +16,32 @@ import {
   Button,
   ButtonText,
   Divider,
-  Heading,
   HStack,
-  Link,
-  LinkText,
   Text,
   VStack,
 } from "../../../components/ui";
 import { useAuth } from "../../../context/auth";
+import { useNetwork } from "../../../context/NetworkContext";
+import { useSchemas } from "../../../context/SchemaProvider";
+import { useWS } from "../../../context/WSProvider";
+import { GetProjectUrl } from "../../../request";
+import FormContainer from "../../components/form-container/FormContainer";
+import { onApply } from "../../components/form-container/OnApply";
 import LanguageSelector from "../../components/language/LanguageSelector";
+import PaymentOptionsActions from "../../Schemas/MenuSchema/PaymentOptionsActions.json";
+import CreditsSchema from "../../Schemas/Profile/CreditsSchema.json";
+import { theme } from "../../Theme";
 import {
   CollapsibleNavigation,
   CollapsibleSection,
 } from "../../utils/component/Collapsible";
-import LogoutAlertDialog from "../LogoutAlertDialog";
-import { theme } from "../../Theme";
-import OrderCollapse from "./OrderCollapse";
-import VoucherCardList from "./VoucherCardList";
-import CreditsSchema from "../../Schemas/Profile/CreditsSchema.json";
-import PaymentOptionsActions from "../../Schemas/MenuSchema/PaymentOptionsActions.json";
-import { getField } from "../../utils/operation/getField";
-import { GetProjectUrl, SetReoute } from "../../../request";
-import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 import { formatCount } from "../../utils/operation/formatCount";
-import { useSchemas } from "../../../context/SchemaProvider";
-import { useWS } from "../../../context/WSProvider";
+import { getField } from "../../utils/operation/getField";
 import { ConnectToWS } from "../../utils/WS/ConnectToWS";
 import { WSMessageHandler } from "../../utils/WS/handleWSMessage";
-import FormContainer from "../../components/form-container/FormContainer";
-import { useForm } from "react-hook-form";
-import { onApply } from "../../components/form-container/OnApply";
-import { useNetwork } from "../../../context/NetworkContext";
+import LogoutAlertDialog from "../LogoutAlertDialog";
+import OrderCollapse from "./OrderCollapse";
+import VoucherCardList from "./VoucherCardList";
 const MobileProfilePage = () => {
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] = useState(false);
   const { userGust, user } = useAuth();
@@ -284,8 +281,6 @@ const ProfileCard = () => {
   } = useNetwork();
   useEffect(() => {
     if (WS_Connected) return;
-
-    SetReoute(menuItemsState.schema.projectProxyRoute);
     let cleanup;
     ConnectToWS(setWSMessageAccounting, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))
@@ -325,10 +320,9 @@ const ProfileCard = () => {
     PaymentOptionsActions.find(
       (action) => action.dashboardFormActionMethodType.toLowerCase() === "get"
     );
-  SetReoute(CreditsSchema.projectProxyRoute);
   const { data, error, isLoading } = useFetch(
     `/${getAction.routeAdderss}`,
-    GetProjectUrl()
+    CreditsSchema.projectProxyRoute
   );
   useEffect(() => {
     if (!_wsMessageAccounting) return;

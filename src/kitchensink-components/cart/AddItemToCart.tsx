@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { SetReoute } from "../../../request";
 import { onApply } from "../../components/form-container/OnApply";
 import { addToCart, setItemQuantity } from "../../reducers/CartReducer";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
@@ -12,7 +11,6 @@ export const AddItemToCart = async (
   schemaActions,
   quantity
 ) => {
-  SetReoute(NodeMenuItemsSchema.projectProxyRoute);
   setLoading(true);
   try {
     //console.log("AddItemToCart cartState",addToCart);

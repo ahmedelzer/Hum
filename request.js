@@ -19,20 +19,19 @@ export const websocketBaseURI = "ws://" + domainURL + ":9000";
 // export const languageID = window.localStorage.getItem("languageID");
 // export const projectProxyRoute =
 //   window.sessionStorage.getItem("projectProxyRoute");//!make it by storge
-export let projectProxyRoute = "BrandingMart";
-export function SetReoute(Route) {
-  projectProxyRoute = Route;
-}
+// export let projectProxyRoute = "BrandingMart";
+
 export function SetIsOnline(state) {
   isOnline = state;
 }
 
 // Add other methods as needed
 
-export const baseURLWithoutApi = `${baseURL}/${projectProxyRoute}`;
+export var baseURLWithoutApi = `${baseURL}`;
 //"proxy": "http://ihs.ddnsking.com:8000",
 
-export function GetProjectUrl() {
+export function GetProjectUrl(projectProxyRoute) {
+  baseURLWithoutApi = `${baseURL}/${projectProxyRoute}`;
   return `${baseURL}/${projectProxyRoute}/api`;
 }
 export async function GetToken() {

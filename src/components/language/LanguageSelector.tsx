@@ -10,7 +10,7 @@ import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl
 import useFetch from "../../../components/hooks/APIsFunctions/useFetch";
 import UseFetchWithoutBaseUrl from "../../../components/hooks/APIsFunctions/UseFetchWithoutBaseUrl";
 import staticLocalization from "../../../context/staticLocalization.json";
-import { GetProjectUrl, SetReoute } from "../../../request";
+import { GetProjectUrl } from "../../../request";
 
 import {
   setLanguageRow,
@@ -34,13 +34,12 @@ const LanguageSelector = () => {
     (p) => p.parameterType === "Direction"
   ).parameterField;
 
-  SetReoute(schemaLanguages.projectProxyRoute);
-
   const dataSourceAPI = (query) =>
     buildApiUrl(query, {
       pageIndex: 1,
       pageSize: 1000,
       activeStatus: 1,
+      projectRout: schemaLanguages.projectProxyRoute,
     });
 
   const getLanguageAction = LanguageSchemaActions?.find(
@@ -91,7 +90,7 @@ const LanguageSelector = () => {
   const currentLang = languageRow[languageName];
   const { data: localization } = useFetch(
     `/${getLocalizationAction?.routeAdderss}/${currentLang}`,
-    GetProjectUrl()
+    schemaLanguages.projectProxyRoute
   );
 
   useEffect(() => {

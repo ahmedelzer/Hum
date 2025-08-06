@@ -11,7 +11,6 @@ import { useNetwork } from "../../../context/NetworkContext";
 import { useWS } from "../../../context/WSProvider";
 // import { LocalizationContext } from "../../../context/LocalizationContext";
 import { buildApiUrl } from "../../../components/hooks/APIsFunctions/BuildApiUrl";
-import { SetReoute } from "../../../request";
 import SuggestCardSchema from "../../Schemas/MenuSchema/SuggestCardSchema.json";
 import { getField } from "../../utils/operation/getField";
 import { prepareLoad } from "../../utils/operation/loadHelpers";
@@ -100,10 +99,11 @@ export default function SuggestCardContainer({
   };
 
   const suggestDataSourceAPI = (query, skip, take) => {
-    SetReoute(SuggestCardSchema.projectProxyRoute);
     return buildApiUrl(query, {
       pageIndex: skip + 1,
       pageSize: take,
+      projectRout: SuggestCardSchema.projectProxyRoute,
+
       shownNodeMenuItemIDs: shownNodeMenuItemIDs.join(","),
     });
   };
@@ -115,8 +115,6 @@ export default function SuggestCardContainer({
   // 🌐 Setup WebSocket connection on mount or WS_Connected change
   useEffect(() => {
     if (WS_Connected) return;
-
-    SetReoute(SuggestCardSchema.projectProxyRoute);
     let cleanup;
     ConnectToWS(setWSMessageSuggest, setWS_Connected)
       .then(() => console.log("🔌 WebSocket setup done"))

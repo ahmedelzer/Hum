@@ -22,7 +22,6 @@ import { VStack } from "../../../components/ui";
 import { useCart } from "../../../context/CartProvider";
 import { useNetwork } from "../../../context/NetworkContext";
 import { useWS } from "../../../context/WSProvider";
-import { SetReoute } from "../../../request";
 import NodeMenuItemsSchema from "../../Schemas/MenuSchema/NodeMenuItemsSchema.json";
 import NodeMenuItemsSchemaActions from "../../Schemas/MenuSchema/NodeMenuItemsSchemaActions.json";
 import { SetResponsiveContainer } from "../../utils/component/SetResponsiveContainer";
