@@ -1,0 +1,50 @@
+{
+  "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+  "schemaType": "form",
+  "idField": "voucherCardID",
+  "dashboardFormSchemaInfoDTOView": {
+    "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+    "schemaHeader": "VoucherCard",
+    "addingHeader": "Scartch Voucher Card",
+    "editingHeader": "Edit voucherCard"
+  },
+  "dashboardFormSchemaParameters": [
+    {
+      "dashboardFormSchemaParameterID": "9e49c792-9b64-4d15-8c47-90a21c560e94",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "text",
+      "parameterField": "voucherCardID",
+      "parameterTitel": "voucherCardID",
+      "parameterLookupTitel": null,
+      "isIDField": true,
+      "indexNumber": 1
+    },
+    {
+      "dashboardFormSchemaParameterID": "9e49c792-9b64-4d15-8c47-90a21c560e94",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "voucherCardCode",
+      "parameterField": "voucherCardCode",
+      "parameterTitel": "voucherCardCode",
+      "parameterLookupTitel": null,
+      "isIDField": false,
+      "indexNumber": 1
+    },
+    {
+      "dashboardFormSchemaParameterID": "9e49c792-9b64-4d15-8c47-90a21c560e94",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": false,
+      "parameterType": "datetime",
+      "parameterField": "usedAt",
+      "parameterTitel": "usedAt",
+      "parameterLookupTitel": null,
+      "isIDField": false,
+      "indexNumber": 2
+    }
+  ],
+  "projectProxyRoute": "BrandingMartAccounting",
+  "isMainSchema": true,
+  "dataSourceName": "AccountInfo",
+  "indexNumber": 0
+}

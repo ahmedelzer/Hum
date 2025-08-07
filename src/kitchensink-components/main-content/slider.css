@@ -1,0 +1,62 @@
+/* Use Tailwind classes to replace colors and spacing */
+
+.mainSlider .swiper-pagination-bullets {
+  @apply bottom-6; /* 1.5rem in Tailwind is `bottom-6` */
+}
+
+.mainSlider .swiper-pagination-bullet,
+.productSlider .swiper-pagination-bullet {
+  @apply !bg-accent; /* Custom accent color defined in your Tailwind config */
+}
+
+.productSlider .swiper-button-prev::after,
+.productSlider .swiper-button-next::after {
+  @apply text-4xl !text-accent p-8 w-[200px]; /* Tailwind classes for font size, color, padding, and width */
+}
+
+/* Reset CSS remains as is */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Header styles using Tailwind */
+.header {
+  @apply bg-gray-800 text-text py-2.5 px-5 flex items-center justify-between; /* Tailwind equivalents */
+}
+
+.logo {
+  @apply text-2xl font-bold;
+}
+
+.tabs {
+  @apply flex gap-5;
+}
+
+.tab {
+  @apply py-2 px-3 rounded-md !bg-card cursor-pointer;
+}
+
+.languages {
+  @apply flex gap-2.5;
+}
+
+.language {
+  @apply py-2 px-3 rounded-md !bg-card cursor-pointer;
+}
+
+.button {
+  @apply py-2.5 px-5 rounded-md !bg-accent !text-text cursor-pointer;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .header {
+    @apply flex-col items-start;
+  }
+
+  .tabs {
+    @apply mt-2.5;
+  }
+}

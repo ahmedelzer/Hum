@@ -1,0 +1,19 @@
+/* Mimicking Bootstrap's col-sm behavior */
+@media (min-width: 176px) {
+  .col-sm-12 {
+    width: 100%;
+  }
+
+  .col-sm-6 {
+    width: 50%;
+  }
+}
+
+.col-sm-12,
+.col-sm-6 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 12px;
+  padding-left: 12px;
+  float: left;
+}

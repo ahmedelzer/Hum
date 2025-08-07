@@ -1,0 +1,11 @@
+2-make application woke in web browser // the proplem in the icons lib
+3-localization//all done but still checkout and profile
+4-clear logs and un useable files
+5-on delete operation remove item if in items but in cart hint the customer is out of stock
+6-clean the files unnecessary code  
+//web tasks
+1-make map work 
+2-
+//suggests
+in login 
+can users in web show the content like a gust in mobile

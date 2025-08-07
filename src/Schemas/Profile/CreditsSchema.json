@@ -1,0 +1,56 @@
+{
+  "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+  "schemaType": "CreditsSchema",
+  "idField": "accountID",
+  "dashboardFormSchemaInfoDTOView": {
+    "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+    "schemaHeader": "Others Payment Options",
+    "addingHeader": "Add Cart",
+    "editingHeader": "Edit Cart"
+  },
+  "dashboardFormSchemaParameters": [
+    {
+      "dashboardFormSchemaParameterID": "9e49c792-9b64-4d15-8c47-90a21c560e94",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": true,
+      "parameterType": "text",
+      "parameterField": "accountID",
+      "parameterTitel": "account ID",
+      "parameterLookupTitel": null,
+      "isIDField": true,
+      "indexNumber": 1
+    },
+    {
+      "dashboardFormSchemaParameterID": "9e49c792-9b64-4d15-8c47-90a21c560e95",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": false,
+      "parameterType": "credit",
+      "parameterField": "accountCredit",
+      "parameterTitel": "Credit",
+      "parameterLookupTitel": "Credit",
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "isIDField": false,
+      "indexNumber": 1
+    },
+    {
+      "dashboardFormSchemaParameterID": "9e49c792-9b64-4d15-8c47-90a21c560e96",
+      "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+      "isEnable": false,
+      "parameterType": "points",
+      "parameterField": "accountPoints",
+      "parameterTitel": "Points",
+      "parameterLookupTitel": "Points",
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "isIDField": false,
+      "indexNumber": 1
+    }
+  ],
+  "projectProxyRoute": "BrandingMartAccounting",
+  "isMainSchema": true,
+  "dataSourceName": "AccountInfo",
+  "indexNumber": 0
+}

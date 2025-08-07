@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* @layer base {
+  body {
+    @apply font-primary bg-body !text-text  overflow-hidden h-full;
+  }
+  .h2 {
+    @apply text-3xl capitalize;
+  }
+  .card-shadow {
+    @apply shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)];
+  }
+  .grad {
+    @apply bg-gradient-to-t from-[#1F2126] to-[#33363D] drop-shadow-2xl;
+  }
+  .btn {
+    @apply h-[50px] flex justify-center items-center rounded-[8px] px-10 py-[10px] text-sm uppercase font-bold;
+  }
+  .btn-accent {
+    @apply bg-accent hover:bg-accent-hover transition-all;
+  }
+  .input {
+    @apply h-[50px] rounded-[8px] w-full outline-none px-6 !text-primary;
+  }
+  .heading {
+    @apply mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20;
+  }
+  .main-button {
+    @apply inline-block rounded border-2 border-accent text-accent hover:border-accent-hover hover:bg-accent hover:bg-opacity-10 hover:text-accent-hover px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal transition duration-150 ease-in-out focus:outline-none focus:ring-0;
+  }
+} */
+:root {
+  --body: #ffffff;
+  --text: #111111;
+  --primary: #ff8c42;
+  --card: #e5e7eb;
+  --accent: #ff6700;
+  --accent-hover: #ff4500;
+}
+body {
+  @apply font-primary overflow-hidden h-full bg-body !text-text;
+}
+::-webkit-scrollbar {
+  @apply w-1.5 h-2;
+}
+
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-secondary-200 rounded-[20px] border-[3px] border-solid border-transparent;
+}
+html,
+body {
+  overflow-y: auto !important;
+}
+* {
+  border-color: #e5e7eb !important;
+}

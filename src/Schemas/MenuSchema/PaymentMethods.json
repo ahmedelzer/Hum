@@ -1,0 +1,46 @@
+{
+  "dashboardFormSchemaID": "270f513b-1788-4c01-879e-4526c990f899",
+  "schemaType": "paymentMethods",
+  "idField": "paymentMethodID",
+  "dashboardFormSchemaInfoDTOView": {
+    "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+    "schemaHeader": "Payment Methods",
+    "addingHeader": "Add Payment Method",
+    "editingHeader": "Edit Payment Method"
+  },
+  "dashboardFormSchemaParameters": [
+    {
+      "dashboardFormSchemaParameterID": "b7100c23-a107-4898-afb3-0a4994aa3bd0",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": true,
+      "parameterType": "text",
+      "parameterField": "paymentMethodID",
+      "parameterTitel": "paymentMethodID",
+      "parameterLookupTitel": "paymentMethodID",
+      "isIDField": true,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 0
+    },
+    {
+      "dashboardFormSchemaParameterID": "b7100c23-a107-4898-afb3-0a4994aa3bd0",
+      "dashboardFormSchemaID": "66a8b526-4e63-49b9-ad10-b5112f6646f4",
+      "isEnable": true,
+      "parameterType": "checkList",
+      "parameterField": "paymentMethod",
+      "parameterTitel": "Payment Method",
+      "parameterLookupTitel": null,
+      "isIDField": false,
+      "lookupID": null,
+      "lookupReturnField": null,
+      "lookupDisplayField": null,
+      "indexNumber": 1
+    }
+  ],
+  "projectProxyRoute": "BrandingMartFinancial",
+  "isMainSchema": true,
+  "dataSourceName": "PaymentMethods",
+  "propertyName": null,
+  "indexNumber": 2
+}
